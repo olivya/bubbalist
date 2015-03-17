@@ -1,0 +1,433 @@
+@import url(http://fonts.googleapis.com/css?family=Lilita+One);
+@import url(http://fonts.googleapis.com/css?family=Lato:300,400);
+@import url(http://fonts.googleapis.com/css?family=Ubuntu:300,400);
+
+body {
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box; 
+}
+
+.task-list {
+	display:inline-block;
+	position:absolute;
+	list-style-type:none;
+	padding:0;
+	word-wrap:break-word;
+	margin-top:0px;
+	margin-bottom:0px;
+}
+
+.tasky {
+	position: absolute;
+	padding-left:10px;
+	padding-right:10px;
+	border-radius:35%;
+	border:1px dotted rgba(0,0,0,0.2);
+	width:130px;
+	height:130px;
+	text-align:center;
+}
+
+.tasky > form {
+  position: relative;
+}
+
+.tasky > form > .buttons > button {
+	position:relative;
+	height:30px;
+	float:left;
+	border-width:0px;
+	color:#fff;
+	border-radius:10px;
+	background-color: rgba(0,0,0,0.65);
+	margin-top:3px;
+}
+
+.tasky > form > .buttons > .other {
+	font-size: .8em;
+	width:28%;
+	float:center;
+	text-align:center;
+	padding:0;
+}
+
+.tasky > form > .buttons > .btn {
+	float:right;
+	padding:0;
+	width:28%;
+}
+
+.tasky > form > .buttons > .save {
+	font-family:'Lilita One',sans-serif;
+	color:#fff;
+	font-size:.65em;
+	width:40%;
+	text-transform: uppercase;
+}
+
+.btn {
+	/*margin-right:2%;*/
+}
+
+.tasky > form > .buttons {
+	height:20px;
+	top:75px;
+}
+
+.tasky > form > textarea {
+	resize:none;
+	width:75%;
+	font-size:1em;
+	padding:5px;
+	border-width:0px;
+	border-radius:10px;
+	background:white;
+	opacity:0.65;
+	outline:none;
+	font-family: "Ubuntu", sans-serif;
+	font-weight:300;
+	position:relative;
+	top:15px;
+	font-size:.95em;
+	line-height:1em;
+	color: rgba(0,0,0,0.5);
+
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box; 	
+}
+
+.task {
+	font-family: "Ubuntu", sans-serif;
+	font-weight:300;
+	font-size:.9em;
+	line-height:1em;
+	color:#fff;
+	margin:0px;	
+	padding:0px;
+}
+
+.edit-feedback {
+	text-align:right;
+	float:right;
+	width:100px;
+	background:lime;
+	height:200px;
+	font-size:3em;
+}
+
+.tasky .handle:hover {
+	cursor: move;
+}
+
+.tasky .handle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.tasky .handle > div {
+	max-width:110px;
+	margin-left:20px;
+	margin-top:13px;
+}
+
+.deleted {
+	display:none;
+}
+
+
+/* ADD TASK FORM */
+.add-task-form {
+	background:#fff;
+	position: fixed;
+	right:-105%;
+	width:87%;
+	height:auto;
+	padding:5px;
+	top:20px;
+   z-index:10000;
+ 	border-radius:10px;
+	    -webkit-transition: all 0.6s;
+	    -moz-transition: all 0.6s;
+	    -ms-transition: all 0.6s;
+	    -o-transition: all 0.6s;
+	    transition: all 0.6s;
+
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box; 
+}
+
+.add-task-form > form > .form-items {
+	width:85%;
+	height:80%;
+	float:left;
+
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box; 
+}
+.add-task-form > form > .form-items > textarea {
+	width:100%;
+	float:left;
+	resize:none;
+	font-size:1em;
+	padding:10px;
+	border-width:0px;
+	border-radius:10px;
+	background:white;
+	opacity:0.85;
+	outline:none;
+	font-family: "Ubuntu", sans-serif;
+	font-weight:300;
+
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box; 
+}
+
+.add-task-button {
+	font-size:1.25em;
+	float:left;
+	width:80%;
+	height:30px;
+	border-width:0px;
+	padding:0px;
+	color:#fff;
+	margin-top:5px;
+	border-radius:10px;
+	background-color: rgba(0,0,0,0.65);
+	font-family:'Lilita One',sans-serif;
+	outline:none;
+}
+
+.text-feedback {
+	float:right;
+	margin-left:2%;
+	width:18%;
+	font-size:1.75em;
+	height:30px;
+	text-align:right;
+	margin-top:5px;
+	font-family:'Lilita One',sans-serif;
+	color:#fff;
+
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box; 
+}
+
+.toggle-menu-button {
+	position:fixed;
+	display:inline;
+	top:0.25em;
+	right:0.25em;
+	text-align:center;
+	color:#fff;
+	font-size:2.5em;
+	border-radius: 50%;
+	height:47px;
+	width:47px;
+	line-height: 52px;
+	/*padding-top:2px;*/
+	border-width:0px;
+	background-color:#E5B2FF;
+	outline:none;
+		-webkit-transition: all 0.72s ease-in-out;
+		-moz-transition: all 0.72s ease-in-out;
+		-ms-transition: all 0.72s ease-in-out;
+		-o-transition: all 0.72s ease-in-out;
+		transition: all 0.72s ease-in-out;
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box; 
+}
+
+.shift-down {
+	top:20px;
+	right:83%;
+	background-color:#FF75B3;
+	line-height: 45px;
+
+		-webkit-transition: all 0.72s ease-in-out;
+		-moz-transition: all 0.72s ease-in-out;
+		-ms-transition: all 0.72s ease-in-out;
+		-o-transition: all 0.72s ease-in-out;
+		transition: all 0.72s ease-in-out;
+}
+
+.menu-open {
+	right:-1.5em;
+	opacity:1;
+	/*background-color:#4FFFD5;*/
+	background-color:#D1D1D1;
+		-webkit-transition: all 0.72s ease-in-out;
+		-moz-transition: all 0.72s ease-in-out;
+		-ms-transition: all 0.72s ease-in-out;
+		-o-transition: all 0.72s ease-in-out;
+		transition: all 0.72s ease-in-out;
+}
+
+.no-tasks-message {
+	position:fixed;
+	/*display:block;*/
+	font-family:'Lilita One',sans-serif;
+	text-transform:uppercase;
+	text-align:center;
+	font-size:2em;	
+	opacity:0.2;
+	top:75px;
+	margin-right: 15%;
+	margin-left: 10%;
+}
+
+.colour-test {
+	height: 50px;
+	width: 50px;
+	border:1px solid gray;
+}
+
+
+/*HELP FORM*/
+.help-form {
+	background:#fff;
+	position: fixed;
+	right:-105%;
+	width:87%;
+	height:auto;
+	padding-top:20px;
+	padding-bottom:20px;
+	padding-left:10px;
+	top:70px;
+   z-index:10000;
+ 	border-radius:10px;
+	    -webkit-transition: all 0.6s;
+	    -moz-transition: all 0.6s;
+	    -ms-transition: all 0.6s;
+	    -o-transition: all 0.6s;
+	    transition: all 0.6s;
+
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box; 
+}
+
+.help-form  > .help-items {
+	width:85%;
+	height:80%;
+	float:left;
+
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box; 
+}
+
+.help-form > .help-items > span {
+	font-family: "Ubuntu", sans-serif;
+	font-weight:300;
+	font-size:0.9em;
+	line-height:0.75em;
+}
+
+.help-form > .help-items > #main {
+	font-family:'Lilita One',sans-serif;
+	color:#fff;
+	text-transform: uppercase;
+	font-size:1.25em;
+}
+
+.help-form > .help-items > #main2 {
+	font-family:'Lilita One',sans-serif;
+	color:#fff;
+	text-transform: uppercase;
+	font-size:1.25em;
+	float:right;
+}
+
+.toggle-help-button {
+	position:fixed;
+	display:inline;
+	top:1.65em;
+	right:0.25em;
+	text-align:center;
+	color:#fff;
+	font-size:2.5em;
+	border-radius: 50%;
+	height:47px;
+	width:47px;
+	line-height: 52px;
+	/*padding-top:2px;*/
+	border-width:0px;
+	background-color:#38FFE1;
+	z-index:1;
+	outline:none;
+		-webkit-transition: all 0.72s ease-in-out;
+		-moz-transition: all 0.72s ease-in-out;
+		-ms-transition: all 0.72s ease-in-out;
+		-o-transition: all 0.72s ease-in-out;
+		transition: all 0.72s ease-in-out;
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box; 
+}
+
+.help-open {
+	right:-1.5em;
+	opacity:1;
+	/*background-color:#4FFFD5;*/
+	background-color:#D1D1D1;
+		-webkit-transition: all 0.72s ease-in-out;
+		-moz-transition: all 0.72s ease-in-out;
+		-ms-transition: all 0.72s ease-in-out;
+		-o-transition: all 0.72s ease-in-out;
+		transition: all 0.72s ease-in-out;
+}
+
+.shift-help {
+	/*top:20px;*/
+	right:83%;
+	background-color:#FF75B3;
+	line-height: 45px;
+
+
+		-webkit-transition: all 0.72s ease-in-out;
+		-moz-transition: all 0.72s ease-in-out;
+		-ms-transition: all 0.72s ease-in-out;
+		-o-transition: all 0.72s ease-in-out;
+		transition: all 0.72s ease-in-out;
+}
+
+.shift-help-down {
+	top:3.75em;
+
+	-webkit-transition: all 0.72s ease-in-out;
+		-moz-transition: all 0.72s ease-in-out;
+		-ms-transition: all 0.72s ease-in-out;
+		-o-transition: all 0.72s ease-in-out;
+		transition: all 0.72s ease-in-out;
+}
+
+.button-pressed {
+	/*color:#fff;*/
+	/*background-color:#fff;*/
+	background-color: rgba(255,255,255,0.5);
+
+		-webkit-transition: all 0.03s;
+		-moz-transition: all 0.03s;
+		-ms-transition: all 0.03s;
+		-o-transition: all 0.03s;
+		transition: all 0.03s;
+}
+.hide {
+	opacity:0;
+
+		-webkit-transition: opacity 0.5s;
+		-moz-transition: opacity 0.5s;
+		-ms-transition: opacity 0.5s;
+		-o-transition: opacity 0.5s;
+		transition: opacity 0.5s;
+}

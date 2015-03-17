@@ -1,0 +1,90 @@
+<div ng-show="noTasks">
+	<span class="no-tasks-message">You haven't added any tasks!</span>
+</div>
+
+<!-- <div class="colour-test"></div> -->
+
+<div ng-hide="noTasks">
+	<ul class="task-list" ng-repeat="task in taskList track by $index">
+		<li>
+			<div class="tasky" id="task{{$index}}">
+
+				<div class="handle" ng-hide="task.editing" id="{{$index}}">
+				<!-- TASK: --> <div ng-hide="task.editing" class="task hide">{{task.task}}
+					<div class="handle" id="{{$index}}"></div>
+				</div>
+				</div>
+		      <!-- EDIT: -->
+		      <!-- <button ng-hide="task.editing" ng-click="toggleEditMode($index)"><i class="fa fa-edit"></i></button> -->
+				<!-- DELETE: -->
+				<!-- <button ng-hide="task.editing" ng-click="deleteTask($index)"><i class="fa fa-trash"></i></button> -->
+				
+				<!-- EDITING FORM: -->
+				<form ng-show="task.editing" ng-submit="toggleEditModeOff($index)" class="handle" id="{{$index}}">
+		      	<textarea rows="4"
+		      				 maxlength="100"
+								 placeholder="Task"
+								 ng-model="task.task"
+								 required
+								 class="edit-box">
+					</textarea>
+
+					<div class="handle buttons" id="{{$index}}">
+						<!-- SAVE: --><button type="submit" class="save">Save</button>
+						<!-- DELETE: --><button id="delete" class="other" ng-click="deleteTask($index)"><i class="fa fa-trash"></i></button>
+						<!-- CHECKOFF: --><button id="done" class="btn other" ng-click="doneTask($index)"><i class="fa fa-check"></i></button>
+			     		<!-- <div class="edit-feedback"></div> -->
+			     	</div>
+		      </form>
+		      <!-- END EDITING FORM -->
+			</div>
+		</li>
+	</ul>
+</div><br/>
+
+<!-- ADD TASK FORM: -->
+<div class="add-task-form">
+	<form name="addTaskForm"
+			ng-submit="addTask()"
+			novalidate>
+
+		<div class="form-items">
+
+			<textarea rows="3"
+						 maxlength="100"
+						 class="task-input"
+						 placeholder="Task"
+						 ng-model="newTask"
+						 required>
+			</textarea><br/>
+			<button class="add-task-button" type="submit">
+				<!-- <i class="fa fa-plus"></i> -->
+				ADD TASK
+			</button>
+			<div class="text-feedback"></div>
+
+		</div>
+
+	</form><br/>
+	
+		<div class="toggle-menu-button" ng-click="toggleMenu()">
+			<i class="fa fa-plus"></i>
+		</div>
+	
+</div>
+
+<!-- HELP FORM: -->
+<div class="help-form">
+		<div class="help-items">
+				<span id="main">Planning's a drag . . .</span><p/>
+				<span>Drag tasks to reposition.</span><p/>
+				<span>Double-tap to edit, delete, or mark as done.</span><p/>
+				<span>Single-tap to bring task to the front.</span><p/>
+				<span id="main2">. . . literally.</span>
+		</div>
+		<br/>
+		<div class="toggle-help-button" ng-click="toggleHelp()">
+			<i class="fa fa-question"></i>
+		</div>
+	
+</div>
