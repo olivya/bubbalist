@@ -35,10 +35,14 @@ bubbalist.controller('mainController', function($scope, Tasks, Colours, $locatio
 
 	//DELETE TASK:
 	$scope.deleteTask = function (i){ //i = $index from home.html
+		$scope.responseNeeded = true;
 
    	smoke.confirm("Are you sure?", function(e){
 			if (e){
+
 				console.log("Task \""+$scope.taskList[i].task+"\" was deleted");
+				$scope.responseNeeded = false;
+				$scope.$apply();
 				$scope.taskList[i] = null;
 
 		 		var items = document.querySelectorAll('.tasky');
@@ -50,6 +54,8 @@ bubbalist.controller('mainController', function($scope, Tasks, Colours, $locatio
 			$scope.checkForTasks();
 			} else{
 				// console.log("nope");
+				$scope.responseNeeded = false;
+				$scope.$apply();
 			}}, {
 				ok: "Yup",
 				cancel: "Nevermind",
@@ -59,9 +65,14 @@ bubbalist.controller('mainController', function($scope, Tasks, Colours, $locatio
 
    //MARK TASK AS COMPLETED
 	$scope.doneTask = function (i){ //i = $index from home.html
- 
+ 	$scope.responseNeeded = true;
+ 	console.log($scope.responseNeeded);
+
    	smoke.confirm("Mark as complete?", function(e){
 			if (e){
+				$scope.responseNeeded = false;
+				$scope.$apply();
+			 	console.log($scope.responseNeeded);
 				$scope.taskList[i] = null;
 
 		 		var items = document.querySelectorAll('.tasky');
@@ -70,15 +81,20 @@ bubbalist.controller('mainController', function($scope, Tasks, Colours, $locatio
 			 				$(items[j]).addClass("deleted");
 			 		}
 			 	}
+
 				$scope.checkForTasks();
 			} else{
 				console.log("nope");
+				$scope.responseNeeded = false;
+				$scope.$apply();
+			 	console.log($scope.responseNeeded);
 			}}, {
 				ok: "Yup",
 				cancel: "Nevermind",
 				reverseButtons: true
 			});
    };
+   
 	//STEP 1: ADD TASK:
 	$scope.addTask = function() {
 		$( ".add-task-button" ).addClass( "button-pressed" );
@@ -98,6 +114,7 @@ bubbalist.controller('mainController', function($scope, Tasks, Colours, $locatio
 			// i = $scope.taskList.map(function(i) { return i.i; }).indexOf($scope.newTask);
 			// console.log("i "+i);
 			console.log("Text: \""+$scope.newTask+"\"");
+			// console.log("Text: \""+$scope.colour+"\"");
 			// console.log("COLOUR \""+$scope.newTask+"\"");
 			// console.log("Colour: "+theColour);
 
@@ -110,8 +127,11 @@ bubbalist.controller('mainController', function($scope, Tasks, Colours, $locatio
 			setTimeout($scope.setStyle,5);
 		}
 		else {
+			$scope.responseNeeded = true;
 			// alert("Please enter a task!");
 			smoke.alert("Please enter a task!", function(e){
+				$scope.responseNeeded = false;
+				$scope.$apply();
 			}, {
 				ok: "Okay"
 			});
@@ -179,7 +199,6 @@ bubbalist.controller('mainController', function($scope, Tasks, Colours, $locatio
 			$('#task'+i).css("background-color",'#076F5C');
 			i++;
 		}
-
 		// console.log("Colour: "+theColour);
 	};
 
@@ -419,6 +438,7 @@ bubbalist.controller('mainController', function($scope, Tasks, Colours, $locatio
 $scope.showPicker = function (){
 	$scope.showColourPicker = true;
 	// console.log($scope.showColourPicker);
+
 	var height1 = $('.add-task-form').height();
 	var height2 = $('#colour1').height();
 	var scrollFoReal = height1 + height2 * 4;
