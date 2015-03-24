@@ -3,8 +3,8 @@
 @import url(http://fonts.googleapis.com/css?family=Ubuntu:300,400);
 
 body {
-	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	box-sizing: border-box; 
 }
 
@@ -64,10 +64,6 @@ body {
 	font-size:.65em;
 	width:40%;
 	text-transform: uppercase;
-}
-
-.btn {
-	/*margin-right:2%;*/
 }
 
 .tasky > form > .buttons {
@@ -139,26 +135,22 @@ body {
 	display:none;
 }
 
-
-/* ADD TASK FORM */
+/*================================================================================*/
+/*================================ ADD TASK FORM =================================*/
+/*================================================================================*/
 .add-task-form {
 	background:#fff;
 	position: fixed;
 	right:-105%;
+	background-color:#D1D1D1;
 	width:87%;
 	height:auto;
 	padding:5px;
 	top:20px;
-   z-index:10000;
  	border-radius:10px;
-	    -webkit-transition: all 0.6s;
-	    -moz-transition: all 0.6s;
-	    -ms-transition: all 0.6s;
-	    -o-transition: all 0.6s;
-	    transition: all 0.6s;
 
-	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	box-sizing: border-box; 
 }
 
@@ -166,9 +158,8 @@ body {
 	width:85%;
 	height:80%;
 	float:left;
-
-	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	box-sizing: border-box; 
 }
 .add-task-form > form > .form-items > textarea {
@@ -185,16 +176,16 @@ body {
 	font-family: "Ubuntu", sans-serif;
 	font-weight:300;
 
-	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	box-sizing: border-box; 
 }
 
 .add-task-button {
 	font-size:1.25em;
 	float:left;
-	width:80%;
-	height:30px;
+	width:60%;
+	height:35px;
 	border-width:0px;
 	padding:0px;
 	color:#fff;
@@ -207,17 +198,16 @@ body {
 
 .text-feedback {
 	float:right;
-	margin-left:2%;
-	width:18%;
-	font-size:1.75em;
-	height:30px;
+	width:17%;
+	font-size:2em;
+	height:35px;
 	text-align:right;
 	margin-top:5px;
 	font-family:'Lilita One',sans-serif;
 	color:#fff;
 
-	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	box-sizing: border-box; 
 }
 
@@ -226,55 +216,28 @@ body {
 	display:inline;
 	top:0.25em;
 	right:0.25em;
-	text-align:center;
-	color:#fff;
-	font-size:2.5em;
 	border-radius: 50%;
 	height:47px;
 	width:47px;
-	line-height: 52px;
-	/*padding-top:2px;*/
 	border-width:0px;
 	background-color:#E5B2FF;
 	outline:none;
-		-webkit-transition: all 0.72s ease-in-out;
-		-moz-transition: all 0.72s ease-in-out;
-		-ms-transition: all 0.72s ease-in-out;
-		-o-transition: all 0.72s ease-in-out;
-		transition: all 0.72s ease-in-out;
-	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	text-align:center;
+	color:#fff;
+	font-size:2.5em;
+
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	box-sizing: border-box; 
 }
 
-.shift-down {
-	top:20px;
-	right:83%;
-	background-color:#FF75B3;
-	line-height: 45px;
-
-		-webkit-transition: all 0.72s ease-in-out;
-		-moz-transition: all 0.72s ease-in-out;
-		-ms-transition: all 0.72s ease-in-out;
-		-o-transition: all 0.72s ease-in-out;
-		transition: all 0.72s ease-in-out;
-}
-
-.menu-open {
-	right:-1.5em;
-	opacity:1;
-	/*background-color:#4FFFD5;*/
-	background-color:#D1D1D1;
-		-webkit-transition: all 0.72s ease-in-out;
-		-moz-transition: all 0.72s ease-in-out;
-		-ms-transition: all 0.72s ease-in-out;
-		-o-transition: all 0.72s ease-in-out;
-		transition: all 0.72s ease-in-out;
+.plus-icon {
+	padding-left:2px;
+	padding-top:4px;
 }
 
 .no-tasks-message {
 	position:fixed;
-	/*display:block;*/
 	font-family:'Lilita One',sans-serif;
 	text-transform:uppercase;
 	text-align:center;
@@ -285,34 +248,24 @@ body {
 	margin-left: 10%;
 }
 
-.colour-test {
-	height: 50px;
-	width: 50px;
-	border:1px solid gray;
-}
-
-
-/*HELP FORM*/
+/*================================================================================*/
+/*================================ HELP FORM =====================================*/
+/*================================================================================*/
 .help-form {
 	background:#fff;
 	position: fixed;
 	right:-105%;
+	background-color:#D1D1D1;
 	width:87%;
 	height:auto;
 	padding-top:20px;
 	padding-bottom:20px;
 	padding-left:10px;
 	top:70px;
-   z-index:10000;
  	border-radius:10px;
-	    -webkit-transition: all 0.6s;
-	    -moz-transition: all 0.6s;
-	    -ms-transition: all 0.6s;
-	    -o-transition: all 0.6s;
-	    transition: all 0.6s;
 
-	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	box-sizing: border-box; 
 }
 
@@ -320,9 +273,8 @@ body {
 	width:85%;
 	height:80%;
 	float:left;
-
-	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	box-sizing: border-box; 
 }
 
@@ -360,62 +312,18 @@ body {
 	height:47px;
 	width:47px;
 	line-height: 52px;
-	/*padding-top:2px;*/
 	border-width:0px;
 	background-color:#38FFE1;
 	z-index:1;
 	outline:none;
-		-webkit-transition: all 0.72s ease-in-out;
-		-moz-transition: all 0.72s ease-in-out;
-		-ms-transition: all 0.72s ease-in-out;
-		-o-transition: all 0.72s ease-in-out;
-		transition: all 0.72s ease-in-out;
-	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	box-sizing: border-box; 
 }
 
-.help-open {
-	right:-1.5em;
-	opacity:1;
-	/*background-color:#4FFFD5;*/
-	background-color:#D1D1D1;
-		-webkit-transition: all 0.72s ease-in-out;
-		-moz-transition: all 0.72s ease-in-out;
-		-ms-transition: all 0.72s ease-in-out;
-		-o-transition: all 0.72s ease-in-out;
-		transition: all 0.72s ease-in-out;
-}
-
-.shift-help {
-	/*top:20px;*/
-	right:83%;
-	background-color:#FF75B3;
-	line-height: 45px;
-
-
-		-webkit-transition: all 0.72s ease-in-out;
-		-moz-transition: all 0.72s ease-in-out;
-		-ms-transition: all 0.72s ease-in-out;
-		-o-transition: all 0.72s ease-in-out;
-		transition: all 0.72s ease-in-out;
-}
-
-.shift-help-down {
-	top:3.75em;
-
-	-webkit-transition: all 0.72s ease-in-out;
-		-moz-transition: all 0.72s ease-in-out;
-		-ms-transition: all 0.72s ease-in-out;
-		-o-transition: all 0.72s ease-in-out;
-		transition: all 0.72s ease-in-out;
-}
-
 .button-pressed {
-	/*color:#fff;*/
-	/*background-color:#fff;*/
 	background-color: rgba(255,255,255,0.5);
-
 		-webkit-transition: all 0.03s;
 		-moz-transition: all 0.03s;
 		-ms-transition: all 0.03s;
@@ -424,10 +332,162 @@ body {
 }
 .hide {
 	opacity:0;
-
 		-webkit-transition: opacity 0.5s;
 		-moz-transition: opacity 0.5s;
 		-ms-transition: opacity 0.5s;
 		-o-transition: opacity 0.5s;
 		transition: opacity 0.5s;
+}
+
+/*================================================================================*/
+/*================================= COLOUR PICKER ================================*/
+/*================================================================================*/
+.colour-picker-button {
+	font-size:1.25em;
+	float:center;
+	width:18%;
+	height:35px;
+	border-width:0px;
+	padding:0px;
+	color:#fff;
+	margin-top:5px;
+	margin-left:5px;
+	border-radius:10px;
+	/*background-color: rgba(0,0,0,0.65);*/
+	background-color: #89FFF1;
+	outline:none;
+}
+
+.colour-picker {
+	margin-top:3px;
+	width:79.5%;
+	height:auto;
+}
+
+#colour1, #colour2, #colour3,
+#colour4, #colour5, #colour6,
+#colour7, #colour8, #colour9 {
+/*	width:30%;
+	height:40px;*/ /* change to same as width */
+	width:50px;
+	height:50px;
+	background:rgba(0,0,0,0.8);
+	float:left;
+	border-radius:50%;
+	margin-left:4.999995%;
+	margin-bottom:4.999995%;
+	opacity:1;
+}
+
+.scroll-for-real {
+	/*background:SlateBlue;*/
+}
+#colour1, #colour4, #colour7 {
+	clear:left;
+	margin-left:0;
+}
+
+#colour7, #colour8, #colour9 {
+	margin-bottom:3px;
+}
+
+#colour1 {
+	background-color:#89FFF1;
+}
+#colour2 {
+	background-color:#8799FF;
+}
+#colour3 {
+	background-color:#BA82FF;
+}
+#colour4 {
+	background-color:#FF8396;
+}
+#colour5 {
+	background-color:#FF6369;	
+}
+#colour6 {
+	background-color:#FF235E;	
+}
+#colour7 {
+	background-color:#5DEFB0;	
+}
+#colour8 {
+	background-color:#47CC92;	
+}
+#colour9 {
+	background-color:#076F5C;	
+}
+/*================================================================================*/
+/*================================ SMOKE.JS ALERTS ===============================*/
+/*================================================================================*/
+.smoke-base { 
+	background: none;
+}
+
+.smoke-base .dialog {
+  top:15%;
+  left:20%;
+  width:100%;
+  width:60%;
+  position:absolute;
+  text-align:center;
+}
+
+.smoke-base .dialog-inner { 
+	padding: 15px;
+}
+
+.smoke {
+	font-family:'Lilita One',sans-serif;
+   text-transform: uppercase;
+	color:#fff;
+	background-color:#D1D1D1;
+	font-weight: 300;
+   font-size:28px;
+	border-radius: 20px;
+	z-index:100000;
+}
+.dialog-buttons {
+	margin: 0px 0 5px 0;
+}
+
+.dialog-buttons button {
+   width:70%;
+   font-size:22px;
+	padding:10px;
+	border-width:0px;
+	color:#fff;
+	margin-right:5px;
+	border-radius:10px;
+	background-color: rgba(0,0,0,0.65);
+	font-family:'Lilita One',sans-serif;
+	text-transform:uppercase;
+	outline:none;
+	margin-top:10px;
+}
+
+button.cancel { 
+	width:70%;
+	margin-left:5px;
+	font-size:22px;
+	border-width:0px;
+	padding:10px;
+	color:#fff;
+	margin-top:10px;
+	border-radius:10px;
+	background-color: rgba(0,0,0,0.65);
+	font-family:'Lilita One',sans-serif;
+	text-transform:uppercase;
+	outline:none;
+}
+
+.dialog-prompt{
+	margin-top:0;
+}
+
+.dialog-prompt input{
+	width:300px;
+	text-align:center;
+	background-color:#ccc;
 }

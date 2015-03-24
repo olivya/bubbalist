@@ -2,13 +2,10 @@
 	<span class="no-tasks-message">You haven't added any tasks!</span>
 </div>
 
-<!-- <div class="colour-test"></div> -->
-
 <div ng-hide="noTasks">
 	<ul class="task-list" ng-repeat="task in taskList track by $index">
 		<li>
 			<div class="tasky" id="task{{$index}}">
-
 				<div class="handle" ng-hide="task.editing" id="{{$index}}">
 				<!-- TASK: --> <div ng-hide="task.editing" class="task hide">{{task.task}}
 					<div class="handle" id="{{$index}}"></div>
@@ -18,7 +15,6 @@
 		      <!-- <button ng-hide="task.editing" ng-click="toggleEditMode($index)"><i class="fa fa-edit"></i></button> -->
 				<!-- DELETE: -->
 				<!-- <button ng-hide="task.editing" ng-click="deleteTask($index)"><i class="fa fa-trash"></i></button> -->
-				
 				<!-- EDITING FORM: -->
 				<form ng-show="task.editing" ng-submit="toggleEditModeOff($index)" class="handle" id="{{$index}}">
 		      	<textarea rows="4"
@@ -43,48 +39,52 @@
 </div><br/>
 
 <!-- ADD TASK FORM: -->
-<div class="add-task-form">
-	<form name="addTaskForm"
-			ng-submit="addTask()"
-			novalidate>
-
-		<div class="form-items">
-
-			<textarea rows="3"
-						 maxlength="100"
-						 class="task-input"
-						 placeholder="Task"
-						 ng-model="newTask"
-						 required>
-			</textarea><br/>
-			<button class="add-task-button" type="submit">
-				<!-- <i class="fa fa-plus"></i> -->
-				ADD TASK
-			</button>
-			<div class="text-feedback"></div>
-
-		</div>
-
-	</form><br/>
-	
-		<div class="toggle-menu-button" ng-click="toggleMenu()">
-			<i class="fa fa-plus"></i>
-		</div>
-	
-</div>
+	<div class="add-task-form">
+		<form name="addTaskForm"
+				ng-submit="addTask()"
+				novalidate>
+			<div class="form-items">
+				<textarea rows="4"
+							 maxlength="100"
+							 class="task-input"
+							 placeholder="Task"
+							 ng-model="newTask"
+							 required>
+				</textarea><br/>
+				<button class="add-task-button" type="submit">ADD TASK</button>
+				<button class="colour-picker-button" ng-click="showPicker()" type="button"></button>
+				<div class="text-feedback"></div>
+				<!-- COLOUR PICKER DROPDOWN: -->
+				<div class="colour-picker" ng-show="showColourPicker">
+						<div id="colour1" ng-click="colourSelected(1)"></div>
+						<div id="colour2" ng-click="colourSelected(2)"></div>
+						<div id="colour3" ng-click="colourSelected(3)"></div><br/>
+						<div id="colour4" ng-click="colourSelected(4)"></div>
+						<div id="colour5" ng-click="colourSelected(5)"></div>
+						<div id="colour6" ng-click="colourSelected(6)"></div><br/>
+						<div id="colour7" ng-click="colourSelected(7)"></div>
+						<div id="colour8" ng-click="colourSelected(8)"></div>
+						<div id="colour9" ng-click="colourSelected(9)"></div>
+				</div>
+			</div>
+		</form><br/>
+		
+			<div class="toggle-menu-button" ng-click="toggleMenu()">
+				<i class="fa fa-plus plus-icon"></i>
+			</div>
+	</div>
+<div class="scroll-for-real"></div>
 
 <!-- HELP FORM: -->
 <div class="help-form">
-		<div class="help-items">
-				<span id="main">Planning's a drag . . .</span><p/>
-				<span>Drag tasks to reposition.</span><p/>
-				<span>Double-tap to edit, delete, or mark as done.</span><p/>
-				<span>Single-tap to bring task to the front.</span><p/>
-				<span id="main2">. . . literally.</span>
-		</div>
-		<br/>
-		<div class="toggle-help-button" ng-click="toggleHelp()">
-			<i class="fa fa-question"></i>
-		</div>
-	
+	<div class="help-items">
+			<span id="main">Planning's a drag . . .</span><p/>
+			<span>Drag tasks to reposition.</span><p/>
+			<span>Double-tap to edit, delete, or mark as done.</span><p/>
+			<span>Single-tap to bring task to the front.</span><p/>
+			<span id="main2">. . . literally.</span>
+	</div>
+	<br/>
+<div class="toggle-help-button" ng-click="toggleHelp()">
+	<i class="fa fa-question"></i>
 </div>
