@@ -354,7 +354,7 @@ body {
 	margin-left:5px;
 	border-radius:10px;
 	/*background-color: rgba(0,0,0,0.65);*/
-	background-color: #89FFF1;
+	background-color: #25d7ec;
 	outline:none;
 }
 
@@ -392,7 +392,7 @@ body {
 }
 
 #colour1 {
-	background-color:#89FFF1;
+	background-color:#25d7ec;
 }
 #colour2 {
 	background-color:#8799FF;
@@ -404,7 +404,7 @@ body {
 	background-color:#FF8396;
 }
 #colour5 {
-	background-color:#FF6369;	
+	background-color:#ea4d7d;	
 }
 #colour6 {
 	background-color:#FF235E;	

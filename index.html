@@ -3,24 +3,34 @@
 
 <head>
 	<title>Bubbalist</title>
-	<script src="bower_components/jquery/dist/jquery.min.js"></script>
-	<script src="bower_components/draggabilly/dist/draggabilly.pkgd.min.js"></script>
-	<script src="smoke.min.js"></script>
-	<script src="jquery.fittext.js"></script>
-	<script src="bower_components/angular/angular.min.js"></script>
-	<script src="bower_components/angular-animate/angular-animate.min.js"></script>
-	<script src="bower_components/angular-route/angular-route.min.js"></script>
-	<script src="bower_components/hammerjs/hammer.js"></script>
-	<script src="bower_components/velocity/velocity.min.js"></script>
+
+	<script type="text/javascript" src="https://apis.google.com/js/api.js"></script>
+
+	<script type="text/javascript" src="realtime-client-utils.js"></script>
+	<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="bower_components/draggabilly/dist/draggabilly.pkgd.min.js"></script>
+	<script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+	<script type="text/javascript" src="bower_components/angular-animate/angular-animate.min.js"></script>
+	<script type="text/javascript" src="bower_components/angular-route/angular-route.min.js"></script>
+	<script type="text/javascript" src="bower_components/hammerjs/hammer.js"></script>
+	<script type="text/javascript" src="bower_components/velocity/velocity.min.js"></script>
+	<script type="text/javascript" src="smoke.min.js"></script>
+
 	<script type="text/javascript" src="script.js"></script>
 	<script type="text/javascript" src="controller.js"></script>
+	<script type="text/javascript" src="drive.js"></script>
+
 	<link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css"/>
 	<link rel="stylesheet" href="bower_components/animate.css/animate.min.css">
 	<link rel="stylesheet" href="style.css" />
+
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 </head>
 
 <body>
+	
+<button id="authorizeButton" disabled>Authorize</button>
+
 	<div id="main">
 		<div ng-view></div>
 	</div>

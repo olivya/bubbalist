@@ -1,6 +1,9 @@
 bubbalist.controller('mainController', function($scope, Tasks, Colours, $location, $timeout) {
+// bubbalist.controller('mainController', function($scope, Colours, $location, $timeout) {
 
 	$scope.taskList = Tasks.all();
+	$scope.taskList = [];
+	// console.log($scope.taskList);
 	$scope.colourList = Colours.all();
 
 	var i = 0;
@@ -33,7 +36,14 @@ bubbalist.controller('mainController', function($scope, Tasks, Colours, $locatio
 
 	$scope.checkForTasks();
 
-	//DELETE TASK:
+
+
+
+
+
+//=============================================================================
+//====== DELETING =============================================================
+//=============================================================================
 	$scope.deleteTask = function (i){ //i = $index from home.html
 		$scope.responseNeeded = true;
 
@@ -94,8 +104,17 @@ bubbalist.controller('mainController', function($scope, Tasks, Colours, $locatio
 				reverseButtons: true
 			});
    };
-   
-	//STEP 1: ADD TASK:
+ 
+
+
+
+
+
+
+
+//=============================================================================
+//====== STEP 1: ADD TASK: ====================================================
+//=============================================================================
 	$scope.addTask = function() {
 		$( ".add-task-button" ).addClass( "button-pressed" );
 
@@ -103,21 +122,19 @@ bubbalist.controller('mainController', function($scope, Tasks, Colours, $locatio
 				$(  ".add-task-button"  ).removeClass( "button-pressed" );
 			},200);
 
-		if($scope.addTaskForm.$valid && $scope.newTask != null) {
-				$scope.taskList.push(
-				{
-					task:$scope.newTask,
-					editing:false,
-					index:i,
-					colour:$scope.theColour
-				});
-			// i = $scope.taskList.map(function(i) { return i.i; }).indexOf($scope.newTask);
-			// console.log("i "+i);
-			console.log("Text: \""+$scope.newTask+"\"");
-			// console.log("Text: \""+$scope.colour+"\"");
-			// console.log("COLOUR \""+$scope.newTask+"\"");
-			// console.log("Colour: "+theColour);
 
+		//$scope.taskList VS. bubbalist.taskList ??? :
+		if($scope.addTaskForm.$valid && $scope.newTask != null) {
+
+			var task = {
+				task:$scope.newTask,
+				editing:false,
+				index:i,
+				colour:$scope.theColour
+			};
+			$scope.taskList.push(task);
+			bubbalist.taskList.push(task);
+			
 			$scope.newTask = "";
 			$scope.checkForTasks();
 			$('.text-feedback').html(maxChars);
@@ -137,6 +154,24 @@ bubbalist.controller('mainController', function($scope, Tasks, Colours, $locatio
 			});
 		}
 	};
+	//multiple controllers for 1 view
+//=============================================================================
+//====== REALTIME API =========================================================
+//=============================================================================
+	bubbalist.updateTasks = function() { //not getting called
+		$scope.taskList = bubbalist.taskList.asArray();
+		$scope.$apply();
+		console.log("updated tasks", $scope.taskList);
+	
+		$scope.newTask = "";
+		$scope.checkForTasks();
+		$('.text-feedback').html(maxChars);
+
+		//rebuilding tasks:
+		// setTimeout($scope.toggleMenu,100);
+		setTimeout($scope.iterateTasks, 5);
+		setTimeout($scope.setStyle,5);
+   };
 
 	$scope.setStyle = function(){
 		setTimeout(function (){
@@ -164,7 +199,7 @@ bubbalist.controller('mainController', function($scope, Tasks, Colours, $locatio
 
 		//SET COLOUR:
 		if ($scope.theColour === 1 || $scope.theColour === undefined) {
-			$('#task'+i).css("background-color",'#89FFF1');
+			$('#task'+i).css("background-color",'#25d7ec');
 			i++;
 		}
 		if ($scope.theColour === 2) {
@@ -180,7 +215,7 @@ bubbalist.controller('mainController', function($scope, Tasks, Colours, $locatio
 			i++;
 		}
 		if ($scope.theColour === 5) {
-			$('#task'+i).css("background-color",'#E86638');
+			$('#task'+i).css("background-color",'#ea4d7d');
 			i++;
 		}
 		if ($scope.theColour === 6) {
@@ -458,7 +493,7 @@ $scope.colourSelected = function (colour){
 	$scope.theColour = colour;
 
 	if ($scope.theColour === 1 || $scope.theColour === undefined) {
-		$('.colour-picker-button').css("background-color",'#89FFF1');
+		$('.colour-picker-button').css("background-color",'#25d7ec');
 	}
 	if ($scope.theColour === 2) {
 		$('.colour-picker-button').css("background-color",'#8799FF');
@@ -470,7 +505,7 @@ $scope.colourSelected = function (colour){
 		$('.colour-picker-button').css("background-color",'#FF8396');
 	}
 	if ($scope.theColour === 5) {
-		$('.colour-picker-button').css("background-color",'#E86638');
+		$('.colour-picker-button').css("background-color",'#ea4d7d');
 	}
 	if ($scope.theColour === 6) {
 		$('.colour-picker-button').css("background-color",'#FF235E');
@@ -504,7 +539,6 @@ $scope.colourSelected = function (colour){
 
 	doubleTapEdit.click = function(i, eventType) {
    	if($scope.taskList[i] != undefined) {
-   		// $scope.taskList[i].editing = !$scope.taskList[i].editing;
    		$scope.toggleEditModeOn(i);
    	}
    	$scope.$apply();
@@ -518,15 +552,9 @@ $scope.colourSelected = function (colour){
 	tapBringForward.click = function(i, eventType) {
    	holdSetZ = $('#task'+i).css("z-index",zIndex);
    	zIndex += 10;
-   	// $scope.dragListener(i);
+  
    	$scope.updateMenuZ();
    	$scope.$apply();
 	}
-
-	// $scope.dragListener = function (i) {
-	// 	if($scope.taskList[i] != undefined) {
-	// 		console.log($scope.taskList[i].position.x);
-	// 	}
-	// }
 
 });
