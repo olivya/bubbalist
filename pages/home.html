@@ -15,11 +15,6 @@
 					<div class="handle" id="{{$index}}"></div>
 				</div>
 				</div>
-		      <!-- EDIT: -->
-		      <!-- <button ng-hide="task.editing" ng-click="toggleEditMode($index)"><i class="fa fa-edit"></i></button> -->
-				<!-- DELETE: -->
-				<!-- <button ng-hide="task.editing" ng-click="deleteTask($index)"><i class="fa fa-trash"></i></button> -->
-				<!-- EDITING FORM: -->
 				<form ng-show="task.editing" ng-submit="toggleEditModeOff($index)" class="handle" id="{{$index}}">
 		      	<textarea rows="4"
 		      				 maxlength="100"
