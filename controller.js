@@ -7,9 +7,10 @@ bubbalist.controller('mainController', function($scope, Tasks, Colours, $locatio
 	$scope.colourList = Colours.all();
 
 	var i = 0;
-	var colour;
+	// var colour;
 	var colourIndex = 0;
 	var theColour = 1;
+	var colour = '25d7ec';
 
 	var opacity;
 
@@ -44,6 +45,12 @@ bubbalist.controller('mainController', function($scope, Tasks, Colours, $locatio
 //=============================================================================
 //====== DELETING =============================================================
 //=============================================================================
+	$scope.clearTasks = function() {
+		console.log("CLEARING ALL TASKS");
+		$scope.taskList.length = 0;
+		bubbalist.taskList.length = 0;
+	}
+
 	$scope.deleteTask = function (i){ //i = $index from home.html
 		$scope.responseNeeded = true;
 
@@ -122,7 +129,6 @@ bubbalist.controller('mainController', function($scope, Tasks, Colours, $locatio
 				$(  ".add-task-button"  ).removeClass( "button-pressed" );
 			},200);
 
-
 		//$scope.taskList VS. bubbalist.taskList ??? :
 		if($scope.addTaskForm.$valid && $scope.newTask != null) {
 
@@ -130,11 +136,14 @@ bubbalist.controller('mainController', function($scope, Tasks, Colours, $locatio
 				task:$scope.newTask,
 				editing:false,
 				index:i,
-				colour:$scope.theColour
+				colour:colour
 			};
 			$scope.taskList.push(task);
 			bubbalist.taskList.push(task);
 			
+			console.log('$scope.taskList ',$scope.taskList);
+			console.log('bubbalist.taskList ',bubbalist.taskList);
+
 			$scope.newTask = "";
 			$scope.checkForTasks();
 			$('.text-feedback').html(maxChars);
@@ -173,6 +182,13 @@ bubbalist.controller('mainController', function($scope, Tasks, Colours, $locatio
 		setTimeout($scope.setStyle,5);
    };
 
+   $scope.colourSelected = function (pickedColour){
+		colour = pickedColour;
+		console.log("User selected #"+pickedColour+"; var colour=",colour);
+		$('.colour-picker-button').css("background-color",'#'+colour);
+		$scope.showColourPicker = false;
+	}
+
 	$scope.setStyle = function(){
 		setTimeout(function (){
 				$(".task").removeClass("hide");
@@ -198,43 +214,49 @@ bubbalist.controller('mainController', function($scope, Tasks, Colours, $locatio
 		}
 
 		//SET COLOUR:
-		if ($scope.theColour === 1 || $scope.theColour === undefined) {
-			$('#task'+i).css("background-color",'#25d7ec');
-			i++;
-		}
-		if ($scope.theColour === 2) {
-			$('#task'+i).css("background-color",'#8799FF');
-			i++;
-		}
-		if ($scope.theColour === 3) {
-			$('#task'+i).css("background-color",'#BA82FF');
-			i++;
-		}
-		if ($scope.theColour === 4) {
-			$('#task'+i).css("background-color",'#FF8396');
-			i++;
-		}
-		if ($scope.theColour === 5) {
-			$('#task'+i).css("background-color",'#ea4d7d');
-			i++;
-		}
-		if ($scope.theColour === 6) {
-			$('#task'+i).css("background-color",'#FF235E');
-			i++;
-		}
-		if ($scope.theColour === 7) {
-			$('#task'+i).css("background-color",'#5DEFB0');
-			i++;
-		}
-		if ($scope.theColour === 8) {
-			$('#task'+i).css("background-color",'#47CC92');
-			i++;
-		}
-		if ($scope.theColour === 9) {
-			$('#task'+i).css("background-color",'#076F5C');
-			i++;
-		}
+		console.log("Set background colour of "+'#task'+i," to #"+colour);
+		$('#task'+i).css("background-color",'#'+colour);
+		i++;
+
+		// if ($scope.theColour === 1 || $scope.theColour === undefined) {
+		// 	$('#task'+i).css("background-color",'#25d7ec');
+		// 	i++;
+		// }
+		// if ($scope.theColour === 2) {
+		// 	$('#task'+i).css("background-color",'#8799FF');
+		// 	i++;
+		// }
+		// if ($scope.theColour === 3) {
+		// 	$('#task'+i).css("background-color",'#BA82FF');
+		// 	i++;
+		// }
+		// if ($scope.theColour === 4) {
+		// 	$('#task'+i).css("background-color",'#FF8396');
+		// 	i++;
+		// }
+		// if ($scope.theColour === 5) {
+		// 	$('#task'+i).css("background-color",'#ea4d7d');
+		// 	i++;
+		// }
+		// if ($scope.theColour === 6) {
+		// 	$('#task'+i).css("background-color",'#FF235E');
+		// 	i++;
+		// }
+		// if ($scope.theColour === 7) {
+		// 	$('#task'+i).css("background-color",'#5DEFB0');
+		// 	i++;
+		// }
+		// if ($scope.theColour === 8) {
+		// 	$('#task'+i).css("background-color",'#47CC92');
+		// 	i++;
+		// }
+		// if ($scope.theColour === 9) {
+		// 	$('#task'+i).css("background-color",'#076F5C');
+		// 	i++;
+		// }
 		// console.log("Colour: "+theColour);
+
+		// i++;
 	};
 
 	$scope.updateMenuZ = function (){ //always ensures menus are on top
@@ -295,6 +317,10 @@ bubbalist.controller('mainController', function($scope, Tasks, Colours, $locatio
 		$('.text-feedback').html(charsRemaining);
 	});
 	//End character counter tutorial reference
+
+
+
+
 
 //=============================================================================
 //====== MENU ANIMATIONS ======================================================
@@ -488,41 +514,48 @@ $scope.showPicker = function (){
 	}
 }
 
-$scope.colourSelected = function (colour){
-	console.log("Colour #"+colour);
-	$scope.theColour = colour;
+// $scope.colourSelected = function (pickedColour){
+// 	colour = pickedColour;
+// 	console.log("User selected #"+pickedColour+"; var colour=",colour);
+// 	$('.colour-picker-button').css("background-color",'#'+colour);
+// 	$scope.showColourPicker = false;
+// }
 
-	if ($scope.theColour === 1 || $scope.theColour === undefined) {
-		$('.colour-picker-button').css("background-color",'#25d7ec');
-	}
-	if ($scope.theColour === 2) {
-		$('.colour-picker-button').css("background-color",'#8799FF');
-	}
-	if ($scope.theColour === 3) {
-		$('.colour-picker-button').css("background-color",'#BA82FF');
-	}
-	if ($scope.theColour === 4) {
-		$('.colour-picker-button').css("background-color",'#FF8396');
-	}
-	if ($scope.theColour === 5) {
-		$('.colour-picker-button').css("background-color",'#ea4d7d');
-	}
-	if ($scope.theColour === 6) {
-		$('.colour-picker-button').css("background-color",'#FF235E');
-	}
-	if ($scope.theColour === 7) {
-		$('.colour-picker-button').css("background-color",'#5DEFB0');
-	}
-	if ($scope.theColour === 8) {
-		$('.colour-picker-button').css("background-color",'#47CC92');
-	}
-	if ($scope.theColour === 9) {
-		$('.colour-picker-button').css("background-color",'#076F5C');
-	}
+// $scope.colourSelected = function (colour){
+// 	console.log("Colour #"+colour);
+// 	$scope.theColour = colour;
 
-	$scope.showColourPicker = false;
-	return $scope.theColour;
-}
+// 	if ($scope.theColour === 1 || $scope.theColour === undefined) {
+// 		$('.colour-picker-button').css("background-color",'#25d7ec');
+// 	}
+// 	if ($scope.theColour === 2) {
+// 		$('.colour-picker-button').css("background-color",'#8799FF');
+// 	}
+// 	if ($scope.theColour === 3) {
+// 		$('.colour-picker-button').css("background-color",'#BA82FF');
+// 	}
+// 	if ($scope.theColour === 4) {
+// 		$('.colour-picker-button').css("background-color",'#FF8396');
+// 	}
+// 	if ($scope.theColour === 5) {
+// 		$('.colour-picker-button').css("background-color",'#ea4d7d');
+// 	}
+// 	if ($scope.theColour === 6) {
+// 		$('.colour-picker-button').css("background-color",'#FF235E');
+// 	}
+// 	if ($scope.theColour === 7) {
+// 		$('.colour-picker-button').css("background-color",'#5DEFB0');
+// 	}
+// 	if ($scope.theColour === 8) {
+// 		$('.colour-picker-button').css("background-color",'#47CC92');
+// 	}
+// 	if ($scope.theColour === 9) {
+// 		$('.colour-picker-button').css("background-color",'#076F5C');
+// 	}
+
+// 	$scope.showColourPicker = false;
+// 	return $scope.theColour;
+// }
 
 //=============================================================================
 //====== HAMMER.JS ============================================================

@@ -4,6 +4,8 @@
 
 <div id="cover" ng-show="responseNeeded"></div>
 
+<button ng-click="clearTasks()">clear tasks</button>
+
 <div ng-hide="noTasks">
 	<ul class="task-list" ng-repeat="task in taskList track by $index">
 		<li>
@@ -58,15 +60,15 @@
 				<div class="text-feedback"></div>
 				<!-- COLOUR PICKER DROPDOWN: -->
 				<div class="colour-picker" ng-show="showColourPicker">
-						<div id="colour1" ng-click="colourSelected(1)"></div>
-						<div id="colour2" ng-click="colourSelected(2)"></div>
-						<div id="colour3" ng-click="colourSelected(3)"></div><br/>
-						<div id="colour4" ng-click="colourSelected(4)"></div>
-						<div id="colour5" ng-click="colourSelected(5)"></div>
-						<div id="colour6" ng-click="colourSelected(6)"></div><br/>
-						<div id="colour7" ng-click="colourSelected(7)"></div>
-						<div id="colour8" ng-click="colourSelected(8)"></div>
-						<div id="colour9" ng-click="colourSelected(9)"></div>
+						<div id="colour1" ng-click="colourSelected('25d7ec')"></div>
+						<div id="colour2" ng-click="colourSelected('8799FF')"></div>
+						<div id="colour3" ng-click="colourSelected('BA82FF')"></div><br/>
+						<div id="colour4" ng-click="colourSelected('FF8396')"></div>
+						<div id="colour5" ng-click="colourSelected('ea4d7d')"></div>
+						<div id="colour6" ng-click="colourSelected('FF235E')"></div><br/>
+						<div id="colour7" ng-click="colourSelected('5DEFB0')"></div>
+						<div id="colour8" ng-click="colourSelected('47CC92')"></div>
+						<div id="colour9" ng-click="colourSelected('076F5C')"></div>
 				</div>
 			</div>
 		</form><br/>

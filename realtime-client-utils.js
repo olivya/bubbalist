@@ -330,7 +330,7 @@ rtclient.RealtimeLoader.prototype.load = function() {
   var file = localStorage.getItem('realtimeFileID');
   if (file) {
     fileIds = [file];
-    console.log(fileIds);
+    console.log('fileIDs: ',fileIds);
   }
   // We have file IDs in the query parameters, so we will use them to load a file.
   if (fileIds) {
