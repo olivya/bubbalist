@@ -72,7 +72,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 				ID:moment().format("MDdYYYYHHmmssSSS")
 			};
 
-			console.log('task: ',task);
+			// console.log('task: ',task);
 			$scope.taskList.push(task);
 			console.log('$scope.taskList ',$scope.taskList);
 
@@ -99,7 +99,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 
 	//STEP 2: "visualize task" (render on DOM)
 	$scope.visTask = function(task) {
-		console.log("$scope.visTask()");
+		// console.log("$scope.visTask()");
 
 		var tasky = document.createElement("div");
 		tasky.id = task.ID; //setting ID of div to task's moment.js ID
@@ -107,7 +107,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		tasky.appendChild(taskyText); //adding ^user-inputted text to tasky div
 
 		id = tasky.id;
-		console.log('id...',id)
+		// console.log('id...',id)
 		var delBtn = document.createElement("button");
 		delBtn.setAttribute('ng-click', 'delTask('+id+')'); //inject taskID into delete button so it will only delete this task
 		var delBtnText = document.createTextNode("DELETE");
@@ -119,7 +119,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 
 		document.getElementById("ngview").appendChild(tasky);
 
-		console.log('tasky.id: ', tasky.id);
+		// console.log('tasky.id: ', tasky.id);
 
 		setTimeout(function () {
 			$scope.compile(tasky.id);
@@ -136,22 +136,47 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	}
 
 	$scope.delTask = function(id) {
-		console.log("deleting task with id ",id);
-		document.getElementById(id).remove();
+		console.log("Deleting task ID",id,"...");
+		
 
+		console.log("bubbalist.taskList START: ",bubbalist.taskList.asArray().length);
+		for (var i=0, length = bubbalist.taskList.length; i <= length - 1; i++) {	
+			if(bubbalist.taskList.asArray()[i] != undefined) {
+				console.log("(BB) TASK:",bubbalist.taskList.asArray()[i].task,"(BB) ID:",JSON.parse(bubbalist.taskList.asArray()[i].ID));
+			}
+			if(bubbalist.taskList.asArray()[i] != undefined && JSON.parse(bubbalist.taskList.asArray()[i].ID) === id) {
+				console.log("FOUND, deleting ",bubbalist.taskList.asArray()[i].task);
+				
+				bubbalist.taskList.remove(i);
+			}
+			// else { console.log("nope (bubbalist)"); }	
+		};
+		console.log("bubbalist.taskList END: ",bubbalist.taskList.asArray().length);
+
+
+		console.log("$scope.taskList START: ",$scope.taskList.length);
 		for (var i=0, length = $scope.taskList.length; i <= length - 1; i++) {	
 			if($scope.taskList[i] != undefined) {
-				console.log("id:",JSON.parse($scope.taskList[i].ID));
+				console.log("($SCOPE) TASK:",$scope.taskList[i].task,"($SCOPE) ID:",JSON.parse($scope.taskList[i].ID));
 			}
-			
 			if($scope.taskList[i] != undefined && JSON.parse($scope.taskList[i].ID) === id) { //if this task is NOT null
-				console.log("FOUND IT, deleting task ",$scope.taskList[i].task);
-				$scope.taskList.splice(i);
+				console.log("FOUND, deleting ",$scope.taskList[i].task);
+				$scope.taskList.splice(i,1); //1 or will delete ALL after index i
 			}
-			else { console.log("nope"); }
+			// else { console.log("nope ($scope)"); }
 		};
+		console.log("$scope.taskList END: ",$scope.taskList.length);
 
-		console.log('$scope.taskList is now...',$scope.taskList);
+		//CHECK THEY'RE SAME:
+		console.log("$scope.taskList is now... ",$scope.taskList);
+		console.log("bubbalist.taskList.asArray() is now... ",bubbalist.taskList.asArray());
+	}
+
+
+	$scope.clearTasks = function() {
+		console.log('$scope.clearTasks()');
+		$scope.taskList.length = 0;
+		bubbalist.taskList.length = 0;
 	}
 
 	
@@ -285,12 +310,6 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 //=============================================================================
 //====== DELETING/MARKING AS COMPLETE =========================================
 //=============================================================================
-	$scope.clearTasks = function() {
-		console.log('$scope.clearTasks()');
-
-		$scope.taskList.length = 0;
-		bubbalist.taskList.length = 0;
-	}
 
 	$scope.deleteTask = function (i){ //i = $index from home.html
 		console.log('$scope.deleteTask(i)');

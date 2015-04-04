@@ -14,13 +14,22 @@ function onFileLoaded(doc) {
     bubbalist.taskList = doc.getModel().getRoot().get('taskList');
 
    function taskAdded(e) {
-        console.log('taskAdded');
+        console.log('======================================\nTASK ADDED\n========================================');
         // console.log('taskAdded', e);
         if (e.isLocal) return; //???
         //if the event happened in the local tab, basically leave this function
         bubbalist.updateTasks();
    };
+
+   function taskDeleted(e) {
+        console.log('======================================\nTASK DELETED\n======================================');
+        if (e.isLocal) return; //???
+        //if the event happened in the local tab, basically leave this function
+        bubbalist.updateTasks();
+   };
+
     bubbalist.taskList.addEventListener(gapi.drive.realtime.EventType.VALUES_ADDED, taskAdded);
+    bubbalist.taskList.addEventListener(gapi.drive.realtime.EventType.VALUES_REMOVED, taskDeleted);
     bubbalist.updateTasks();
 }
 
