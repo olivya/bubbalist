@@ -6,6 +6,10 @@
 
 <button ng-click="clearTasks()">clear tasks</button><br/>
 
+<!-- <div ng-repeat="task in taskList track by $index">
+	<tasks-added task="task"></tasks-added>
+</div> -->
+
 <div ng-hide="noTasks">
 	<ul class="task-list" ng-repeat="task in taskList track by $index">
 		<li>

@@ -1,4 +1,4 @@
-bubbalist.controller('mainController', function($scope, Tasks, $location, $timeout) {
+bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	$scope.taskList = [];
 	var colour = '#25d7ec';
 	var opacity;
@@ -47,22 +47,26 @@ bubbalist.controller('mainController', function($scope, Tasks, $location, $timeo
 	bubbalist.updateTasks = function() { //not getting called
 		$scope.taskList = bubbalist.taskList.asArray();
 		$scope.$apply();
-		console.log("WAT bubbalist.updateTasks()", $scope.taskList);
+		console.log("bubbalist.updateTasks()", $scope.taskList);
 		$scope.newTask = "";
 		// $scope.checkForTasks();
 		$('.text-feedback').html(maxChars);
+		console.log("READY!");
 		// rebuilding tasks:
 		// setTimeout($scope.toggleMenu,100);
 		// setTimeout($scope.iterateTasks, 5);
 		// setTimeout($scope.setStyle,5);
    };
 
-	//STEP 1: Push to lists
+	//STEP 1: PUSH TO LISTS
 	$scope.addTask = function() {
 		console.log('$scope.addTask()');
+
+		var textInput = $scope.newTask;
+
 		if($scope.addTaskForm.$valid && $scope.newTask != null) {
 			var task = {
-				task:$scope.newTask,
+				task:textInput,
 				editing:false,
 				colour:colour,
 				ID:moment().format("MDdYYYYHHmmssSSS")
@@ -89,7 +93,68 @@ bubbalist.controller('mainController', function($scope, Tasks, $location, $timeo
 				$scope.$apply(); },
 				{ ok: "Okay" });
 		}
+
+		$scope.visTask(task);
 	};
+
+	//STEP 2: "visualize task" (render on DOM)
+	$scope.visTask = function(task) {
+		console.log("$scope.visTask()");
+
+		var tasky = document.createElement("div");
+		tasky.id = task.ID; //setting ID of div to task's moment.js ID
+		var taskyText = document.createTextNode(task.task);
+		tasky.appendChild(taskyText); //adding ^user-inputted text to tasky div
+
+		id = tasky.id;
+		console.log('id...',id)
+		var delBtn = document.createElement("button");
+		delBtn.setAttribute('ng-click', 'delTask('+id+')'); //inject taskID into delete button so it will only delete this task
+		var delBtnText = document.createTextNode("DELETE");
+
+		delBtn.appendChild(delBtnText);
+		tasky.appendChild(delBtn);
+
+		console.log("tasky: ",tasky);
+
+		document.getElementById("ngview").appendChild(tasky);
+
+		console.log('tasky.id: ', tasky.id);
+
+		setTimeout(function () {
+			$scope.compile(tasky.id);
+		},1000);
+	}
+
+	$scope.compile = function (id) {
+		var el = angular.element('#'+id);
+			$scope = el.scope();
+			$injector = el.injector();
+			$injector.invoke(function($compile){
+	   		$compile(el)($scope);
+			});
+	}
+
+	$scope.delTask = function(id) {
+		console.log("deleting task with id ",id);
+		document.getElementById(id).remove();
+
+		for (var i=0, length = $scope.taskList.length; i <= length - 1; i++) {	
+			if($scope.taskList[i] != undefined) {
+				console.log("id:",JSON.parse($scope.taskList[i].ID));
+			}
+			
+			if($scope.taskList[i] != undefined && JSON.parse($scope.taskList[i].ID) === id) { //if this task is NOT null
+				console.log("FOUND IT, deleting task ",$scope.taskList[i].task);
+				$scope.taskList.splice(i);
+			}
+			else { console.log("nope"); }
+		};
+
+		console.log('$scope.taskList is now...',$scope.taskList);
+	}
+
+	
 
 
 
@@ -496,8 +561,7 @@ $scope.showPicker = function (){
 	tapBringForward.click = function(i, eventType) {
    	holdSetZ = $('#task'+i).css("z-index",zIndex);
    	zIndex += 10;
-  
-   	$scope.updateMenuZ();
+   	// $scope.updateMenuZ();
    	$scope.$apply();
 	}
 });
