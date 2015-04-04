@@ -24,12 +24,3 @@ bubbalist.factory("Tasks", function() {
     },
   };
 });
-
-bubbalist.factory("Colours", function() {
-  var colourList = ['#67E5E5','#4CD8FF','#BA82FF'];
-  return {
-    all: function() {
-      return colourList;
-    },
-  };
-});

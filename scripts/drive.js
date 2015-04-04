@@ -14,14 +14,13 @@ function onFileLoaded(doc) {
     bubbalist.taskList = doc.getModel().getRoot().get('taskList');
 
    function taskAdded(e) {
-        console.log('taskAdded', e);
+        console.log('taskAdded');
+        // console.log('taskAdded', e);
         if (e.isLocal) return; //???
         //if the event happened in the local tab, basically leave this function
         bubbalist.updateTasks();
    };
-
     bubbalist.taskList.addEventListener(gapi.drive.realtime.EventType.VALUES_ADDED, taskAdded);
-
     bubbalist.updateTasks();
 }
 
