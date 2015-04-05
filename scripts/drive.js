@@ -14,7 +14,7 @@ function onFileLoaded(doc) {
     bubbalist.taskList = doc.getModel().getRoot().get('taskList');
 
    function taskAdded(e) {
-        console.log('======================================\nTASK ADDED\n========================================');
+        console.log('======================================\nTASK ADDED (drive.js)\n========================================');
         // console.log('taskAdded', e);
         if (e.isLocal) return; //???
         //if the event happened in the local tab, basically leave this function
@@ -22,7 +22,7 @@ function onFileLoaded(doc) {
    };
 
    function taskDeleted(e) {
-        console.log('======================================\nTASK DELETED\n======================================');
+        console.log('======================================\nTASK DELETED (drive.js)\n======================================');
         if (e.isLocal) return; //???
         //if the event happened in the local tab, basically leave this function
         bubbalist.updateTasks();

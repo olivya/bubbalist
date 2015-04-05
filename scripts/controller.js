@@ -60,8 +60,6 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 
 	//STEP 1: PUSH TO LISTS
 	$scope.addTask = function() {
-		console.log('$scope.addTask()');
-
 		var textInput = $scope.newTask;
 
 		if($scope.addTaskForm.$valid && $scope.newTask != null) {
@@ -72,19 +70,12 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 				ID:moment().format("MDdYYYYHHmmssSSS")
 			};
 
-			// console.log('task: ',task);
 			$scope.taskList.push(task);
-			console.log('$scope.taskList ',$scope.taskList);
-
 			bubbalist.taskList.push(task);
-			// console.log('bubbalist.taskList ',bubbalist.taskList);
 
 			$scope.newTask = "";
-			// $scope.checkForTasks();
 			$('.text-feedback').html(maxChars);
 			setTimeout($scope.toggleMenu,100);
-			// setTimeout($scope.iterateTasks, 5);
-			// setTimeout($scope.setStyle,5);
 		}
 		else {
 			$scope.responseNeeded = true; //put faded div on screen
@@ -93,84 +84,85 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 				$scope.$apply(); },
 				{ ok: "Okay" });
 		}
-
 		$scope.visTask(task);
 	};
 
 	//STEP 2: "visualize task" (render on DOM)
 	$scope.visTask = function(task) {
-		// console.log("$scope.visTask()");
-
+		//create task
 		var tasky = document.createElement("div");
 		tasky.id = task.ID; //setting ID of div to task's moment.js ID
 		var taskyText = document.createTextNode(task.task);
 		tasky.appendChild(taskyText); //adding ^user-inputted text to tasky div
-
 		id = tasky.id;
-		// console.log('id...',id)
+		
+		//create delete button (w/unique ID)
 		var delBtn = document.createElement("button");
 		delBtn.setAttribute('ng-click', 'delTask('+id+')'); //inject taskID into delete button so it will only delete this task
 		var delBtnText = document.createTextNode("DELETE");
-
 		delBtn.appendChild(delBtnText);
 		tasky.appendChild(delBtn);
-
+		
 		console.log("tasky: ",tasky);
-
 		document.getElementById("ngview").appendChild(tasky);
 
-		// console.log('tasky.id: ', tasky.id);
-
+		//compile to activate ng-click on div
 		setTimeout(function () {
 			$scope.compile(tasky.id);
 		},1000);
 	}
 
+	//Begin compile function reference:
+	//Source: http://stackoverflow.com/questions/25759497/angularjs-dynamically-set-attribute
 	$scope.compile = function (id) {
 		var el = angular.element('#'+id);
-			$scope = el.scope();
-			$injector = el.injector();
-			$injector.invoke(function($compile){
-	   		$compile(el)($scope);
-			});
+		$scope = el.scope();
+		$injector = el.injector();
+		$injector.invoke(function($compile){
+	   	$compile(el)($scope);
+		});
 	}
+	//End compile function reference.
 
-	$scope.delTask = function(id) {
+	$scope.delTask = function(id) { //deletes tasks FROM ARRAYS (not DOM)
 		console.log("Deleting task ID",id,"...");
 		
-
-		console.log("bubbalist.taskList START: ",bubbalist.taskList.asArray().length);
+		console.log("bubbalist.taskList.length START: ",bubbalist.taskList.asArray().length);
 		for (var i=0, length = bubbalist.taskList.length; i <= length - 1; i++) {	
-			if(bubbalist.taskList.asArray()[i] != undefined) {
-				console.log("(BB) TASK:",bubbalist.taskList.asArray()[i].task,"(BB) ID:",JSON.parse(bubbalist.taskList.asArray()[i].ID));
-			}
 			if(bubbalist.taskList.asArray()[i] != undefined && JSON.parse(bubbalist.taskList.asArray()[i].ID) === id) {
-				console.log("FOUND, deleting ",bubbalist.taskList.asArray()[i].task);
-				
+				console.log("FOUND, deleting task \'",bubbalist.taskList.asArray()[i].task,"\'");
 				bubbalist.taskList.remove(i);
-			}
-			// else { console.log("nope (bubbalist)"); }	
+			} //else { console.log("NOPE (BB)"); }	
 		};
-		console.log("bubbalist.taskList END: ",bubbalist.taskList.asArray().length);
+		console.log("bubbalist.taskList.length END: ",bubbalist.taskList.asArray().length,"\n ");
 
-
-		console.log("$scope.taskList START: ",$scope.taskList.length);
+		console.log("$scope.taskList.length START: ",$scope.taskList.length);
 		for (var i=0, length = $scope.taskList.length; i <= length - 1; i++) {	
-			if($scope.taskList[i] != undefined) {
-				console.log("($SCOPE) TASK:",$scope.taskList[i].task,"($SCOPE) ID:",JSON.parse($scope.taskList[i].ID));
-			}
 			if($scope.taskList[i] != undefined && JSON.parse($scope.taskList[i].ID) === id) { //if this task is NOT null
-				console.log("FOUND, deleting ",$scope.taskList[i].task);
-				$scope.taskList.splice(i,1); //1 or will delete ALL after index i
-			}
-			// else { console.log("nope ($scope)"); }
+				console.log("FOUND, deleting task \'",$scope.taskList[i].task,"\'");
+				$scope.taskList.splice(i,1); //,1 or will delete ALL after index i
+			} //else { console.log("NOPE ($SCOPE)"); }
 		};
-		console.log("$scope.taskList END: ",$scope.taskList.length);
+		console.log("$scope.taskList.length END: ",$scope.taskList.length);
 
 		//CHECK THEY'RE SAME:
 		console.log("$scope.taskList is now... ",$scope.taskList);
 		console.log("bubbalist.taskList.asArray() is now... ",bubbalist.taskList.asArray());
+
+		$scope.remTask(id);
 	}
+
+	$scope.remTask  = function (id){ //deletes task visually off DOM
+		console.log("remTask",id);
+
+		var tasky = document.getElementById(id);
+		tasky.parentNode.removeChild(tasky);
+	}
+
+
+
+
+
 
 
 	$scope.clearTasks = function() {
@@ -179,16 +171,6 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		bubbalist.taskList.length = 0;
 	}
 
-	
-
-
-
-
-
-
-//============================================================================= !!!!!!
-//====== (old) !!!!!! STYLING ================================================= !!!!!!
-//============================================================================= !!!!!!
    $scope.colourSelected = function (pickedColour){
 		console.log('$scope.colourSelected(pickedColour)');
 
@@ -197,30 +179,6 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		$('.colour-picker-button').css("background-color",colour); //update button colour for feedback
 		$scope.showColourPicker = false;
 	}
-
-	$scope.setStyle = function(){
-		console.log('$scope.setStyle() -- SHOULD NOT BE CALLLED!!!!!!!');
-
-		setZ = $('#task'+i).css("z-index",zIndex); //ensure new task is on top
-		menuSetZ = $('.add-task-form').css("z-index",zIndexMenus); //update menu z-index
-		menuSetZ = $('.help-form').css("z-index",zIndexMenus); //update help menu z-index
-		colourPickerSetZ = $('.colour-picker').css("z-index",zIndexColourPicker);
-		zIndex+=10; //NEXT z-index for Tasks
-		$scope.updateMenuZ(); //NEXT z-index for Menus
-
-		if(space <= 200) { //ensure new task is not directly over-top of previous
-			increaseSpace = $('#task'+i).css("top",space+"px");
-			space += 40;
-		} else {
-			space = 15; //start layering back at top
-			increaseSpace = $('#task'+i).css("top",space+"px");
-			space += 40;
-		}
-
-		console.log("Set background colour of "+'#task'+i," to "+colour);
-		$('#task'+i).css("background-color",colour);
-		i++;
-	};
 
 	$scope.updateMenuZ = function (){ //always ensures menus are on top
 		console.log('$scope.updateMenuZ()');
@@ -232,29 +190,12 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		colourPickerSetZ = $('.colour-picker').css("z-index",zIndexColourPicker);
 	}
 
-	//STEP 2: ADD "TASKY" CLASS
-	$scope.iterateTasks = function (){
-		console.log('$scope.iterateTasks() -- SHOULD NOT BE CALLLED!!!!!!!');
 
-		$( "li > div" ).addClass( "tasky" );
-		setTimeout($scope.toggleDraggability, 5);
-	};
-	
-	//STEP 3: MAKE DRAGGABLE
-	$scope.toggleDraggability = function (){
-		console.log('$scope.toggleDraggability() -- SHOULD NOT BE CALLLED!!!!!!!');
-		var items = document.querySelectorAll('.tasky');
 
-		for (var i=0, length = $scope.taskList.length; i <= length - 1; i++) {	
-			if($scope.taskList[i] != null) { //if this task is NOT null
-				var task = items[i];
-				var draggie = new Draggabilly( task, { //DRAGGABILLY.JS
-		    		handle: '.task'
-		    	});
-			}
-		};
-	};
 
+
+
+//====== [ old styling ] =================================================
 
 
 
