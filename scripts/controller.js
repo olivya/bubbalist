@@ -2,8 +2,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	$scope.taskList = [];
 	var colour = '#25d7ec';
 	var opacity;
-
-	//LAYERING STUFF:
+	//Variables for updating DOM:
 	var zIndex = 0;
 	var zIndexMenus = 10;
 	var zIndexColourPicker = 20;
@@ -12,13 +11,9 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	var setMenuZ;
 	var colourPickerSetZ;
 	var alertZ;
-
+	var updateBGColour;
 	var space = 0;
 	var increaseSpace;
-
-
-
-
 //=============================================================================
 //====== CHECK IF NO TASKS (to show 'no tasks' message) =======================
 //=============================================================================
@@ -32,18 +27,11 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		var items = document.querySelectorAll('.tasky');
 	};
 
-	$scope.checkForTasks();
-
-
-
-
-
-
+	$scope.checkForTasks(); //NEED THIS or first task goes weird
 //=============================================================================
-//====== ADDING TASKS =========================================================
+//====== ON STARTUP... ========================================================
 //=============================================================================
-
-//REALTIME API (runs on reload only)
+//REALTIME API (runs on reload)
 	bubbalist.updateTasks = function() { //not getting called
 		$scope.taskList = bubbalist.taskList.asArray();
 		$scope.$apply();
@@ -51,25 +39,26 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		$scope.newTask = "";
 		$('.text-feedback').html(maxChars);
 		$scope.drawTasks();
-
-		console.log("READY!"); //this is when loading screen can stop 
+		console.log("READY!"); //<--- this is when loading screen can stop <--- 
    };
-
+   //Draws stored tasks on reload:
    $scope.drawTasks = function() {
    	j = 1;
    	for (var i=0, length = bubbalist.taskList.length; i <= length - 1; i++) {	
 			if(bubbalist.taskList.asArray()[i] != null) {
-				console.log("FOUND",j,"TASK(s) TO DRAW:",bubbalist.taskList.asArray()[i].task);
+				console.log("FOUND TASK: \""+bubbalist.taskList.asArray()[i].task+"\"");
 				j++;
 				$scope.visTask(bubbalist.taskList.asArray()[i]);
 			}
 		};
+		console.log("Added",j,"tasks :D");
    }
-
+//=============================================================================
+//====== ADDING TASKS =========================================================
+//=============================================================================
 	//STEP 1: PUSH TO LISTS
 	$scope.addTask = function() {
 		var textInput = $scope.newTask;
-
 		if($scope.addTaskForm.$valid && $scope.newTask != null) {
 			var task = {
 				task:textInput,
@@ -77,101 +66,91 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 				colour:colour,
 				ID:moment().format("MDdYYYYHHmmssSSS")
 			};
-
-			$scope.taskList.push(task);
-			bubbalist.taskList.push(task);
-
-			$scope.newTask = "";
-			$('.text-feedback').html(maxChars);
-			setTimeout($scope.toggleMenu,100);
+			$scope.taskList.push(task); //for angular/scope/DOM
+			bubbalist.taskList.push(task); //for drive.js
+			$scope.newTask = ""; //reset textbox
+			$('.text-feedback').html(maxChars); //reset char count
+			setTimeout($scope.toggleMenu,100); //close menu after a moment
 		}
-		else {
+		else { //if user didn't input anything...
 			$scope.responseNeeded = true; //put faded div on screen
 			smoke.alert("Please enter a task!", function(e){
 				$scope.responseNeeded = false;
-				$scope.$apply(); },
-				{ ok: "Okay" });
+				$scope.$apply();
+			}, { ok: "Okay" });
 		}
-		$scope.visTask(task);
+		$scope.visTask(task); //now render on DOM the task just pushed above ^
 	};
 
-	//STEP 2: "visualize task" (render on DOM)
+	//STEP 2: render task on DOM
 	$scope.visTask = function(task) {
-		//create task
+		//1. create & add tasky div (bubble/container):
 		var tasky = document.createElement("div");
-		tasky.id = task.ID; //setting ID of div to task's moment.js ID
-		var taskyText = document.createTextNode(task.task);
-		tasky.appendChild(taskyText); //adding ^user-inputted text to tasky div
-		id = tasky.id;
-		
-		//create delete button (w/unique ID)
+		tasky.id = task.ID; //setting css ID of div to task's ID generated above by moment.js
+		document.getElementById("ngview").appendChild(tasky); //append tasky div to ng-view div (in index.html)
+		//2. create & append taskySpan to tasky div:
+		var taskySpan = document.createElement("span"); //create span to inject task text into
+		document.getElementById(''+tasky.id+'').appendChild(taskySpan); //append this span to the div above using its ID
+		//3. add task text node & append to taskySpan:
+		var taskyText = document.createTextNode(task.task); //create text node w/user inputted text
+		taskySpan.appendChild(taskyText); //adding ^ user-inputted text ^ to tasky span within tasky div
+		//4. create delete button (w/unique ID) & append to tasky div
 		var delBtn = document.createElement("button");
-		delBtn.setAttribute('ng-click', 'delTask('+id+')'); //inject taskID into delete button so it will only delete this task
+		delBtn.setAttribute('ng-click', 'delTask('+tasky.id+')'); //inject taskID into delTask() so it will only delete this task
 		var delBtnText = document.createTextNode("DELETE");
-		delBtn.appendChild(delBtnText);
-		tasky.appendChild(delBtn);
-		
+		delBtn.appendChild(delBtnText); //add text to button
+		tasky.appendChild(delBtn); //add button to tasky
+		//5. add .tasky class for styling
+		$("#"+tasky.id).addClass("tasky");
+		//6. (check)
 		console.log("ADDING TASKY: ",tasky);
-		document.getElementById("ngview").appendChild(tasky);
-
-		//compile to activate ng-click on div
-		setTimeout(function () {
-			$scope.compile(tasky.id);
-		},1000);
+		//7. recompile div, to activate ng-click functionality on button
+		//(reference for compile function is below)
+		setTimeout(function () { $scope.compile(tasky.id); },500);
 	}
 
-	//Begin compile function reference:
+	//Begin compile function reference (for activating dynamically set ng-click attribute)
 	//Source: http://stackoverflow.com/questions/25759497/angularjs-dynamically-set-attribute
 	$scope.compile = function (id) {
 		var el = angular.element('#'+id);
 		$scope = el.scope();
 		$injector = el.injector();
-		$injector.invoke(function($compile){
-	   	$compile(el)($scope);
-		});
+		$injector.invoke(function($compile){ $compile(el)($scope); });
 	}
 	//End compile function reference.
 
-	$scope.delTask = function(id) { //deletes tasks FROM ARRAYS (not DOM)
-		console.log("Deleting task ID",id,"...");
-		
-		console.log("bubbalist.taskList.length START: ",bubbalist.taskList.asArray().length);
+	$scope.delTask = function(id) { //deletes tasks from arrays (not DOM yet)
+		console.log(" \nDELETING task w/ID",id,"...");
+		console.log("bb length START:",bubbalist.taskList.asArray().length);
 		for (var i=0, length = bubbalist.taskList.length; i <= length - 1; i++) {	
 			if(bubbalist.taskList.asArray()[i] != undefined && JSON.parse(bubbalist.taskList.asArray()[i].ID) === id) {
-				console.log("FOUND, deleting task \'",bubbalist.taskList.asArray()[i].task,"\'");
+				console.log("FOUND, deleting \'"+bubbalist.taskList.asArray()[i].task+"\'");
 				bubbalist.taskList.remove(i);
 			} //else { console.log("NOPE (BB)"); }	
 		};
-		console.log("bubbalist.taskList.length END: ",bubbalist.taskList.asArray().length,"\n ");
+		console.log("bb length END:",bubbalist.taskList.asArray().length,"\n ");
 
-		console.log("$scope.taskList.length START: ",$scope.taskList.length);
+		console.log("$scope length START:",$scope.taskList.length);
 		for (var i=0, length = $scope.taskList.length; i <= length - 1; i++) {	
 			if($scope.taskList[i] != undefined && JSON.parse($scope.taskList[i].ID) === id) { //if this task is NOT null
-				console.log("FOUND, deleting task \'",$scope.taskList[i].task,"\'");
+				console.log("FOUND, deleting \'"+$scope.taskList[i].task+"\'");
+				console.log('======================================\nTASK DELETED ($scope)\n======================================');
 				$scope.taskList.splice(i,1); //,1 or will delete ALL after index i
 			} //else { console.log("NOPE ($SCOPE)"); }
 		};
-		console.log("$scope.taskList.length END: ",$scope.taskList.length);
-
-		//CHECK THEY'RE SAME:
+		console.log("$scope length END:",$scope.taskList.length,"\n ");
+		//DOUBLE-CHECK THEY'RE SAME:
 		console.log("$scope.taskList is now... ",$scope.taskList);
 		console.log("bubbalist.taskList.asArray() is now... ",bubbalist.taskList.asArray());
 
-		$scope.remTask(id);
+		$scope.remTask(id); //now actually remove visually from DOM
 	}
 
 	$scope.remTask  = function (id){ //deletes task visually off DOM
-		console.log("remTask",id);
-
+		console.log("Removing task",id,"from DOM...");
 		var tasky = document.getElementById(id);
 		tasky.parentNode.removeChild(tasky);
 	}
-
-
-
-
-
-
 
 	$scope.clearTasks = function() {
 		console.log('$scope.clearTasks()');
@@ -179,6 +158,57 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		bubbalist.taskList.length = 0;
 	}
 
+//====== [ old styling ] =================================================
+
+//=============================================================================
+//====== HAMMER.JS ============================================================
+//=============================================================================
+	var mc = new Hammer.Manager(document.body);
+	mc.add( new Hammer.Tap({ event: 'doubletap', taps: 2 }) );
+	mc.add( new Hammer.Tap({ event: 'tap', taps:1 }) );
+
+	//DOUBLE TAP to toggle edit mode:
+	mc.on("doubletap", function(ev) {
+		console.log("ev.target.id",ev.target.id);
+		doubleTapEdit.click(ev.target.id, ev.type);
+		tapBringForward.click(ev.target.id, ev.type); //(also bring forward if editing)
+		// console.log("ev.target.id=",ev.target.id,"// ev.type=",ev.type);
+	});
+
+	doubleTapEdit.click = function(i, eventType) { //orig function in 'orig hammer js fns'
+		console.log("EDIT i=",i,"// eventType=",eventType);
+		// console.log($scope.taskList[i]); //will be undefined b/c i is ID now, not index pos
+		$scope.startEditing(i);
+   	$scope.$apply();
+	}
+
+	//TAP to bring event to front:
+	mc.on("tap", function(ev) {
+  		tapBringForward.click(ev.target.id, ev.type); //calls tapBringForward function w/hammer (touch) data
+  		// console.log("ev.target.id=",ev.target.id,"// ev.type=",ev.type);
+	});
+
+	tapBringForward.click = function(i, eventType) { //orig function in 'orig hammer js fns'
+   	id = i;
+   	updateBGColour = $("#"+id).toggleClass("testBG");
+   	$scope.$apply();
+	}
+
+//=============================================================================
+//====== TOGGLE EDITING =======================================================
+//=============================================================================
+
+	$scope.startEditing = function (i){
+		console.log("starting to edit ID",i);
+		var tasky = document.getElementById(id);
+		console.log(tasky);
+	}
+
+// === orig toggle editing fns ===
+
+//==========================================================================================================================
+//====== GOOD TO GO (for now): =============================================================================================
+//==========================================================================================================================
    $scope.colourSelected = function (pickedColour){
 		console.log('$scope.colourSelected(pickedColour)');
 
@@ -198,16 +228,6 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		colourPickerSetZ = $('.colour-picker').css("z-index",zIndexColourPicker);
 	}
 
-
-
-
-
-
-//====== [ old styling ] =================================================
-
-
-
-
 //=============================================================================
 //====== CHARACTER COUNTER ====================================================
 //=============================================================================
@@ -223,95 +243,6 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	});
 	//End character counter tutorial reference
 
-
-
-
-
-//=============================================================================
-//====== TOGGLE EDITING =======================================================
-//=============================================================================
-	$scope.toggleEditModeOn = function (i){
-		console.log('$scope.toggleEditModeOn()');
-
-		//check first that nothing else is in edit mode
-		for (var j=0, length = $scope.taskList.length; j <= length - 1; j++) {	
-			if($scope.taskList[j] != null) { //if this task is NOT null...
-				if($scope.taskList[j].editing = true) { //...and is in edit mode...
-					$scope.taskList[j].editing = false; //disable edit mode.
-				}
-			}
-		};
-		$scope.taskList[i].editing = !$scope.taskList[i].editing;
-	};
-
-	$scope.toggleEditModeOff = function (i){
-		console.log('$scope.toggleEditModeOff()');
-
-		$scope.taskList[i].editing = false;
-		console.log("Text after editing: \""+$scope.taskList[i].task+"\"");
-	};
-
-
-
-
-
-
-//=============================================================================
-//====== DELETING/MARKING AS COMPLETE =========================================
-//=============================================================================
-
-	$scope.deleteTask = function (i){ //i = $index from home.html
-		console.log('$scope.deleteTask(i)');
-
-		$scope.responseNeeded = true; //throw up faded div
-   	smoke.confirm("Are you sure?", function(e){
-			if (e){
-				console.log("Task \""+$scope.taskList[i].task+"\" was deleted");
-				$scope.responseNeeded = false; //remove faded div
-				$scope.$apply();
-				$scope.taskList[i] = null;
-		 		var items = document.querySelectorAll('.tasky');
-			 		for (var j=0, length = $scope.taskList.length; j <= length - 1; j++) {
-			 			if ($scope.taskList[j] === null) { //ensure task[j] hasn't already been deleted (to avoid error)
-			 				$(items[j]).addClass("deleted");
-			 		}
-		 		}
-				$scope.checkForTasks();
-				} else {
-					$scope.responseNeeded = false;
-					$scope.$apply();
-				}}, { ok: "Yup", cancel: "Nevermind", reverseButtons: true });
-   };
-
-   //MARK TASK AS COMPLETED
-	$scope.doneTask = function (i){ //i = $index from home.html
-	 	console.log('$scope.doneTask(i)');
-
-	 	$scope.responseNeeded = true; //throw up faded div
-	   	smoke.confirm("Mark as complete?", function(e){
-				if (e){
-					$scope.responseNeeded = false; //remove faded div
-					$scope.$apply();
-				 	console.log($scope.responseNeeded);
-					$scope.taskList[i] = null;
-			 		var items = document.querySelectorAll('.tasky');
-				 		for (var j=0, length = $scope.taskList.length; j <= length - 1; j++) {
-				 			if ($scope.taskList[j] === null) { //ensure task[j] hasn't already been deleted (to avoid error)
-				 				$(items[j]).addClass("deleted");
-				 		}
-				 	}
-				$scope.checkForTasks();
-				} else {
-					$scope.responseNeeded = false; //remove faded div
-					$scope.$apply();
-				 	console.log($scope.responseNeeded);
-				}}, { ok: "Yup", cancel: "Nevermind", reverseButtons: true });
-   };
-
-
-
-
-
 //=============================================================================
 //======== COLOUR PICKER ======================================================
 //=============================================================================
@@ -322,11 +253,6 @@ $scope.showPicker = function (){
 	var height1 = $('.add-task-form').height();
 	var height2 = $('#colour1').height();
 }
-
-
-
-
-
 
 //=============================================================================
 //====== MENU ANIMATIONS ======================================================
@@ -496,40 +422,55 @@ $scope.showPicker = function (){
 		}
 	};
 
-
-
-
-
-
 //=============================================================================
-//====== HAMMER.JS ============================================================
+//====== DELETING/MARKING AS COMPLETE (prob will be deleted) ==================
 //=============================================================================
-	var mc = new Hammer.Manager(document.body);
-	mc.add( new Hammer.Tap({ event: 'doubletap', taps: 2 }) );
-	mc.add( new Hammer.Tap({ event: 'tap', taps:1 }) );
 
-	//DOUBLE TAP to toggle edit mode:
-	mc.on("doubletap", function(ev) {
-		doubleTapEdit.click(ev.target.id, ev.type);
-		tapBringForward.click(ev.target.id, ev.type);
-	});
+	$scope.deleteTask = function (i){ //i = $index from home.html
+		console.log('$scope.deleteTask(i)');
 
-	doubleTapEdit.click = function(i, eventType) {
-   	if($scope.taskList[i] != undefined) {
-   		$scope.toggleEditModeOn(i);
-   	}
-   	$scope.$apply();
-	}
+		$scope.responseNeeded = true; //throw up faded div
+   	smoke.confirm("Are you sure?", function(e){
+			if (e){
+				console.log("Task \""+$scope.taskList[i].task+"\" was deleted");
+				$scope.responseNeeded = false; //remove faded div
+				$scope.$apply();
+				$scope.taskList[i] = null;
+		 		var items = document.querySelectorAll('.tasky');
+			 		for (var j=0, length = $scope.taskList.length; j <= length - 1; j++) {
+			 			if ($scope.taskList[j] === null) { //ensure task[j] hasn't already been deleted (to avoid error)
+			 				$(items[j]).addClass("deleted");
+			 		}
+		 		}
+				$scope.checkForTasks();
+				} else {
+					$scope.responseNeeded = false;
+					$scope.$apply();
+				}}, { ok: "Yup", cancel: "Nevermind", reverseButtons: true });
+   };
 
-	//TAP to bring event to front:
-	mc.on("tap", function(ev) {
-  		tapBringForward.click(ev.target.id, ev.type);
-	});
+   //MARK TASK AS COMPLETED
+	$scope.doneTask = function (i){ //i = $index from home.html
+	 	console.log('$scope.doneTask(i)');
 
-	tapBringForward.click = function(i, eventType) {
-   	holdSetZ = $('#task'+i).css("z-index",zIndex);
-   	zIndex += 10;
-   	// $scope.updateMenuZ();
-   	$scope.$apply();
-	}
+	 	$scope.responseNeeded = true; //throw up faded div
+	   	smoke.confirm("Mark as complete?", function(e){
+				if (e){
+					$scope.responseNeeded = false; //remove faded div
+					$scope.$apply();
+				 	console.log($scope.responseNeeded);
+					$scope.taskList[i] = null;
+			 		var items = document.querySelectorAll('.tasky');
+				 		for (var j=0, length = $scope.taskList.length; j <= length - 1; j++) {
+				 			if ($scope.taskList[j] === null) { //ensure task[j] hasn't already been deleted (to avoid error)
+				 				$(items[j]).addClass("deleted");
+				 		}
+				 	}
+				$scope.checkForTasks();
+				} else {
+					$scope.responseNeeded = false; //remove faded div
+					$scope.$apply();
+				 	console.log($scope.responseNeeded);
+				}}, { ok: "Yup", cancel: "Nevermind", reverseButtons: true });
+   };
 });

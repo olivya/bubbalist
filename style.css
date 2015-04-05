@@ -18,80 +18,19 @@ body {
 	margin-bottom:0px;
 }
 
+/* === original tasky class styling goes heeere === */
+
 .tasky {
-	position: absolute;
-	padding-left:10px;
-	padding-right:10px;
-	border-radius:35%;
-	border:1px dotted rgba(0,0,0,0.2);
-	width:130px;
-	height:130px;
-	text-align:center;
+	background:aqua;
+	margin:10px;
+	padding:10px;
+	width:150px;
+	border-radius:16px;
 }
 
-.tasky > form {
-  position: relative;
-}
-
-.tasky > form > .buttons > button {
-	position:relative;
-	height:30px;
-	float:left;
-	border-width:0px;
-	color:#fff;
-	border-radius:10px;
-	background-color: rgba(0,0,0,0.65);
-	margin-top:3px;
-}
-
-.tasky > form > .buttons > .other {
-	font-size: .8em;
-	width:28%;
-	float:center;
-	text-align:center;
-	padding:0;
-}
-
-.tasky > form > .buttons > .btn {
-	float:right;
-	padding:0;
-	width:28%;
-}
-
-.tasky > form > .buttons > .save {
-	font-family:'Lilita One',sans-serif;
-	color:#fff;
-	font-size:.65em;
-	width:40%;
-	text-transform: uppercase;
-}
-
-.tasky > form > .buttons {
-	height:20px;
-	top:75px;
-}
-
-.tasky > form > textarea {
-	resize:none;
-	width:75%;
-	font-size:1em;
-	padding:5px;
-	border-width:0px;
-	border-radius:10px;
-	background:white;
-	opacity:0.65;
-	outline:none;
-	font-family: "Ubuntu", sans-serif;
-	font-weight:300;
-	position:relative;
-	top:15px;
-	font-size:.95em;
-	line-height:1em;
-	color: rgba(0,0,0,0.5);
-
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box; 	
+.testBG {
+	background-color:BlueViolet;
+	color:white;
 }
 
 .task {
@@ -111,24 +50,6 @@ body {
 	background:lime;
 	height:200px;
 	font-size:3em;
-}
-
-.tasky .handle:hover {
-	cursor: move;
-}
-
-.tasky .handle {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.tasky .handle > div {
-	max-width:110px;
-	margin-left:20px;
-	margin-top:13px;
 }
 
 .deleted {
