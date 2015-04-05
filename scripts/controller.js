@@ -49,14 +49,22 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		$scope.$apply();
 		console.log("bubbalist.updateTasks()", $scope.taskList);
 		$scope.newTask = "";
-		// $scope.checkForTasks();
 		$('.text-feedback').html(maxChars);
-		console.log("READY!");
-		// rebuilding tasks:
-		// setTimeout($scope.toggleMenu,100);
-		// setTimeout($scope.iterateTasks, 5);
-		// setTimeout($scope.setStyle,5);
+		$scope.drawTasks();
+
+		console.log("READY!"); //this is when loading screen can stop 
    };
+
+   $scope.drawTasks = function() {
+   	j = 1;
+   	for (var i=0, length = bubbalist.taskList.length; i <= length - 1; i++) {	
+			if(bubbalist.taskList.asArray()[i] != null) {
+				console.log("FOUND",j,"TASK(s) TO DRAW:",bubbalist.taskList.asArray()[i].task);
+				j++;
+				$scope.visTask(bubbalist.taskList.asArray()[i]);
+			}
+		};
+   }
 
 	//STEP 1: PUSH TO LISTS
 	$scope.addTask = function() {
@@ -103,7 +111,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		delBtn.appendChild(delBtnText);
 		tasky.appendChild(delBtn);
 		
-		console.log("tasky: ",tasky);
+		console.log("ADDING TASKY: ",tasky);
 		document.getElementById("ngview").appendChild(tasky);
 
 		//compile to activate ng-click on div
