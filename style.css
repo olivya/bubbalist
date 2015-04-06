@@ -8,6 +8,63 @@ body {
 	box-sizing: border-box; 
 }
 
+.edit-form-buttons {
+	position:relative;
+	height:30px;
+	float:left;
+	border-width:0px;
+	color:#fff;
+	border-radius:10px;
+	background-color: rgba(0,0,0,0.65);
+	margin-top:2px;
+}
+
+.save-button {
+	font-family:'Lilita One',sans-serif;
+	color:#fff;
+	font-size:.65em;
+	width:40%;
+	text-transform: uppercase;
+}
+
+.delete-button {
+	font-size: .8em;
+	width:28%;
+	float:center;
+	text-align:center;
+	margin-left:2%;
+	padding:0;
+}
+
+.check-off-button {
+	font-size:.8em;
+	width:28%;
+	float:right;
+	padding:0;
+}
+
+.edit-box {
+	resize:none;
+	width:100%;
+	font-size:1em;
+	padding:5px;
+	border-width:0px;
+	border-radius:10px;
+	background:white;
+	opacity:0.65;
+	outline:none;
+	font-family: "Ubuntu", sans-serif;
+	font-weight:300;
+	position:relative;
+	/*top:15px;*/
+	font-size:.8em;
+	color: rgba(0,0,0,0.5);
+
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box; 	
+}
+
 .task-list {
 	display:inline-block;
 	position:absolute;
@@ -22,9 +79,13 @@ body {
 	position:absolute;
 	background:aqua;
 	width:120px;
-	height:105px;
+	height:100px;
 	border-radius:25px;
 	border:1px dotted rgba(0,0,0,0.4);
+	padding:9px;
+/*	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;*/
 }
 
 .tasky:hover {
@@ -418,8 +479,8 @@ button.cancel {
 #loading {
 	position:fixed;
 	width:110%;
-	height:110%;
-	margin-top:-10%;
+	height:150%;
+	margin-top:-20%;
 	margin-left:-10%;
 	background-color:rgba(0,0,0,0.5);
  	z-index:100000000000000000;

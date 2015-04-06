@@ -128,7 +128,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	$scope.visTask = function(task) {
 		if (task != undefined) {
 			thisTask = $scope.dataFromID(task.ID);
-			//1. create & add tasky & handle (for dragging) divs:
+			//create & add tasky & handle (for dragging) divs:
 			var tasky = document.createElement("div");
 			tasky.id = task.ID;
 			document.getElementById("ngview").appendChild(tasky);
@@ -140,34 +140,57 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 			document.getElementById(tasky.id).appendChild(handle);
 			$("#"+handle.id).addClass("handle");
 
-			//2. create & add user-inputted task into a span:
+			//create & add user-inputted task into a span:
 			var taskySpan = document.createElement("span");
 			taskySpan.id = task.ID+"span";
 			var taskySpanText = document.createTextNode(thisTask.task);
 			taskySpan.appendChild(taskySpanText);
 			handle.appendChild(taskySpan); //add to above div
-			//4. create delete button (w/unique ID) & append to tasky div:
-			var delBtn = document.createElement("button");
-			delBtn.id = task.ID+"del";
-			delBtn.setAttribute('ng-click', 'delTask('+task.ID+')');
-			var delBtnText = document.createTextNode("DELETE");
-			delBtn.appendChild(delBtnText);
-			handle.appendChild(delBtn);
-			//6. create textarea for editing:
+		
+			//create textarea for editing:
 			var taskyEdit = document.createElement("textarea");
 			taskyEdit.id = task.ID+"edit";
 			var taskyEditPlaceholder = document.createTextNode(thisTask.task);
 			taskyEdit.appendChild(taskyEditPlaceholder);
 			tasky.appendChild(taskyEdit);
+			$('#'+taskyEdit.id).addClass('edit-box');
+			taskyEdit.setAttribute("rows","4");
+
 			$(taskyEdit).hide(); //(hidden until user enters edit mode)
-			//7. create save button for editing:
+			
+			//create save button for editing:
 			var saveBtn = document.createElement("button");
 			saveBtn.id = task.ID+"save";
 			saveBtn.setAttribute('ng-click', 'doneEditing('+thisTask.ID+')');
-			var saveBtnText = document.createTextNode("save");
+			var saveBtnText = document.createTextNode("SAVE");
 			saveBtn.appendChild(saveBtnText);
 			tasky.appendChild(saveBtn);
+			$('#'+saveBtn.id).addClass('save-button edit-form-buttons');
 			$(saveBtn).hide(); //(hidden until user enters edit mode)
+
+			//create delete button (w/unique ID) & append to tasky div:
+			var delBtn = document.createElement("button");
+			delBtn.id = task.ID+"del";
+			delBtn.setAttribute('ng-click', 'delTask('+task.ID+')');
+			var trashIcon = document.createElement("i");
+			trashIcon.id = task.ID+"trash";
+			$(trashIcon).addClass('fa fa-trash');
+			delBtn.appendChild(trashIcon);
+			tasky.appendChild(delBtn);
+			$('#'+delBtn.id).addClass('delete-button edit-form-buttons');
+			$(delBtn).hide();
+
+			var doneBtn = document.createElement("button");
+			doneBtn.id = task.ID+"done";
+			// doneBtn.setAttribute('ng-click', 'delTask('+task.ID+')');
+			var checkIcon = document.createElement("i");
+			checkIcon.id = task.ID+"check";
+			$(checkIcon).addClass('fa fa-check');
+			doneBtn.appendChild(checkIcon);
+			tasky.appendChild(doneBtn);
+			$('#'+doneBtn.id).addClass('check-off-button edit-form-buttons');
+			$(doneBtn).hide();
+
 			//set position & styling:
 			$('#'+tasky.id).css("top",thisTask.yPos+"px");
 			$('#'+tasky.id).css("left",thisTask.xPos+"px");
@@ -177,19 +200,16 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 			if(thisTaskIsNew) {
 				zPos+=10; //only start incrementing zPos once you're not "re-"drawing tasks from storage
 			}
-
 			//update space variable so next task is not directly over-top of this one:
-			if(space <= 200) {
-				space += 40;
-			} else {
-				space = 15; //start layering back at top
-				space += 40;
-			}
-			//7. recompile div, to activate ng-click functionality on buttons:
+			if(space <= 200) { space += 40; }
+			else { space = 15; space += 40; } //start layering back at top
+
+			//recompile div, to activate ng-click functionality on buttons:
 			setTimeout(function(){ $scope.compile(tasky.id); },200);
-			//8. call function to make tasky draggable:
+
+			//call function to make tasky draggable:
 			$scope.makeDraggie(thisTask.ID);
-			// console.log("tasky code: ",tasky); //check html code
+			console.log("tasky code: ",tasky); //check html code
 		}
 	}
 
@@ -273,11 +293,14 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 			//toggle editing stuff:
 			$("#"+shortID+"edit").show();
 			$("#"+shortID+"save").show();
-			$("#"+shortID+"del").hide();
+			$("#"+shortID+"del").show();
+			$("#"+shortID+"done").show();
 			$("#"+shortID+"handle").hide();
 			//rm original span (will make new one on save):
 			var origTaskySpan = document.getElementById(thisTask.ID+"span");
-			origTaskySpan.parentNode.removeChild(origTaskySpan);
+			if(origTaskySpan) {
+				origTaskySpan.parentNode.removeChild(origTaskySpan);
+			}
 		}
 	}
 
@@ -291,7 +314,8 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		//toggle editing stuff:
 		$("#"+thisTask.ID+"save").hide();
 		$("#"+thisTask.ID+"edit").hide();
-		$("#"+thisTask.ID+"del").show();
+		$("#"+thisTask.ID+"del").hide();
+		$("#"+thisTask.ID+"done").hide();
 		$("#"+thisTask.ID+"handle").show();
 		//add new span w/edited task (if unedited will just add same text back in):
 		var newTaskySpan = document.createElement("span");
@@ -300,7 +324,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		newTaskySpan.appendChild(newTaskySpanText);
 		var delBtn = document.getElementById(thisTask.ID+"del");
 		var handle = document.getElementById(thisTask.ID+"handle");
-		handle.insertBefore(newTaskySpan, delBtn);
+		handle.appendChild(newTaskySpan);
 	}
 
 //=============================================================================
