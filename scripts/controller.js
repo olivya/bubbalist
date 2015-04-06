@@ -157,24 +157,40 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 
 		//7. recompile div, to activate ng-click functionality on buttons
 		setTimeout(function(){ $scope.compile(tasky.id); },500);
+		// var $draggable = $('.draggable').draggabilly({
+ 	// 		// handle: '.tasky'
+		// })
+		
+		$scope.makeDraggie(thisTask.ID);
 
-		var $draggable = $('.draggable').draggabilly({
- 			// handle: '.tasky'
-		})
+	}
+
+	$scope.makeDraggie = function(id){
+		$('#'+id).draggabilly();
+
+		$('#'+id).on('dragStart', function() {
+			thisTask = $scope.dataFromID(id);
+    		console.log('dragStart for \''+thisTask.task+'\'');
+  		});
+
+  		$('#'+id).on('dragEnd', function() {
+			thisTask = $scope.dataFromID(id);
+    		console.log('dragEnd for \''+thisTask.task+'\'');
+  		});
 	}
 
 	$scope.delTask = function(id) { //deletes tasks from arrays (not DOM yet)
 		console.log(" \nDELETING task w/ID",id,"...");
-		console.log("bb length START:",bubbalist.taskList.asArray().length);
+		// console.log("bb length START:",bubbalist.taskList.asArray().length);
 		for (var i=0, length = bubbalist.taskList.length; i <= length - 1; i++) {	
 			if(bubbalist.taskList.asArray()[i] != undefined && JSON.parse(bubbalist.taskList.asArray()[i].ID) === id) {
 				console.log("FOUND, deleting \'"+bubbalist.taskList.asArray()[i].task+"\'");
 				bubbalist.taskList.remove(i);
 			}
 		};
-		console.log("bb length END:",bubbalist.taskList.asArray().length,"\n ");
+		// console.log("bb length END:",bubbalist.taskList.asArray().length,"\n ");
 
-		console.log("$scope length START:",$scope.taskList.length);
+		// console.log("$scope length START:",$scope.taskList.length);
 		for (var i=0, length = $scope.taskList.length; i <= length - 1; i++) {	
 			if($scope.taskList[i] != undefined && JSON.parse($scope.taskList[i].ID) === id) { //if this task is NOT null
 				console.log("FOUND, deleting \'"+$scope.taskList[i].task+"\'");
@@ -182,10 +198,10 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 				$scope.taskList.splice(i,1); //,1 or will delete ALL after index i
 			}
 		};
-		console.log("$scope length END:",$scope.taskList.length,"\n ");
+		// console.log("$scope length END:",$scope.taskList.length,"\n ");
 		//DOUBLE-CHECK THEY'RE SAME:
-		console.log("$scope.taskList is now... ",$scope.taskList);
-		console.log("bubbalist.taskList.asArray() is now... ",bubbalist.taskList.asArray());
+		// console.log("$scope.taskList is now... ",$scope.taskList);
+		// console.log("bubbalist.taskList.asArray() is now... ",bubbalist.taskList.asArray());
 		
 		//now actually remove visually from DOM...
 		$scope.remTask(id);
@@ -195,12 +211,6 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		console.log("Removing task",id,"from DOM...");
 		var tasky = document.getElementById(id);
 		tasky.parentNode.removeChild(tasky);
-	}
-
-	$scope.clearTasks = function() {
-		console.log('$scope.clearTasks()');
-		$scope.taskList.length = 0;
-		bubbalist.taskList.length = 0;
 	}
 //=============================================================================
 //====== TOGGLE EDITING =======================================================
