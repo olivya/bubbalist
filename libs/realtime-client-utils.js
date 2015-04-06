@@ -328,6 +328,7 @@ rtclient.RealtimeLoader.prototype.load = function() {
   var authorizer = this.authorizer;
 
   var file = localStorage.getItem('realtimeFileID');
+
   if (file) {
     fileIds = [file];
     console.log('fileIDs: ',fileIds);
@@ -354,6 +355,7 @@ rtclient.RealtimeLoader.prototype.load = function() {
   }
 
   if (this.autoCreate) {
+    console.log("HAD TO CREATE FILE");
     this.createNewFileAndRedirect();
   }
 }

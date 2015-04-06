@@ -4,6 +4,9 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	var opacity;
 	//Variables for updating DOM:
 	var zIndex = 0;
+	var zPos = 0;
+	var largestZ = 0;
+
 	var zIndexMenus = 10;
 	var zIndexColourPicker = 20;
 	var setZ;
@@ -13,7 +16,9 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	var alertZ;
 	var updateBGColour;
 	var space = 20;
-	var increaseSpace;	
+	var increaseSpace;
+
+	var thisTaskIsNew = false;
 //=============================================================================
 //====== CHECK IF NO TASKS (to show 'no tasks' message) =======================
 //=============================================================================
@@ -31,12 +36,20 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 //=============================================================================
 //REALTIME API (runs on reload)
 	bubbalist.updateTasks = function() { //not getting called
+		console.log(thisTaskIsNew);
 		$scope.taskList = bubbalist.taskList.asArray();
 		$scope.$apply();
 		console.log("bubbalist.updateTasks()", $scope.taskList);
 		$scope.newTask = "";
 		$('.text-feedback').html(maxChars);
+
 		$scope.drawTasks();
+
+		console.log(" \ndone drawing! now finding largest Z value so far...");
+		zPos = $scope.findLargestZ();
+		console.log("...so next zPos will be",zPos);
+		thisTaskIsNew = true;
+		console.log(thisTaskIsNew);
 		console.log("READY!\n~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~\n "); //<--- this is when loading screen can stop <--- 
    };
    //Draws stored tasks on reload:
@@ -56,6 +69,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	$scope.addTask = function() {
 		var textInput = $scope.newTask;
 		var yPos = space;
+
 		if($scope.addTaskForm.$valid && $scope.newTask != null) {
 			var task = {
 				task:textInput,
@@ -63,11 +77,16 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 				colour:colour,
 				ID:moment().format("MDdYYYYHHmmssSSS"),
 				xPos:10,
-				yPos:yPos
+				yPos:yPos,
+				zPos:zPos, //initial assigned zPos
+				clicks:0
 			};
-			console.log('x:',task.xPos,"y:",task.yPos);
+
+			console.log('x:',task.xPos,"y:",task.yPos,"z:",task.zPos);
+
 			$scope.taskList.push(task); //for angular/scope/DOM
 			bubbalist.taskList.push(task); //for drive.js
+
 			$scope.newTask = ""; //reset textbox
 			$('.text-feedback').html(maxChars); //reset char count
 			setTimeout($scope.toggleMenu,100); //close menu after a moment
@@ -91,8 +110,10 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 				var ID = $scope.taskList[i].ID;
 				var xPos = $scope.taskList[i].xPos;
 				var yPos = $scope.taskList[i].yPos;
+				var zPos = $scope.taskList[i].zPos;
+				var clicks = $scope.taskList[i].clicks;
 				return {
-					task:task, editing:editing, colour:colour, ID:ID, i:i, xPos:xPos, yPos:yPos
+					task:task, editing:editing, colour:colour, ID:ID, i:i, xPos:xPos, yPos:yPos, zPos:zPos, clicks:clicks
 				};
 			}
 		};
@@ -100,6 +121,8 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	// STEP 2: render task on DOM ("task"= task obj data, "tasky"= visual task on DOM/HTML)
 	$scope.visTask = function(task) {
 		thisTask = $scope.dataFromID(task.ID);
+		console.log("drawing! this task's zPos:",thisTask.zPos);
+
 		//1. create & add tasky div:
 		var tasky = document.createElement("div");
 		tasky.id = task.ID;
@@ -128,7 +151,6 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		//6. create textarea for editing:
 		var taskyEdit = document.createElement("textarea");
 		taskyEdit.id = task.ID+"edit";
-		// taskyEdit.setAttribute('placeholder', thisTask.task);
 		var taskyEditPlaceholder = document.createTextNode(thisTask.task);
 		taskyEdit.appendChild(taskyEditPlaceholder);
 		tasky.appendChild(taskyEdit);
@@ -144,6 +166,13 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		//set position:
 		$('#'+tasky.id).css("top",thisTask.yPos+"px");
 		$('#'+tasky.id).css("left",thisTask.xPos+"px");
+
+		$('#'+tasky.id).css("z-index",thisTask.zPos);
+
+		if(thisTaskIsNew) {
+			zPos+=10;
+		}
+
 		//update space variable so next task is not directly over-top of this one:
 		if(space <= 200) {
 			space += 40;
@@ -155,7 +184,21 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		setTimeout(function(){ $scope.compile(tasky.id); },200);
 		//8. call function to make tasky draggable:
 		$scope.makeDraggie(thisTask.ID);
-		console.log("tasky code: ",tasky); //check html code
+		// console.log("tasky code: ",tasky); //check html code
+	}
+
+	$scope.findLargestZ = function () {
+		console.log("checking for largest Z-index...");
+		for (var i=0, length = bubbalist.taskList.length; i <= length - 1; i++) {	
+			if(bubbalist.taskList.asArray()[i].zPos > largestZ) {
+				largestZ = bubbalist.taskList.asArray()[i].zPos;
+				console.log("updating largest z to...",largestZ);
+			}
+		};
+		zPos = largestZ;
+		zPos+=10;
+		console.log("done! largest Z was",largestZ);
+		return zPos;
 	}
 
 	$scope.makeDraggie = function(id){
@@ -256,8 +299,8 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	//DOUBLE TAP to toggle edit mode:
 	mc.on("doubletap", function(ev) {
 		doubleTapEdit.click(ev.target.id, ev.type);
-		tapBringForward.click(ev.target.id, ev.type); //(also bring forward if editing)
-		console.log("ev.target.id=",ev.target.id,"// ev.type=",ev.type);
+		tapBringForward.click(ev.target.id, ev.type); //(also want bring forward if editing)
+		// console.log("ev.target.id=",ev.target.id,"// ev.type=",ev.type);
 	});
 
 	doubleTapEdit.click = function(id, eventType) { //orig function in 'orig hammer js fns'
@@ -272,10 +315,31 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
   		// console.log("ev.target.id=",ev.target.id,"// ev.type=",ev.type);
 	});
 
-	tapBringForward.click = function(i, eventType) { //orig function in 'orig hammer js fns'
-   	id = i;
-   	// updateBGColour = $("#"+id).toggleClass("testBG");
-   	$scope.$apply();
+	tapBringForward.click = function(id, eventType) { //orig function in 'orig hammer js fns'
+   	var longID = id;
+   	var diff = longID.length - 16; //need to shorten ID to the first 16 digits
+   	var shortID = longID.substr(0, longID.length-diff);
+
+		thisTask = $scope.dataFromID(shortID);
+
+		if(thisTask != undefined) {
+			// console.log(' \nstarting clicks on',thisTask.task,'=',thisTask.clicks);
+	   	console.log('current zPos:',zPos);
+	   	console.log('thisTask starting zPos:',thisTask.zPos);
+
+	   	zPos = zPos+10;
+	   	$('#'+shortID).css("z-index",zPos);
+	   	thisTask.zPos = zPos;
+	   	console.log('this task\'s ASSIGNED zPos is now:',thisTask.zPos);
+	   	zPos = zPos+10;
+	   	console.log('next zPos is:',zPos,'\n ');
+	   	thisTask.clicks++;
+
+	   	bubbalist.taskList.set(thisTask.i, thisTask);
+			$scope.taskList[thisTask.i] = thisTask;
+
+	   	$scope.$apply();
+	   }
 	}
 //==========================================================================================================================
 //====== GOOD TO GO (for now): =============================================================================================
