@@ -40,7 +40,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		$scope.newTask = "";
 		$('.text-feedback').html(maxChars);
 		$scope.drawTasks();
-		console.log("READY!"); //<--- this is when loading screen can stop <--- 
+		console.log("READY!\n~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~\n "); //<--- this is when loading screen can stop <--- 
    };
    //Draws stored tasks on reload:
    $scope.drawTasks = function() {
@@ -82,7 +82,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		$scope.visTask(task); //now render on DOM the task just pushed above ^
 
 		thisTask = $scope.dataFromID(task.ID);
-		console.log(thisTask.task, thisTask.editing, thisTask.colour, thisTask.ID);
+		// console.log(thisTask.task, thisTask.editing, thisTask.colour, thisTask.ID);
 	};
 
 	$scope.dataFromID = function (id) {
@@ -93,22 +93,16 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 				var colour = $scope.taskList[i].colour;
 				var ID = $scope.taskList[i].ID;
 				return {
-					task:task,
-					editing:editing,
-					colour:colour,
-					ID:ID,
-					i:i
+					task:task, editing:editing, colour:colour, ID:ID,i:i
 				};
 			}
 		};
 	}
 
-	//STEP 2: render task on DOM
-	//task = task data
-	//tasky = DOM/HTML (visual) version of task
+	// STEP 2: render task on DOM ("task" = task obj data, "tasky" = DOM/HTML task)
 	$scope.visTask = function(task) {
 		thisTask = $scope.dataFromID(task.ID);
-		console.log(" \ntask obj =",thisTask);
+		console.log("adding \""+thisTask.task+"\"");
 		
 		//1. create & add tasky div:
 		var tasky = document.createElement("div");
@@ -118,7 +112,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 
 		//2. create & add user-inputted task into a span
 		var taskySpan = document.createElement("span");
-		taskySpan.id = task.ID+"span"; //**
+		taskySpan.id = task.ID+"span";
 		var taskySpanText = document.createTextNode(thisTask.task);
 		taskySpan.appendChild(taskySpanText);
 		tasky.appendChild(taskySpan); //add to above div
@@ -148,7 +142,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		$(saveBtn).hide(); //(hidden until user enters edit mode)
 
 		//6. (check html code)
-		console.log("tasky code: ",tasky);
+		// console.log("tasky code: ",tasky);
 
 		//7. recompile div, to activate ng-click functionality on buttons
 		setTimeout(function(){ $scope.compile(tasky.id); },500);
@@ -161,7 +155,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 			if(bubbalist.taskList.asArray()[i] != undefined && JSON.parse(bubbalist.taskList.asArray()[i].ID) === id) {
 				console.log("FOUND, deleting \'"+bubbalist.taskList.asArray()[i].task+"\'");
 				bubbalist.taskList.remove(i);
-			} //else { console.log("NOPE (BB)"); }	
+			}
 		};
 		console.log("bb length END:",bubbalist.taskList.asArray().length,"\n ");
 
@@ -171,12 +165,13 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 				console.log("FOUND, deleting \'"+$scope.taskList[i].task+"\'");
 				console.log('======================================\nTASK DELETED ($scope)\n======================================');
 				$scope.taskList.splice(i,1); //,1 or will delete ALL after index i
-			} //else { console.log("NOPE ($SCOPE)"); }
+			}
 		};
 		console.log("$scope length END:",$scope.taskList.length,"\n ");
 		//DOUBLE-CHECK THEY'RE SAME:
 		console.log("$scope.taskList is now... ",$scope.taskList);
 		console.log("bubbalist.taskList.asArray() is now... ",bubbalist.taskList.asArray());
+		
 		//now actually remove visually from DOM...
 		$scope.remTask(id);
 	}
@@ -195,46 +190,41 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 //=============================================================================
 //====== TOGGLE EDITING =======================================================
 //=============================================================================
-	$scope.startEditing = function (i) {
-		thisTask = $scope.dataFromID(i);
-		console.log('startEditing thisTask',thisTask.task); //throws error when clicking text
-		console.log('startEditing $scope task',$scope.taskList[thisTask.i].task);
-
-		$scope.taskList[thisTask.i] = thisTask;
-
-		$("#"+i+"edit").show();
-		$("#"+i+"save").show();
+	$scope.startEditing = function (id) {
+		thisTask = $scope.dataFromID(id);
+		if(thisTask) { //remove after fixing hammer.js
+			// console.log('START (thisTask // $scope // BB):\n'+thisTask.task,"//",$scope.taskList[thisTask.i].task,"//",bubbalist.taskList.asArray()[thisTask.i].task);
+			bubbalist.taskList.set(thisTask.i, thisTask);
+			$scope.taskList[thisTask.i] = thisTask;
+			$("#"+id+"edit").show();
+			$("#"+id+"save").show();
+			//rm original span (will make new one on save)
+			var origTaskySpan = document.getElementById(thisTask.ID+"span");
+			origTaskySpan.parentNode.removeChild(origTaskySpan);
+		}
 	}
 
 	$scope.doneEditing = function(id){
 		thisTask = $scope.dataFromID(JSON.stringify(id));
+		//grab new task text:
 		thisTask.task = document.getElementById(thisTask.ID+"edit").value;
+		//set new task value in arrays:
+		bubbalist.taskList.set(thisTask.i, thisTask);
 		$scope.taskList[thisTask.i].task = thisTask.task;
-
-		console.log('done editing thisTask',thisTask.task);
-		console.log("done editing $scope task ",$scope.taskList[thisTask.i].task);
-
+		// console.log('END (thisTask // $scope // BB):\n'+thisTask.task,"//",$scope.taskList[thisTask.i].task,"//",bubbalist.taskList.asArray()[thisTask.i].task+'\n ');
+		//hide editing stuff:
 		$("#"+thisTask.ID+"save").hide();
 		$("#"+thisTask.ID+"edit").hide();
-
-		//rm original span
-		var taskySpan = document.getElementById(thisTask.ID+"span");
-		taskySpan.parentNode.removeChild(taskySpan);
-
-		//add new span
-		taskySpan = document.createElement("span");
-		taskySpan.id =thisTask.ID+"span";
-		var taskySpanText = document.createTextNode(thisTask.task);
+		//add new span w/edited task (if unedited will just add same text back in):
+		var newTaskySpan = document.createElement("span");
+		newTaskySpan.id = thisTask.ID+"span";
+		var newTaskySpanText = document.createTextNode(thisTask.task);
+		newTaskySpan.appendChild(newTaskySpanText);
 		var delBtn = document.getElementById(thisTask.ID+"del");
-		tasky = document.getElementById(thisTask.ID);
-		tasky.insertBefore(taskySpanText, delBtn);
-		tasky.appendChild(taskySpan);
-
-		// $("#"+thisTask.ID+"span").replaceWith( "<span id=#"+thisTask.ID+"span>"+thisTask.task+"</span>" );
+		var tasky = document.getElementById(thisTask.ID);
+		tasky.insertBefore(newTaskySpan, delBtn);
+		//console.log("new tasky ",tasky);
 	}
-
-// === orig toggle editing fns ===
-//====== [ old styling ] =================================================
 
 //=============================================================================
 //====== HAMMER.JS ============================================================
@@ -245,16 +235,14 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 
 	//DOUBLE TAP to toggle edit mode:
 	mc.on("doubletap", function(ev) {
-		// console.log("ev.target.id",ev.target.id);
 		doubleTapEdit.click(ev.target.id, ev.type);
 		tapBringForward.click(ev.target.id, ev.type); //(also bring forward if editing)
-		// console.log("ev.target.id=",ev.target.id,"// ev.type=",ev.type);
+		//console.log("ev.target.id=",ev.target.id,"// ev.type=",ev.type);
 	});
 
-	doubleTapEdit.click = function(i, eventType) { //orig function in 'orig hammer js fns'
+	doubleTapEdit.click = function(id, eventType) { //orig function in 'orig hammer js fns'
 		// console.log("EDIT i=",i,"// eventType=",eventType);
-		// console.log($scope.taskList[i]); //will be undefined b/c i is ID now, not index pos
-		$scope.startEditing(i);
+		$scope.startEditing(id);
    	$scope.$apply();
 	}
 
