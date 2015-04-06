@@ -5,12 +5,17 @@ window.onload = function() {
 
 function initializeModel(model) {
     console.log('MODEL INITIALIZED');
+    bubbalist.ready = false;
+    bubbalist.updateReady();
+    console.log("bubbalist.ready is now",bubbalist.ready);
     var taskList = model.createList();
     model.getRoot().set('taskList', taskList);
 }
 
 function onFileLoaded(doc) {
     console.log('FILE LOADED');
+    bubbalist.updateReady();
+    console.log("bubbalist.ready is now",bubbalist.ready);
     bubbalist.taskList = doc.getModel().getRoot().get('taskList');
 
    function taskAdded(e) {
@@ -34,6 +39,7 @@ function onFileLoaded(doc) {
     bubbalist.taskList.addEventListener(gapi.drive.realtime.EventType.VALUES_ADDED, taskAdded);
     bubbalist.taskList.addEventListener(gapi.drive.realtime.EventType.VALUES_REMOVED, taskDeleted);
     bubbalist.taskList.addEventListener(gapi.drive.realtime.EventType.VALUE_CHANGED, taskChanged);
+
     bubbalist.updateTasks();
 }
 

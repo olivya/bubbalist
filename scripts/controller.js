@@ -20,8 +20,9 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 
 	var thisTaskIsNew = false;
 
+	$scope.activated = false;
+	bubbalist.ready = false;
 	$scope.ready = false;
-
 //=============================================================================
 //====== CHECK IF NO TASKS (to show 'no tasks' message) =======================
 //=============================================================================
@@ -37,8 +38,31 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 //=============================================================================
 //====== ON STARTUP... ========================================================
 //=============================================================================
-//REALTIME API (runs on reload)
+bubbalist.stopLoad = function() {
+	console.log('stopping load screen to let user log in');
+	bubbalist.ready = true;
+	$scope.activated = false;
+	bubbalist.updateReady();
+	console.log("bubbalist.ready is now",bubbalist.ready);
+	$scope.$apply();
+}
+
+bubbalist.updateReady = function() {
+	if (bubbalist.ready) {
+		$scope.ready = true;
+	} else $scope.ready = false;
+
+	console.log("$scope ready --- ",$scope.ready);
+}
+
+bubbalist.updateReady();
+console.log("bubbalist.ready is now",bubbalist.ready);
+
+//REALTIME API (runs on initial creation & reload)
 	bubbalist.updateTasks = function() { //not getting called
+		bubbalist.ready = false;
+		bubbalist.updateReady();
+
 		console.log(thisTaskIsNew);
 		$scope.taskList = bubbalist.taskList.asArray();
 		$scope.$apply();
@@ -52,11 +76,19 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		zPos = $scope.findLargestZ();
 		console.log("...so next zPos will be",zPos);
 		thisTaskIsNew = true;
-		console.log(thisTaskIsNew);
+
+		print(bubbalist.ready);
 		console.log("READY!\n~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~\n "); //<--- this is when loading screen can stop <--- 
 
-		$scope.ready = true;
+		bubbalist.ready = true;
+		bubbalist.updateReady();
+		console.log("bubbalist.ready is now",bubbalist.ready);
+		$scope.activated = true;
 
+		$('#authorizeButton').remove();
+		$('#google').remove();
+
+		$('#loading').remove();
 		$('.toggle-menu-button').removeClass('fade');
 		$('.toggle-help-button').removeClass('fade');
 
@@ -64,6 +96,10 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
    };
    //Draws stored tasks on reload:
    $scope.drawTasks = function() {
+   	bubbalist.ready = true;
+  		bubbalist.updateReady();
+   	console.log("bubbalist.ready is now",bubbalist.ready);
+
    	j = 1;
    	for (var i=0, length = bubbalist.taskList.length; i <= length - 1; i++) {	
 			if(bubbalist.taskList.asArray()[i] != null) {
@@ -414,7 +450,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	var menuSpeed = 400;
 
 	$scope.showAddMenu = function (){
-		if($scope.ready) {
+		if($scope.activated) {
 			menuOpen = true;
 			if(!helpMenuOpen) { //check that HELP menu is NOT already open
 				$( ".toggle-help-button" ).velocity(
@@ -475,7 +511,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	};
 
 	$scope.showHelpMenu = function (){
-		if($scope.ready) {
+		if($scope.activated) {
 			helpMenuOpen = true;
 
 			setTimeout(function () {
