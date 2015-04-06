@@ -2,9 +2,8 @@
 	<!-- <span class="no-tasks-message">You haven't added any tasks!</span> -->
 </div>
 
-<div id="cover" ng-show="responseNeeded"></div>
-
 <button class="clear-button" ng-click="clearTasks()">clear tasks</button><br/>
+<div id="loading" ng-hide="ready"></div>
 
 <!-- <div ng-repeat="task in taskList track by $index">
 	<tasks-added task="task"></tasks-added>
@@ -43,6 +42,8 @@
 
 <!-- ADD TASK FORM: -->
 	<div class="add-task-form">
+		<div id="cover" ng-show="responseNeeded"></div>
+
 		<form name="addTaskForm"
 				ng-submit="addTask()"
 				novalidate>
@@ -74,7 +75,7 @@
 			</div>
 		</form><br/>
 		
-			<div class="toggle-menu-button" ng-click="toggleMenu()">
+			<div class="toggle-menu-button fade" ng-click="toggleMenu()">
 				<i class="fa fa-plus plus-icon"></i>
 			</div>
 	</div>
@@ -90,7 +91,6 @@
 			<span id="main2">. . . literally.</span>
 	</div>
 	<br/>
-<div class="toggle-help-button" ng-click="toggleHelp()">
-	<i class="fa fa-question"></i>
-</div>
-
+	<div class="toggle-help-button fade" ng-click="toggleHelp()">
+		<i class="fa fa-question"></i>
+	</div>

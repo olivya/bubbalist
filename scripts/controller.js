@@ -19,6 +19,9 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	var increaseSpace;
 
 	var thisTaskIsNew = false;
+
+	$scope.ready = false;
+
 //=============================================================================
 //====== CHECK IF NO TASKS (to show 'no tasks' message) =======================
 //=============================================================================
@@ -45,12 +48,19 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 
 		$scope.drawTasks();
 
-		console.log(" \ndone drawing! now finding largest Z value so far...");
+		console.log("done drawing! finding largest z-index...");
 		zPos = $scope.findLargestZ();
 		console.log("...so next zPos will be",zPos);
 		thisTaskIsNew = true;
 		console.log(thisTaskIsNew);
 		console.log("READY!\n~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~\n "); //<--- this is when loading screen can stop <--- 
+
+		$scope.ready = true;
+
+		$('.toggle-menu-button').removeClass('fade');
+		$('.toggle-help-button').removeClass('fade');
+
+		$scope.$apply();
    };
    //Draws stored tasks on reload:
    $scope.drawTasks = function() {
@@ -116,84 +126,82 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	}
 	// STEP 2: render task on DOM ("task"= task obj data, "tasky"= visual task on DOM/HTML)
 	$scope.visTask = function(task) {
-		thisTask = $scope.dataFromID(task.ID);
-		console.log("drawing! this task's zPos:",thisTask.zPos);
+		if (task != undefined) {
+			thisTask = $scope.dataFromID(task.ID);
+			//1. create & add tasky & handle (for dragging) divs:
+			var tasky = document.createElement("div");
+			tasky.id = task.ID;
+			document.getElementById("ngview").appendChild(tasky);
+			$("#"+tasky.id).addClass("tasky"); //for styling
+			$("#"+tasky.id).addClass("draggable"); //for styling
 
-		//1. create & add tasky & handle (for dragging) divs:
-		var tasky = document.createElement("div");
-		tasky.id = task.ID;
-		document.getElementById("ngview").appendChild(tasky);
-		$("#"+tasky.id).addClass("tasky"); //for styling
-		$("#"+tasky.id).addClass("draggable"); //for styling
+			var handle = document.createElement("div");
+			handle.id = task.ID+"handle";
+			document.getElementById(tasky.id).appendChild(handle);
+			$("#"+handle.id).addClass("handle");
 
-		var handle = document.createElement("div");
-		handle.id = task.ID+"handle";
-		document.getElementById(tasky.id).appendChild(handle);
-		$("#"+handle.id).addClass("handle");
+			//2. create & add user-inputted task into a span:
+			var taskySpan = document.createElement("span");
+			taskySpan.id = task.ID+"span";
+			var taskySpanText = document.createTextNode(thisTask.task);
+			taskySpan.appendChild(taskySpanText);
+			handle.appendChild(taskySpan); //add to above div
+			//4. create delete button (w/unique ID) & append to tasky div:
+			var delBtn = document.createElement("button");
+			delBtn.id = task.ID+"del";
+			delBtn.setAttribute('ng-click', 'delTask('+task.ID+')');
+			var delBtnText = document.createTextNode("DELETE");
+			delBtn.appendChild(delBtnText);
+			handle.appendChild(delBtn);
+			//6. create textarea for editing:
+			var taskyEdit = document.createElement("textarea");
+			taskyEdit.id = task.ID+"edit";
+			var taskyEditPlaceholder = document.createTextNode(thisTask.task);
+			taskyEdit.appendChild(taskyEditPlaceholder);
+			tasky.appendChild(taskyEdit);
+			$(taskyEdit).hide(); //(hidden until user enters edit mode)
+			//7. create save button for editing:
+			var saveBtn = document.createElement("button");
+			saveBtn.id = task.ID+"save";
+			saveBtn.setAttribute('ng-click', 'doneEditing('+thisTask.ID+')');
+			var saveBtnText = document.createTextNode("save");
+			saveBtn.appendChild(saveBtnText);
+			tasky.appendChild(saveBtn);
+			$(saveBtn).hide(); //(hidden until user enters edit mode)
+			//set position & styling:
+			$('#'+tasky.id).css("top",thisTask.yPos+"px");
+			$('#'+tasky.id).css("left",thisTask.xPos+"px");
+			$('#'+tasky.id).css("z-index",thisTask.zPos);
+			$('#'+tasky.id).css("background-color",thisTask.colour);
 
-		//2. create & add user-inputted task into a span:
-		var taskySpan = document.createElement("span");
-		taskySpan.id = task.ID+"span";
-		var taskySpanText = document.createTextNode(thisTask.task);
-		taskySpan.appendChild(taskySpanText);
-		handle.appendChild(taskySpan); //add to above div
-		//4. create delete button (w/unique ID) & append to tasky div:
-		var delBtn = document.createElement("button");
-		delBtn.id = task.ID+"del";
-		delBtn.setAttribute('ng-click', 'delTask('+task.ID+')');
-		var delBtnText = document.createTextNode("DELETE");
-		delBtn.appendChild(delBtnText);
-		handle.appendChild(delBtn);
-		//6. create textarea for editing:
-		var taskyEdit = document.createElement("textarea");
-		taskyEdit.id = task.ID+"edit";
-		var taskyEditPlaceholder = document.createTextNode(thisTask.task);
-		taskyEdit.appendChild(taskyEditPlaceholder);
-		tasky.appendChild(taskyEdit);
-		$(taskyEdit).hide(); //(hidden until user enters edit mode)
-		//7. create save button for editing:
-		var saveBtn = document.createElement("button");
-		saveBtn.id = task.ID+"save";
-		saveBtn.setAttribute('ng-click', 'doneEditing('+thisTask.ID+')');
-		var saveBtnText = document.createTextNode("save");
-		saveBtn.appendChild(saveBtnText);
-		tasky.appendChild(saveBtn);
-		$(saveBtn).hide(); //(hidden until user enters edit mode)
-		//set position & styling:
-		$('#'+tasky.id).css("top",thisTask.yPos+"px");
-		$('#'+tasky.id).css("left",thisTask.xPos+"px");
-		$('#'+tasky.id).css("z-index",thisTask.zPos);
-		$('#'+tasky.id).css("background-color",thisTask.colour);
+			if(thisTaskIsNew) {
+				zPos+=10; //only start incrementing zPos once you're not "re-"drawing tasks from storage
+			}
 
-		if(thisTaskIsNew) {
-			zPos+=10; //only start incrementing zPos once you're not "re-"drawing tasks from storage
+			//update space variable so next task is not directly over-top of this one:
+			if(space <= 200) {
+				space += 40;
+			} else {
+				space = 15; //start layering back at top
+				space += 40;
+			}
+			//7. recompile div, to activate ng-click functionality on buttons:
+			setTimeout(function(){ $scope.compile(tasky.id); },200);
+			//8. call function to make tasky draggable:
+			$scope.makeDraggie(thisTask.ID);
+			// console.log("tasky code: ",tasky); //check html code
 		}
-
-		//update space variable so next task is not directly over-top of this one:
-		if(space <= 200) {
-			space += 40;
-		} else {
-			space = 15; //start layering back at top
-			space += 40;
-		}
-		//7. recompile div, to activate ng-click functionality on buttons:
-		setTimeout(function(){ $scope.compile(tasky.id); },200);
-		//8. call function to make tasky draggable:
-		$scope.makeDraggie(thisTask.ID);
-		// console.log("tasky code: ",tasky); //check html code
 	}
 
 	$scope.findLargestZ = function () {
-		console.log("checking for largest Z-index...");
 		for (var i=0, length = bubbalist.taskList.length; i <= length - 1; i++) {	
 			if(bubbalist.taskList.asArray()[i].zPos > largestZ) {
 				largestZ = bubbalist.taskList.asArray()[i].zPos;
-				console.log("updating largest z to...",largestZ);
 			}
 		};
 		zPos = largestZ;
 		zPos+=10;
-		console.log("done! largest Z was",largestZ);
+		console.log("done! largest Z was",largestZ+"...");
 		return zPos;
 	}
 
@@ -234,7 +242,6 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 				$scope.$apply();
 			}
 		}, { ok: "Yup", cancel: "Nevermind", reverseButtons: true });
-
 	}
 
 	$scope.remTask  = function (id){ //deletes task visually off DOM
@@ -326,7 +333,6 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	});
 
 	doubleTapEdit.click = function(id, eventType) {
-		console.log("EDIT i=",id,"// eventType=",eventType);
 		$scope.startEditing(id);
    	$scope.$apply();
 	}
@@ -384,43 +390,44 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	var menuSpeed = 400;
 
 	$scope.showAddMenu = function (){
-		menuOpen = true;
+		if($scope.ready) {
+			menuOpen = true;
+			if(!helpMenuOpen) { //check that HELP menu is NOT already open
+				$( ".toggle-help-button" ).velocity(
+				{	top:"4.35em" 	},
+				{	duration: menuSpeed });
 
-		if(!helpMenuOpen) { //check that HELP menu is NOT already open
-			$( ".toggle-help-button" ).velocity(
-			{	top:"4.35em" 	},
-			{	duration: menuSpeed });
+				$( ".add-task-form" ).velocity(
+				{ right: "-1.5em" },
+				{ duration: menuSpeed });
 
-			$( ".add-task-form" ).velocity(
-			{ right: "-1.5em" },
-			{ duration: menuSpeed });
+				$( ".toggle-menu-button" ).velocity(
+				{	right: "83%",
+					top:"20px",
+					backgroundColor:"#FF75B3",
+					rotateZ:"45"},
+				{	duration: menuSpeed });
 
-			$( ".toggle-menu-button" ).velocity(
-			{	right: "83%",
-				top:"20px",
-				backgroundColor:"#FF75B3",
-				rotateZ:"45"},
-			{	duration: menuSpeed });
+				$( ".plus-icon" ).velocity(
+				{	marginLeft:"-2",
+					paddingTop:"5" },
+				{	duration: menuSpeed });
+			}
 
-			$( ".plus-icon" ).velocity(
-			{	marginLeft:"-2",
-				paddingTop:"5" },
-			{	duration: menuSpeed });
-		}
+			else { //if HELP menu IS already open...
+				$scope.toggleHelp(); //...close it
 
-		else { //if HELP menu IS already open...
-			$scope.toggleHelp(); //...close it
+				$( ".add-task-form" ).velocity(
+				{ right: "-1.5em" },
+				{ duration: menuSpeed });
 
-			$( ".add-task-form" ).velocity(
-			{ right: "-1.5em" },
-			{ duration: menuSpeed });
-
-			$( ".toggle-menu-button" ).velocity(
-			{	right: "83%",
-				top:"20px",
-				backgroundColor:"#FF75B3",
-				rotateZ:"45" },
-			{	duration: menuSpeed });
+				$( ".toggle-menu-button" ).velocity(
+				{	right: "83%",
+					top:"20px",
+					backgroundColor:"#FF75B3",
+					rotateZ:"45" },
+				{	duration: menuSpeed });
+			}
 		}
 	};
 
@@ -444,35 +451,37 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	};
 
 	$scope.showHelpMenu = function (){
-		helpMenuOpen = true;
+		if($scope.ready) {
+			helpMenuOpen = true;
 
-		setTimeout(function () {
-			$( ".toggle-help-button" ).find($(".fa")).removeClass('fa-question').addClass('fa-times')
-		},200);
+			setTimeout(function () {
+				$( ".toggle-help-button" ).find($(".fa")).removeClass('fa-question').addClass('fa-times')
+			},200);
 
-		if(menuOpen) {	//check if ADD TASK menu is already open...
-			$scope.toggleMenu(); //...and if it is, close it
+			if(menuOpen) {	//check if ADD TASK menu is already open...
+				$scope.toggleMenu(); //...and if it is, close it
 
-			$( ".help-form" ).velocity(
-			{ 	right:"-1.5em" },
-			{ 	duration: menuSpeed });
+				$( ".help-form" ).velocity(
+				{ 	right:"-1.5em" },
+				{ 	duration: menuSpeed });
 
-			$( ".toggle-help-button" ).velocity(
-			{	right: "83%",
-				top:"1.65em",
-				backgroundColor:"#FF75B3"	},
-			{	duration: menuSpeed });
-		}
+				$( ".toggle-help-button" ).velocity(
+				{	right: "83%",
+					top:"1.65em",
+					backgroundColor:"#FF75B3"	},
+				{	duration: menuSpeed });
+			}
 
-		else {
-			$( ".help-form" ).velocity(
-			{ right:"-1.5em" },
-			{ duration: menuSpeed });
+			else {
+				$( ".help-form" ).velocity(
+				{ right:"-1.5em" },
+				{ duration: menuSpeed });
 
-			$( ".toggle-help-button" ).velocity(
-			{	right: "83%",
-				backgroundColor:"#FF75B3"	},
-			{	duration: menuSpeed });
+				$( ".toggle-help-button" ).velocity(
+				{	right: "83%",
+					backgroundColor:"#FF75B3"	},
+				{	duration: menuSpeed });
+			}
 		}
 	};
 

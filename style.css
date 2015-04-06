@@ -18,8 +18,6 @@ body {
 	margin-bottom:0px;
 }
 
-/* === original tasky class styling goes heeere === */
-
 .tasky {
 	position:absolute;
 	background:aqua;
@@ -81,7 +79,7 @@ body {
 	padding:5px;
 	top:20px;
  	border-radius:10px;
- 	z-index:10000000000000000;
+ 	z-index:100000000000000;
 
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -197,7 +195,7 @@ body {
 	padding-left:10px;
 	top:70px;
  	border-radius:10px;
- 	z-index:10000000000000000;
+ 	z-index:100000000000000;
 
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -314,9 +312,6 @@ body {
 	opacity:1;
 }
 
-.scroll-for-real {
-	/*background:SlateBlue;*/
-}
 #colour1, #colour4, #colour7 {
 	clear:left;
 	margin-left:0;
@@ -326,33 +321,16 @@ body {
 	margin-bottom:3px;
 }
 
-#colour1 {
-	background-color:#25d7ec;
-}
-#colour2 {
-	background-color:#8799FF;
-}
-#colour3 {
-	background-color:#BA82FF;
-}
-#colour4 {
-	background-color:#FF8396;
-}
-#colour5 {
-	background-color:#ea4d7d;	
-}
-#colour6 {
-	background-color:#FF235E;	
-}
-#colour7 {
-	background-color:#5DEFB0;	
-}
-#colour8 {
-	background-color:#47CC92;	
-}
-#colour9 {
-	background-color:#076F5C;	
-}
+#colour1 { background-color:#25d7ec; }
+#colour2 { background-color:#8799FF; }
+#colour3 { background-color:#BA82FF; }
+#colour4 { background-color:#FF8396; }
+#colour5 { background-color:#ea4d7d; }
+#colour6 { background-color:#FF235E; }
+#colour7 { background-color:#5DEFB0; }
+#colour8 { background-color:#47CC92; }
+#colour9 { background-color:#076F5C; }
+
 /*================================================================================*/
 /*================================ SMOKE.JS ALERTS ===============================*/
 /*================================================================================*/
@@ -381,7 +359,7 @@ body {
 	font-weight: 300;
    font-size:28px;
 	border-radius: 20px;
-	z-index:100000000000000001;
+ 	z-index:10000000000000000000000;
 }
 .dialog-buttons {
 	margin: 0px 0 5px 0;
@@ -429,8 +407,24 @@ button.cancel {
 
 #cover {
 	position:fixed;
-	width:100%;
-	height:100%;
+	width:110%;
+	height:110%;
+	margin-top:-10%;
+	margin-left:-10%;
 	background-color:rgba(255,255,255,0.8);
-	z-index:1000000;
+ 	z-index:100000000000000000;
+}
+
+#loading {
+	position:fixed;
+	width:110%;
+	height:110%;
+	margin-top:-10%;
+	margin-left:-10%;
+	background-color:rgba(0,0,0,0.5);
+ 	z-index:100000000000000000;
+}
+
+.fade {
+	opacity:0.3;
 }
