@@ -14,19 +14,20 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	var updateBGColour;
 	var space = 0;
 	var increaseSpace;
+
+	var taskyText;
+	var editedText;
 //=============================================================================
 //====== CHECK IF NO TASKS (to show 'no tasks' message) =======================
 //=============================================================================
 	$scope.checkForTasks = function (){
 		console.log('$scope.checkForTasks()');
-
 		if ($scope.taskList.length === 0) {
 				$scope.noTasks = true;
 			}
 		else $scope.noTasks = false;
 		var items = document.querySelectorAll('.tasky');
 	};
-
 	$scope.checkForTasks(); //NEED THIS or first task goes weird
 //=============================================================================
 //====== ON STARTUP... ========================================================
@@ -46,12 +47,10 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
    	j = 1;
    	for (var i=0, length = bubbalist.taskList.length; i <= length - 1; i++) {	
 			if(bubbalist.taskList.asArray()[i] != null) {
-				console.log("FOUND TASK: \""+bubbalist.taskList.asArray()[i].task+"\"");
 				j++;
 				$scope.visTask(bubbalist.taskList.asArray()[i]);
 			}
 		};
-		console.log("Added",j,"tasks :D");
    }
 //=============================================================================
 //====== ADDING TASKS =========================================================
@@ -64,8 +63,9 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 				task:textInput,
 				editing:false,
 				colour:colour,
-				ID:moment().format("MDdYYYYHHmmssSSS")
+				ID:moment().format("MDdYYYYHHmmssSSS") 
 			};
+
 			$scope.taskList.push(task); //for angular/scope/DOM
 			bubbalist.taskList.push(task); //for drive.js
 			$scope.newTask = ""; //reset textbox
@@ -80,44 +80,79 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 			}, { ok: "Okay" });
 		}
 		$scope.visTask(task); //now render on DOM the task just pushed above ^
+
+		thisTask = $scope.dataFromID(task.ID);
+		console.log(thisTask.task, thisTask.editing, thisTask.colour, thisTask.ID);
 	};
 
-	//STEP 2: render task on DOM
-	$scope.visTask = function(task) {
-		//1. create & add tasky div (bubble/container):
-		var tasky = document.createElement("div");
-		tasky.id = task.ID; //setting css ID of div to task's ID generated above by moment.js
-		document.getElementById("ngview").appendChild(tasky); //append tasky div to ng-view div (in index.html)
-		//2. create & append taskySpan to tasky div:
-		var taskySpan = document.createElement("span"); //create span to inject task text into
-		document.getElementById(''+tasky.id+'').appendChild(taskySpan); //append this span to the div above using its ID
-		//3. add task text node & append to taskySpan:
-		var taskyText = document.createTextNode(task.task); //create text node w/user inputted text
-		taskySpan.appendChild(taskyText); //adding ^ user-inputted text ^ to tasky span within tasky div
-		//4. create delete button (w/unique ID) & append to tasky div
-		var delBtn = document.createElement("button");
-		delBtn.setAttribute('ng-click', 'delTask('+tasky.id+')'); //inject taskID into delTask() so it will only delete this task
-		var delBtnText = document.createTextNode("DELETE");
-		delBtn.appendChild(delBtnText); //add text to button
-		tasky.appendChild(delBtn); //add button to tasky
-		//5. add .tasky class for styling
-		$("#"+tasky.id).addClass("tasky");
-		//6. (check)
-		console.log("ADDING TASKY: ",tasky);
-		//7. recompile div, to activate ng-click functionality on button
-		//(reference for compile function is below)
-		setTimeout(function () { $scope.compile(tasky.id); },500);
+	$scope.dataFromID = function (id) {
+		for (var i=0, length = $scope.taskList.length; i <= length - 1; i++) {	
+			if($scope.taskList[i].ID === id) {
+				var task = $scope.taskList[i].task;
+				var editing = $scope.taskList[i].editing;
+				var colour = $scope.taskList[i].colour;
+				var ID = $scope.taskList[i].ID;
+				return {
+					task:task,
+					editing:editing,
+					colour:colour,
+					ID:ID,
+					i:i
+				};
+			}
+		};
 	}
 
-	//Begin compile function reference (for activating dynamically set ng-click attribute)
-	//Source: http://stackoverflow.com/questions/25759497/angularjs-dynamically-set-attribute
-	$scope.compile = function (id) {
-		var el = angular.element('#'+id);
-		$scope = el.scope();
-		$injector = el.injector();
-		$injector.invoke(function($compile){ $compile(el)($scope); });
+	//STEP 2: render task on DOM
+	//task = task data
+	//tasky = DOM/HTML (visual) version of task
+	$scope.visTask = function(task) {
+		thisTask = $scope.dataFromID(task.ID);
+		console.log(" \ntask obj =",thisTask);
+		
+		//1. create & add tasky div:
+		var tasky = document.createElement("div");
+		tasky.id = task.ID;
+		document.getElementById("ngview").appendChild(tasky);
+		$("#"+tasky.id).addClass("tasky"); //for styling
+
+		//2. create & add user-inputted task into a span
+		var taskySpan = document.createElement("span");
+		taskySpan.id = task.ID+"span"; //**
+		var taskySpanText = document.createTextNode(thisTask.task);
+		taskySpan.appendChild(taskySpanText);
+		tasky.appendChild(taskySpan); //add to above div
+
+		//4. create delete button (w/unique ID) & append to tasky div
+		var delBtn = document.createElement("button");
+		delBtn.id = task.ID+"del";
+		delBtn.setAttribute('ng-click', 'delTask('+task.ID+')');
+		var delBtnText = document.createTextNode("DELETE");
+		delBtn.appendChild(delBtnText);
+		tasky.appendChild(delBtn);
+		
+		//6. create textarea for editing
+		var taskyEdit = document.createElement("textarea");
+		taskyEdit.id = task.ID+"edit";
+		taskyEdit.setAttribute('value', thisTask.task);
+		tasky.appendChild(taskyEdit);
+		$(taskyEdit).hide(); //(hidden until user enters edit mode)
+
+		//7. create save button for editing
+		var saveBtn = document.createElement("button");
+		saveBtn.id = task.ID+"save";
+		saveBtn.setAttribute('ng-click', 'doneEditing('+thisTask.ID+')');
+		var saveBtnText = document.createTextNode("save");
+		saveBtn.appendChild(saveBtnText);
+		tasky.appendChild(saveBtn);
+		$(saveBtn).hide(); //(hidden until user enters edit mode)
+
+		//6. (check html code)
+		console.log("tasky code: ",tasky);
+
+		//7. recompile div, to activate ng-click functionality on buttons
+		setTimeout(function(){ $scope.compile(tasky.id); },500);
 	}
-	//End compile function reference.
 
 	$scope.delTask = function(id) { //deletes tasks from arrays (not DOM yet)
 		console.log(" \nDELETING task w/ID",id,"...");
@@ -142,8 +177,8 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		//DOUBLE-CHECK THEY'RE SAME:
 		console.log("$scope.taskList is now... ",$scope.taskList);
 		console.log("bubbalist.taskList.asArray() is now... ",bubbalist.taskList.asArray());
-
-		$scope.remTask(id); //now actually remove visually from DOM
+		//now actually remove visually from DOM...
+		$scope.remTask(id);
 	}
 
 	$scope.remTask  = function (id){ //deletes task visually off DOM
@@ -157,7 +192,48 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		$scope.taskList.length = 0;
 		bubbalist.taskList.length = 0;
 	}
+//=============================================================================
+//====== TOGGLE EDITING =======================================================
+//=============================================================================
+	$scope.startEditing = function (i) {
+		thisTask = $scope.dataFromID(i);
+		console.log('startEditing thisTask',thisTask.task); //throws error when clicking text
+		console.log('startEditing $scope task',$scope.taskList[thisTask.i].task);
 
+		$scope.taskList[thisTask.i] = thisTask;
+
+		$("#"+i+"edit").show();
+		$("#"+i+"save").show();
+	}
+
+	$scope.doneEditing = function(id){
+		thisTask = $scope.dataFromID(JSON.stringify(id));
+		thisTask.task = document.getElementById(thisTask.ID+"edit").value;
+		$scope.taskList[thisTask.i].task = thisTask.task;
+
+		console.log('done editing thisTask',thisTask.task);
+		console.log("done editing $scope task ",$scope.taskList[thisTask.i].task);
+
+		$("#"+thisTask.ID+"save").hide();
+		$("#"+thisTask.ID+"edit").hide();
+
+		//rm original span
+		var taskySpan = document.getElementById(thisTask.ID+"span");
+		taskySpan.parentNode.removeChild(taskySpan);
+
+		//add new span
+		taskySpan = document.createElement("span");
+		taskySpan.id =thisTask.ID+"span";
+		var taskySpanText = document.createTextNode(thisTask.task);
+		var delBtn = document.getElementById(thisTask.ID+"del");
+		tasky = document.getElementById(thisTask.ID);
+		tasky.insertBefore(taskySpanText, delBtn);
+		tasky.appendChild(taskySpan);
+
+		// $("#"+thisTask.ID+"span").replaceWith( "<span id=#"+thisTask.ID+"span>"+thisTask.task+"</span>" );
+	}
+
+// === orig toggle editing fns ===
 //====== [ old styling ] =================================================
 
 //=============================================================================
@@ -169,14 +245,14 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 
 	//DOUBLE TAP to toggle edit mode:
 	mc.on("doubletap", function(ev) {
-		console.log("ev.target.id",ev.target.id);
+		// console.log("ev.target.id",ev.target.id);
 		doubleTapEdit.click(ev.target.id, ev.type);
 		tapBringForward.click(ev.target.id, ev.type); //(also bring forward if editing)
 		// console.log("ev.target.id=",ev.target.id,"// ev.type=",ev.type);
 	});
 
 	doubleTapEdit.click = function(i, eventType) { //orig function in 'orig hammer js fns'
-		console.log("EDIT i=",i,"// eventType=",eventType);
+		// console.log("EDIT i=",i,"// eventType=",eventType);
 		// console.log($scope.taskList[i]); //will be undefined b/c i is ID now, not index pos
 		$scope.startEditing(i);
    	$scope.$apply();
@@ -190,25 +266,23 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 
 	tapBringForward.click = function(i, eventType) { //orig function in 'orig hammer js fns'
    	id = i;
-   	updateBGColour = $("#"+id).toggleClass("testBG");
+   	// updateBGColour = $("#"+id).toggleClass("testBG");
    	$scope.$apply();
 	}
-
-//=============================================================================
-//====== TOGGLE EDITING =======================================================
-//=============================================================================
-
-	$scope.startEditing = function (i){
-		console.log("starting to edit ID",i);
-		var tasky = document.getElementById(id);
-		console.log(tasky);
-	}
-
-// === orig toggle editing fns ===
-
 //==========================================================================================================================
 //====== GOOD TO GO (for now): =============================================================================================
 //==========================================================================================================================
+
+	//Begin compile function reference (for activating dynamically set ng-click attribute)
+	//Source: http://stackoverflow.com/questions/25759497/angularjs-dynamically-set-attribute
+	$scope.compile = function(id) {
+		var el = angular.element('#'+id);
+		$scope = el.scope();
+		$injector = el.injector();
+		$injector.invoke(function($compile){ $compile(el)($scope); });
+	}
+	//End compile function reference.
+
    $scope.colourSelected = function (pickedColour){
 		console.log('$scope.colourSelected(pickedColour)');
 
