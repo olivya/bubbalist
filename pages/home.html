@@ -4,7 +4,7 @@
 
 <div id="cover" ng-show="responseNeeded"></div>
 
-<!-- <button class="clear-button" ng-click="clearTasks()">clear tasks</button><br/> -->
+<button class="clear-button" ng-click="clearTasks()">clear tasks</button><br/>
 
 <!-- <div ng-repeat="task in taskList track by $index">
 	<tasks-added task="task"></tasks-added>
@@ -57,7 +57,7 @@
 				<!-- <span ng-click="addTask()"> -->
 					<button class="add-task-button" type="submit">ADD TASK!</button>
 				<!-- </span> -->
-				<button class="colour-picker-button" ng-click="showPicker()" type="button"></button>
+				<button class="colour-picker-button" ng-click="togglePicker()" type="button"></button>
 				<div class="text-feedback"></div>
 				<!-- COLOUR PICKER DROPDOWN: -->
 				<div class="colour-picker" ng-show="showColourPicker">

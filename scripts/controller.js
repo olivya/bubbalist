@@ -81,12 +81,8 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 				zPos:zPos, //initial assigned zPos
 				clicks:0
 			};
-
-			console.log('x:',task.xPos,"y:",task.yPos,"z:",task.zPos);
-
 			$scope.taskList.push(task); //for angular/scope/DOM
 			bubbalist.taskList.push(task); //for drive.js
-
 			$scope.newTask = ""; //reset textbox
 			$('.text-feedback').html(maxChars); //reset char count
 			setTimeout($scope.toggleMenu,100); //close menu after a moment
@@ -123,7 +119,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		thisTask = $scope.dataFromID(task.ID);
 		console.log("drawing! this task's zPos:",thisTask.zPos);
 
-		//1. create & add tasky div:
+		//1. create & add tasky & handle (for dragging) divs:
 		var tasky = document.createElement("div");
 		tasky.id = task.ID;
 		document.getElementById("ngview").appendChild(tasky);
@@ -163,14 +159,14 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		saveBtn.appendChild(saveBtnText);
 		tasky.appendChild(saveBtn);
 		$(saveBtn).hide(); //(hidden until user enters edit mode)
-		//set position:
+		//set position & styling:
 		$('#'+tasky.id).css("top",thisTask.yPos+"px");
 		$('#'+tasky.id).css("left",thisTask.xPos+"px");
-
 		$('#'+tasky.id).css("z-index",thisTask.zPos);
+		$('#'+tasky.id).css("background-color",thisTask.colour);
 
 		if(thisTaskIsNew) {
-			zPos+=10;
+			zPos+=10; //only start incrementing zPos once you're not "re-"drawing tasks from storage
 		}
 
 		//update space variable so next task is not directly over-top of this one:
@@ -245,6 +241,17 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		var tasky = document.getElementById(id);
 		tasky.parentNode.removeChild(tasky);
 	}
+
+	$scope.clearTasks  = function (){
+		console.log("CLEARING ALL TASKS...");
+
+	  for (var i=0, length = $scope.taskList.length; i <= length - 1; i++) {	
+			$scope.remTask($scope.taskList[i].ID);
+		};
+
+		$scope.taskList.length = 0;
+		bubbalist.taskList.length = 0;
+	}
 //=============================================================================
 //====== TOGGLE EDITING =======================================================
 //=============================================================================
@@ -290,92 +297,62 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	}
 
 //=============================================================================
+//======== COLOUR PICKING =====================================================
+//=============================================================================
+	$scope.togglePicker = function (){
+		console.log('$scope.togglePicker()');
+		if(!$scope.showColourPicker) {
+			$scope.showColourPicker = true;
+		} else $scope.showColourPicker = false;
+	}
+
+   $scope.colourSelected = function (pickedColour){
+		colour = pickedColour;
+		console.log('user selected',colour);
+		$('.colour-picker-button').css("background-color",colour); //update button colour for feedback
+		$scope.togglePicker();
+	}
+
+//=============================================================================
 //====== HAMMER.JS ============================================================
 //=============================================================================
 	var mc = new Hammer.Manager(document.body);
 	mc.add( new Hammer.Tap({ event: 'doubletap', taps: 2 }) );
 	mc.add( new Hammer.Tap({ event: 'tap', taps:1 }) );
 
-	//DOUBLE TAP to toggle edit mode:
 	mc.on("doubletap", function(ev) {
 		doubleTapEdit.click(ev.target.id, ev.type);
-		tapBringForward.click(ev.target.id, ev.type); //(also want bring forward if editing)
-		// console.log("ev.target.id=",ev.target.id,"// ev.type=",ev.type);
+		tapBringForward.click(ev.target.id, ev.type); //(since you also want bring forward if editing)
 	});
 
-	doubleTapEdit.click = function(id, eventType) { //orig function in 'orig hammer js fns'
+	doubleTapEdit.click = function(id, eventType) {
 		console.log("EDIT i=",id,"// eventType=",eventType);
 		$scope.startEditing(id);
    	$scope.$apply();
 	}
 
-	//TAP to bring event to front:
 	mc.on("tap", function(ev) {
-  		tapBringForward.click(ev.target.id, ev.type); //calls tapBringForward function w/hammer (touch) data
-  		// console.log("ev.target.id=",ev.target.id,"// ev.type=",ev.type);
+  		tapBringForward.click(ev.target.id, ev.type);
 	});
 
 	tapBringForward.click = function(id, eventType) { //orig function in 'orig hammer js fns'
    	var longID = id;
    	var diff = longID.length - 16; //need to shorten ID to the first 16 digits
    	var shortID = longID.substr(0, longID.length-diff);
-
 		thisTask = $scope.dataFromID(shortID);
-
 		if(thisTask != undefined) {
-			// console.log(' \nstarting clicks on',thisTask.task,'=',thisTask.clicks);
-	   	console.log('current zPos:',zPos);
-	   	console.log('thisTask starting zPos:',thisTask.zPos);
-
 	   	zPos = zPos+10;
 	   	$('#'+shortID).css("z-index",zPos);
 	   	thisTask.zPos = zPos;
-	   	console.log('this task\'s ASSIGNED zPos is now:',thisTask.zPos);
 	   	zPos = zPos+10;
-	   	console.log('next zPos is:',zPos,'\n ');
 	   	thisTask.clicks++;
-
 	   	bubbalist.taskList.set(thisTask.i, thisTask);
 			$scope.taskList[thisTask.i] = thisTask;
-
 	   	$scope.$apply();
 	   }
 	}
-//==========================================================================================================================
-//====== GOOD TO GO (for now): =============================================================================================
-//==========================================================================================================================
-
-	//Begin compile function reference (for activating dynamically set ng-click attribute)
-	//Source: http://stackoverflow.com/questions/25759497/angularjs-dynamically-set-attribute
-	$scope.compile = function(id) {
-		var el = angular.element('#'+id);
-		$scope = el.scope();
-		$injector = el.injector();
-		$injector.invoke(function($compile){ $compile(el)($scope); });
-	}
-	//End compile function reference.
-
-   $scope.colourSelected = function (pickedColour){
-		console.log('$scope.colourSelected(pickedColour)');
-
-		colour = pickedColour;
-		console.log("User selected #"+pickedColour+"; var colour = ",colour);
-		$('.colour-picker-button').css("background-color",colour); //update button colour for feedback
-		$scope.showColourPicker = false;
-	}
-
-	$scope.updateMenuZ = function (){ //always ensures menus are on top
-		console.log('$scope.updateMenuZ()');
-
-		zIndexMenus = zIndex + 15;
-		menuSetZ = $('.add-task-form').css("z-index",zIndexMenus);
-		menuSetZ = $('.help-form').css("z-index",zIndexMenus);
-		zIndexColourPicker = zIndexMenus + 15;
-		colourPickerSetZ = $('.colour-picker').css("z-index",zIndexColourPicker);
-	}
-
 //=============================================================================
-//====== CHARACTER COUNTER ====================================================
+//====== REFERENCED FUNCTIONS =================================================
 //=============================================================================
 	//Begin character counter tutorial reference:
 	//Part 1: http://www.youtube.com/watch?v=13bceSHothY
@@ -389,16 +366,15 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	});
 	//End character counter tutorial reference
 
-//=============================================================================
-//======== COLOUR PICKER ======================================================
-//=============================================================================
-$scope.showPicker = function (){
-	console.log('$scope.showPicker()');
-
-	$scope.showColourPicker = true;
-	var height1 = $('.add-task-form').height();
-	var height2 = $('#colour1').height();
-}
+	//Begin compile function reference (for activating dynamically set ng-click attribute)
+	//Source: http://stackoverflow.com/questions/25759497/angularjs-dynamically-set-attribute
+	$scope.compile = function(id) {
+		var el = angular.element('#'+id);
+		$scope = el.scope();
+		$injector = el.injector();
+		$injector.invoke(function($compile){ $compile(el)($scope); });
+	}
+	//End compile function reference.
 
 //=============================================================================
 //====== MENU ANIMATIONS ======================================================

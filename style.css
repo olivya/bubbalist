@@ -23,14 +23,10 @@ body {
 .tasky {
 	position:absolute;
 	background:aqua;
-	/*padding:20px;*/
 	width:120px;
 	height:105px;
 	border-radius:25px;
-	border:2px solid MediumSlateBlue;
-/*	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box; 	*/
+	border:1px dotted rgba(0,0,0,0.4);
 }
 
 .tasky:hover {
@@ -44,7 +40,6 @@ body {
   width: 100%;
   height: 100%;
   padding:20px;
-  background-color:rgba(0,0,0,0.3);
   -webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box; 	
