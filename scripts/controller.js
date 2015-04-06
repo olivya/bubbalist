@@ -12,7 +12,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	var colourPickerSetZ;
 	var alertZ;
 	var updateBGColour;
-	var space = 0;
+	var space = 20;
 	var increaseSpace;
 
 	var taskyText;
@@ -109,6 +109,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		tasky.id = task.ID;
 		document.getElementById("ngview").appendChild(tasky);
 		$("#"+tasky.id).addClass("tasky"); //for styling
+		$("#"+tasky.id).addClass("draggable"); //for styling
 
 		//2. create & add user-inputted task into a span
 		var taskySpan = document.createElement("span");
@@ -141,11 +142,25 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		tasky.appendChild(saveBtn);
 		$(saveBtn).hide(); //(hidden until user enters edit mode)
 
+		//ensure new task is not directly over-top of previous
+		if(space <= 200) {
+			increaseSpace = $('#'+thisTask.ID).css("top",space+"px");
+			space += 40;
+		} else {
+			space = 15; //start layering back at top
+			increaseSpace = $('#'+thisTask.ID).css("top",space+"px");
+			space += 40;
+		}
+
 		//6. (check html code)
 		// console.log("tasky code: ",tasky);
 
 		//7. recompile div, to activate ng-click functionality on buttons
 		setTimeout(function(){ $scope.compile(tasky.id); },500);
+
+		var $draggable = $('.draggable').draggabilly({
+ 			// handle: '.tasky'
+		})
 	}
 
 	$scope.delTask = function(id) { //deletes tasks from arrays (not DOM yet)

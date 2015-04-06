@@ -21,8 +21,11 @@ body {
 /* === original tasky class styling goes heeere === */
 
 .tasky {
+	position:absolute;
+	/*top:50px;*/
+	left:10px;
 	background:aqua;
-	margin:10px;
+	/*margin:10px;*/
 	padding:10px;
 	width:150px;
 	border-radius:16px;
@@ -69,6 +72,7 @@ body {
 	padding:5px;
 	top:20px;
  	border-radius:10px;
+ 	z-index:10000000000000000;
 
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -184,6 +188,7 @@ body {
 	padding-left:10px;
 	top:70px;
  	border-radius:10px;
+ 	z-index:10000000000000000;
 
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -367,7 +372,7 @@ body {
 	font-weight: 300;
    font-size:28px;
 	border-radius: 20px;
-	z-index:10000000;
+	z-index:100000000000000001;
 }
 .dialog-buttons {
 	margin: 0px 0 5px 0;
