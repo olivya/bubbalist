@@ -104,7 +104,7 @@ bubbalist.showSpinner = function () {
 		bubbalist.ready = false;
 		bubbalist.updateReady();
 
-		console.log(thisTaskIsNew);
+		// console.log(thisTaskIsNew);
 		$scope.taskList = bubbalist.taskList.asArray();
 		$scope.$apply();
 		// console.log("bubbalist.updateTasks()", $scope.taskList);
@@ -119,7 +119,7 @@ bubbalist.showSpinner = function () {
 		zPos = $scope.findLargestZ();
 		// console.log("...so next zPos will be",zPos);
 		thisTaskIsNew = true;
-		console.log(thisTaskIsNew);
+		// console.log(thisTaskIsNew);
 
 		// console.log(bubbalist.ready);
 		console.log("READY!\n~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~\n "); //<--- this is when loading screen can stop <--- 
@@ -234,7 +234,7 @@ bubbalist.showSpinner = function () {
 	// STEP 2: render task on DOM ("task"= task obj data, "tasky"= visual task on DOM/HTML)
 	$scope.visTask = function(task) {
 		if (task != undefined) {
-			console.log(thisTaskIsNew,"????");
+			// console.log(thisTaskIsNew,"????");
 
 			$("#noTasksMsg").addClass("animated bounceOutDown");
 			setTimeout(function(){
@@ -390,13 +390,13 @@ bubbalist.showSpinner = function () {
 		$scope.responseNeeded = true; //throw up faded div
    	thisTask = $scope.dataFromID(JSON.stringify(id));
 
-   	console.log('doneTask id',id);
+   	// console.log('doneTask id',id);
 
    	thisTask.editing = false;
 
    	smoke.confirm("Mark as complete?", function(e){
 			if (e){
-				console.log("DONE, DELETING");
+				// console.log("DONE, DELETING");
 				$scope.responseNeeded = false; //remove faded div
 				$scope.$apply();
 				for (var i=0, length = bubbalist.taskList.length; i <= length - 1; i++) {	
@@ -500,7 +500,7 @@ bubbalist.showSpinner = function () {
 	}
 
 	$scope.clearTasks  = function (){
-		console.log("CLEARING ALL TASKS...");
+		// console.log("CLEARING ALL TASKS...");
 
 	  for (var i=0, length = $scope.taskList.length; i <= length - 1; i++) {	
 			$scope.remTask($scope.taskList[i].ID);
@@ -515,7 +515,7 @@ bubbalist.showSpinner = function () {
 	$scope.startEditing = function (id) {
 
 
-			console.log("STARTING EDITING");
+			// console.log("STARTING EDITING");
 			$scope.checkIfEditing();
 			// $scope.fadeOtherTasks(id);
 
@@ -634,7 +634,7 @@ bubbalist.showSpinner = function () {
 
    $scope.colourSelected = function (pickedColour){
 		colour = pickedColour;
-		console.log('user selected',colour);
+		// console.log('user selected',colour);
 		// $('.colour-picker-button').css("background-color",colour); //update button colour for feedback
 		$('.colour-picker-button').velocity({backgroundColor:colour}, { duration: 100 });
 		$('.colour-picker-button').addClass("animated rubberBand");
