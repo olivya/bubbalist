@@ -61,7 +61,9 @@
 				<button class="colour-picker-button" ng-click="togglePicker()" type="button"></button>
 				<div class="text-feedback"></div>
 				<!-- COLOUR PICKER DROPDOWN: -->
-				<div class="colour-picker" ng-show="showColourPicker">
+				<!-- <div class="colour-picker" ng-show="showColourPicker"> -->
+				<div class="colour-picker" style="display:none;">
+					<div class="colours" style="display:none;">
 						<div id="colour1" ng-click="colourSelected('#25d7ec')"></div>
 						<div id="colour2" ng-click="colourSelected('#8799FF')"></div>
 						<div id="colour3" ng-click="colourSelected('#BA82FF')"></div><br/>
@@ -71,6 +73,7 @@
 						<div id="colour7" ng-click="colourSelected('#5DEFB0')"></div>
 						<div id="colour8" ng-click="colourSelected('#47CC92')"></div>
 						<div id="colour9" ng-click="colourSelected('#076F5C')"></div>
+					</div>
 				</div>
 			</div>
 		</form><br/>

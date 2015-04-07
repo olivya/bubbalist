@@ -69,6 +69,11 @@ body {
 	opacity:1;
 }
 
+
+.button-pressed {
+	background-color: rgba(0,0,0,0.8);
+}
+
 .edit-form-buttons {
 	position:relative;
 	height:30px;
@@ -400,6 +405,14 @@ body {
 		transition: opacity 0.5s;
 }
 
+/*.colour-picker-button {
+  -webkit-animation-duration: 0.7s;
+  -moz-animation-duration: 0.7s;
+  -o-animation-duration: 0.7s;
+  -ms-animation-duration: 0.7s;
+  animation-duration: 0.7s;
+}*/
+
 /*================================================================================*/
 /*================================= COLOUR PICKER ================================*/
 /*================================================================================*/
@@ -422,7 +435,7 @@ body {
 .colour-picker {
 	margin-top:3px;
 	width:79.5%;
-	height:auto;
+	height:150px;
 }
 
 #colour1, #colour2, #colour3,
@@ -468,9 +481,9 @@ body {
 
 .smoke-base .dialog {
   top:15%;
-  left:20%;
+  left:15%;
   width:100%;
-  width:60%;
+  width:70%;
   position:absolute;
   text-align:center;
 }
@@ -489,12 +502,13 @@ body {
 	border-radius: 20px;
  	z-index:10000000000000000000000;
 }
+
 .dialog-buttons {
 	margin: 0px 0 5px 0;
 }
 
 .dialog-buttons button {
-   width:70%;
+   width:85%;
    font-size:22px;
 	padding:10px;
 	border-width:0px;
@@ -509,7 +523,7 @@ body {
 }
 
 button.cancel { 
-	width:70%;
+	width:85%;
 	margin-left:5px;
 	font-size:22px;
 	border-width:0px;

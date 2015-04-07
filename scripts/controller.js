@@ -24,12 +24,17 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	bubbalist.ready = false;
 	$scope.ready = false;
 
-	// $("#login").hide();
+	// $(function() {
+	// 	FastClick.attach(document.body);
+	// });
+
+	// var clickOrTouch = (('ontouchend' in window)) ? 'touchend' : 'click';
+
 //=============================================================================
 //====== CHECK IF NO TASKS (to show 'no tasks' message) =======================
 //=============================================================================
 	$scope.checkForTasks = function (){
-		console.log('$scope.checkForTasks()');
+		// console.log('$scope.checkForTasks()');
 		if ($scope.taskList.length === 0) {
 				$scope.noTasks = true;
 			}
@@ -48,7 +53,7 @@ bubbalist.stopLoad = function() {
 	bubbalist.ready = true;
 	$scope.activated = false;
 	bubbalist.updateReady();
-	console.log("bubbalist.ready is now",bubbalist.ready);
+	// console.log("bubbalist.ready is now",bubbalist.ready);
 	$scope.$apply();
 }
 
@@ -136,7 +141,7 @@ bubbalist.showSpinner = function () {
    	bubbalist.ready = true;
    	$scope.activated = true;
   		bubbalist.updateReady();
-   	console.log("bubbalist.ready is now",bubbalist.ready);
+   	// console.log("bubbalist.ready is now",bubbalist.ready);
 
    	j = 1;
    	for (var i=0, length = bubbalist.taskList.length; i <= length - 1; i++) {	
@@ -319,6 +324,20 @@ bubbalist.showSpinner = function () {
   		});
 	}
 
+	$scope.feedback = function(id){
+			$( "#"+id+"save" ).velocity({ 
+				properties: { backgroundColor:"#ffffff" },
+				options: { duration:10 }
+			});
+
+		setTimeout(function(){
+			$( "#"+id+"save" ).velocity({ 
+				properties: { backgroundColor:"#000000" },
+				options: { duration:10 }
+			});
+		},200);
+	}
+
 	$scope.doneTask = function(id) { 
 		$scope.responseNeeded = true; //throw up faded div
    	thisTask = $scope.dataFromID(JSON.stringify(id));
@@ -411,35 +430,38 @@ bubbalist.showSpinner = function () {
 //====== TOGGLE EDITING =======================================================
 //=============================================================================
 	$scope.startEditing = function (id) {
-		console.log("STARTING EDITING");
-		$scope.checkIfEditing();
-		// $scope.fadeOtherTasks(id);
 
-		// var longID = id;
-		// var shortID = longID.substr(0, longID.length-6); //removes "handle" from end of ID 
-		// console.log("longID:",longID,"--->","shortID:",shortID);
-		thisTask = $scope.dataFromID(id);
-		console.log(thisTask);
 
-		if(thisTask) { //remove after fixing hammer.js
-			var shortID = thisTask.ID;
-			thisTask.editing = true;
-			bubbalist.taskList.set(thisTask.i, thisTask);
-			$scope.taskList[thisTask.i] = thisTask;
-			thisTask.editing = true;
-			//toggle editing stuff:
-			$("#"+shortID+"edit").show();
-			$("#"+shortID+"save").show();
-			$("#"+shortID+"del").show();
-			$("#"+shortID+"done").show();
-			$("#"+shortID+"handle").hide();
-			//rm original span (will make new one on save):
-			var origTaskySpan = document.getElementById(thisTask.ID+"span");
-			if(origTaskySpan) {
-				// origTaskySpan.parentNode.removeChild(origTaskySpan);
-				$(origTaskySpan).hide();
+			console.log("STARTING EDITING");
+			$scope.checkIfEditing();
+			// $scope.fadeOtherTasks(id);
+
+			// var longID = id;
+			// var shortID = longID.substr(0, longID.length-6); //removes "handle" from end of ID 
+			// console.log("longID:",longID,"--->","shortID:",shortID);
+			thisTask = $scope.dataFromID(id);
+			// console.log(thisTask);
+
+			if(thisTask) { //remove after fixing hammer.js
+				var shortID = thisTask.ID;
+				thisTask.editing = true;
+				bubbalist.taskList.set(thisTask.i, thisTask);
+				$scope.taskList[thisTask.i] = thisTask;
+				thisTask.editing = true;
+				//toggle editing stuff:
+				$("#"+shortID+"edit").show();
+				$("#"+shortID+"save").show();
+				$("#"+shortID+"del").show();
+				$("#"+shortID+"done").show();
+				$("#"+shortID+"handle").hide();
+				//rm original span (will make new one on save):
+				var origTaskySpan = document.getElementById(thisTask.ID+"span");
+				if(origTaskySpan) {
+					// origTaskySpan.parentNode.removeChild(origTaskySpan);
+					$(origTaskySpan).hide();
+				}
 			}
-		}
+
 	}
 
 	$scope.stopEditing = function(id){
@@ -466,40 +488,40 @@ bubbalist.showSpinner = function () {
 	}
 
 	$scope.doneEditing = function(id){
-		thisTask = $scope.dataFromID(JSON.stringify(id));
 
-		//grab new task text:
-		thisTask.task = document.getElementById(thisTask.ID+"edit").value;
+		// setTimeout(function(){
+			thisTask = $scope.dataFromID(JSON.stringify(id));
+			//grab new task text:
+			thisTask.task = document.getElementById(thisTask.ID+"edit").value;
+			thisTask.editing = false;
+			// console.log(thisTask.editing);
 
-		thisTask.editing = false;
-		console.log(thisTask.editing);
+			//set new task value in arrays:
+			bubbalist.taskList.set(thisTask.i, thisTask);
+			$scope.taskList[thisTask.i].task = thisTask.task;
+			//toggle editing stuff:
+			$("#"+thisTask.ID+"save").hide();
+			$("#"+thisTask.ID+"edit").hide();
+			$("#"+thisTask.ID+"del").hide();
+			$("#"+thisTask.ID+"done").hide();
+			$("#"+thisTask.ID+"handle").show();
 
-		//set new task value in arrays:
-		bubbalist.taskList.set(thisTask.i, thisTask);
-		$scope.taskList[thisTask.i].task = thisTask.task;
-		//toggle editing stuff:
-		$("#"+thisTask.ID+"save").hide();
-		$("#"+thisTask.ID+"edit").hide();
-		$("#"+thisTask.ID+"del").hide();
-		$("#"+thisTask.ID+"done").hide();
-		$("#"+thisTask.ID+"handle").show();
+			//delete original span
+			var origTaskySpan = document.getElementById(thisTask.ID+"span");
+			if(origTaskySpan) {
+				origTaskySpan.parentNode.removeChild(origTaskySpan);
+			}
 
-		//delete original span
-		var origTaskySpan = document.getElementById(thisTask.ID+"span");
-		if(origTaskySpan) {
-			origTaskySpan.parentNode.removeChild(origTaskySpan);
-		}
+			//add new span w/edited task (if unedited will just add same text back in):
+			var newTaskySpan = document.createElement("span");
+			newTaskySpan.id = thisTask.ID+"span";
+			var newTaskySpanText = document.createTextNode(thisTask.task);
+			newTaskySpan.appendChild(newTaskySpanText);
+			var delBtn = document.getElementById(thisTask.ID+"del");
+			var handle = document.getElementById(thisTask.ID+"handle");
+			handle.appendChild(newTaskySpan);
+	// },100);
 
-		//add new span w/edited task (if unedited will just add same text back in):
-		var newTaskySpan = document.createElement("span");
-		newTaskySpan.id = thisTask.ID+"span";
-		var newTaskySpanText = document.createTextNode(thisTask.task);
-		newTaskySpan.appendChild(newTaskySpanText);
-		var delBtn = document.getElementById(thisTask.ID+"del");
-		var handle = document.getElementById(thisTask.ID+"handle");
-		handle.appendChild(newTaskySpan);
-
-		// $scope.unfadeOtherTasks(id);
 	}
 
 	$scope.checkIfEditing = function() {
@@ -514,18 +536,35 @@ bubbalist.showSpinner = function () {
 //=============================================================================
 //======== COLOUR PICKING =====================================================
 //=============================================================================
+	var picker = false;
+
 	$scope.togglePicker = function (){
-		console.log('$scope.togglePicker()');
-		if(!$scope.showColourPicker) {
-			$scope.showColourPicker = true;
-		} else $scope.showColourPicker = false;
+		$scope.showColourPicker();
+		picker = !picker;
+		// console.log(picker);
 	}
 
    $scope.colourSelected = function (pickedColour){
 		colour = pickedColour;
 		console.log('user selected',colour);
-		$('.colour-picker-button').css("background-color",colour); //update button colour for feedback
+		// $('.colour-picker-button').css("background-color",colour); //update button colour for feedback
+		$('.colour-picker-button').velocity({backgroundColor:colour}, { duration: 100 });
+		$('.colour-picker-button').addClass("animated rubberBand");
+		setTimeout(function() {
+			$('.colour-picker-button').removeClass("animated rubberBand");
+		},1000);
 		$scope.togglePicker();
+	}
+
+	$scope.showColourPicker = function () {
+		if(!picker) { 
+			$( ".colour-picker" ).velocity("slideDown", { duration: 200 })
+			$( ".colours" ).velocity("fadeIn", { duration: 100, delay:150 })
+		}
+		else {
+			$( ".colour-picker" ).velocity("slideUp", { duration: 200, delay:150 })
+			$( ".colours" ).velocity("fadeOut", { duration: 100 })
+		}
 	}
 
 //=============================================================================
@@ -552,7 +591,7 @@ bubbalist.showSpinner = function () {
    	var diff = longID.length - 16; //need to shorten ID to the first 16 digits
    	var shortID = longID.substr(0, longID.length-diff);
    	var id = shortID;
-   	console.log(id); //runs first
+   	// console.log(id); //runs first
 
    	if(id[0] === 'c') {
 	   	for (var i=0, length = $scope.taskList.length; i <= length - 1; i++) {	
@@ -584,12 +623,6 @@ bubbalist.showSpinner = function () {
 	   	var id = shortID;
    	} else shortID = id;
 
-   	// console.log("tapBringForward.click",id,eventType); //runs second
-
-   	// var longID = id;
-   	// var diff = longID.length - 16; //need to shorten ID to the first 16 digits
-   	// var shortID = longID.substr(0, longID.length-diff);
-
 		thisTask = $scope.dataFromID(shortID);
 
 		if(thisTask != undefined) {
@@ -602,7 +635,6 @@ bubbalist.showSpinner = function () {
 			$scope.taskList[thisTask.i] = thisTask;
 	   	$scope.$apply();
 	   }
-
 	}
 //=============================================================================
 //====== REFERENCED FUNCTIONS =================================================
