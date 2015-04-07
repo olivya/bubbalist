@@ -75,7 +75,7 @@ bubbalist.updateReady();
 bubbalist.destroyLogin = function () {
 	$('#authorizeButton').remove();
 	$('#google').remove();
-	console.log("destroying login");
+	// console.log("destroying login");
 }
 
 bubbalist.showLogin = function () {
@@ -107,7 +107,7 @@ bubbalist.showSpinner = function () {
 		console.log(thisTaskIsNew);
 		$scope.taskList = bubbalist.taskList.asArray();
 		$scope.$apply();
-		console.log("bubbalist.updateTasks()", $scope.taskList);
+		// console.log("bubbalist.updateTasks()", $scope.taskList);
 		//colour is right here...
 
 		$scope.newTask = "";
@@ -119,6 +119,7 @@ bubbalist.showSpinner = function () {
 		zPos = $scope.findLargestZ();
 		// console.log("...so next zPos will be",zPos);
 		thisTaskIsNew = true;
+		console.log(thisTaskIsNew);
 
 		// console.log(bubbalist.ready);
 		console.log("READY!\n~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~\n "); //<--- this is when loading screen can stop <--- 
@@ -126,7 +127,7 @@ bubbalist.showSpinner = function () {
 		bubbalist.ready = true;
 		bubbalist.updateReady();
 		bubbalist.destroyLogin();
-		console.log("bubbalist.ready is now",bubbalist.ready);
+		// console.log("bubbalist.ready is now",bubbalist.ready);
 		$scope.activated = true;
 
 		if(bubbalist.taskList.length===0) {
@@ -145,7 +146,7 @@ bubbalist.showSpinner = function () {
 
 		// } else $(".no-tasks-message").hide();
 
-		console.log("activated?",$scope.activated);
+		// console.log("activated?",$scope.activated);
 
 		// $('#authorizeButton').remove();
 		// $('#google').remove();
@@ -170,6 +171,8 @@ bubbalist.showSpinner = function () {
 				$scope.visTask(bubbalist.taskList.asArray()[i]);
 			}
 		};
+
+		thisTaskIsNew = true;
    }
 //=============================================================================
 //====== ADDING TASKS =========================================================
@@ -231,6 +234,8 @@ bubbalist.showSpinner = function () {
 	// STEP 2: render task on DOM ("task"= task obj data, "tasky"= visual task on DOM/HTML)
 	$scope.visTask = function(task) {
 		if (task != undefined) {
+			console.log(thisTaskIsNew,"????");
+
 			$("#noTasksMsg").addClass("animated bounceOutDown");
 			setTimeout(function(){
 				$("#noTasksMsg").removeClass("animated bounceOutDown");
@@ -892,7 +897,7 @@ bubbalist.showSpinner = function () {
 	}
 
 	$scope.toggleMenu = function (){
-		$scope.exitEditMode();
+		// $scope.exitEditMode();
 
 		if(!menuOpen) {
 			$scope.showAddMenu();
@@ -904,7 +909,7 @@ bubbalist.showSpinner = function () {
 	};
 
 	$scope.toggleHelp = function (){
-		$scope.exitEditMode();
+		// $scope.exitEditMode();
 
 		if(!helpMenuOpen) { 
 			$scope.showHelpMenu();
@@ -915,55 +920,4 @@ bubbalist.showSpinner = function () {
 		}
 	};
 
-//=============================================================================
-//====== DELETING/MARKING AS COMPLETE (prob will be deleted) ==================
-//=============================================================================
-
-	$scope.deleteTask = function (i){ //i = $index from home.html
-		console.log('$scope.deleteTask(i)');
-
-		$scope.responseNeeded = true; //throw up faded div
-   	smoke.confirm("Are you sure?", function(e){
-			if (e){
-				console.log("Task \""+$scope.taskList[i].task+"\" was deleted");
-				$scope.responseNeeded = false; //remove faded div
-				$scope.$apply();
-				$scope.taskList[i] = null;
-		 		var items = document.querySelectorAll('.tasky');
-			 		for (var j=0, length = $scope.taskList.length; j <= length - 1; j++) {
-			 			if ($scope.taskList[j] === null) { //ensure task[j] hasn't already been deleted (to avoid error)
-			 				$(items[j]).addClass("deleted");
-			 		}
-		 		}
-				$scope.checkForTasks();
-				} else {
-					$scope.responseNeeded = false;
-					$scope.$apply();
-				}}, { ok: "Yup", cancel: "Nevermind", reverseButtons: true });
-   };
-
-   //MARK TASK AS COMPLETED
-	// $scope.doneTask = function (i){ //i = $index from home.html
-	//  	console.log('$scope.doneTask(i)');
-
-	//  	$scope.responseNeeded = true; //throw up faded div
-	//    	smoke.confirm("Mark as complete?", function(e){
-	// 			if (e){
-	// 				$scope.responseNeeded = false; //remove faded div
-	// 				$scope.$apply();
-	// 			 	console.log($scope.responseNeeded);
-	// 				$scope.taskList[i] = null;
-	// 		 		var items = document.querySelectorAll('.tasky');
-	// 			 		for (var j=0, length = $scope.taskList.length; j <= length - 1; j++) {
-	// 			 			if ($scope.taskList[j] === null) { //ensure task[j] hasn't already been deleted (to avoid error)
-	// 			 				$(items[j]).addClass("deleted");
-	// 			 		}
-	// 			 	}
-	// 			$scope.checkForTasks();
-	// 			} else {
-	// 				$scope.responseNeeded = false; //remove faded div
-	// 				$scope.$apply();
-	// 			 	console.log($scope.responseNeeded);
-	// 			}}, { ok: "Yup", cancel: "Nevermind", reverseButtons: true });
- //   };
 });
