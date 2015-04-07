@@ -231,16 +231,17 @@ bubbalist.showSpinner = function () {
 			taskyEdit.id = task.ID+"edit";
 			var taskyEditPlaceholder = document.createTextNode(thisTask.task);
 			taskyEdit.appendChild(taskyEditPlaceholder);
+			taskyEdit.setAttribute('maxlength', '100');
 			tasky.appendChild(taskyEdit);
 			$('#'+taskyEdit.id).addClass('edit-box');
-			taskyEdit.setAttribute("rows","4");
+			taskyEdit.setAttribute("rows","6");
 
 			$(taskyEdit).hide(); //(hidden until user enters edit mode)
 			
 			//create save button for editing:
 			var saveBtn = document.createElement("button");
 			saveBtn.id = task.ID+"save";
-			saveBtn.setAttribute('ng-click', 'doneEditing('+thisTask.ID+')');
+			saveBtn.setAttribute('ng-click', 'doneEditing('+task.ID+')');
 			var saveBtnText = document.createTextNode("SAVE");
 			saveBtn.appendChild(saveBtnText);
 			tasky.appendChild(saveBtn);
@@ -261,7 +262,7 @@ bubbalist.showSpinner = function () {
 
 			var doneBtn = document.createElement("button");
 			doneBtn.id = task.ID+"done";
-			// doneBtn.setAttribute('ng-click', 'delTask('+task.ID+')');
+			doneBtn.setAttribute('ng-click', 'doneTask('+task.ID+')');
 			var checkIcon = document.createElement("i");
 			checkIcon.id = task.ID+"check";
 			$(checkIcon).addClass('fa fa-check');
@@ -318,9 +319,45 @@ bubbalist.showSpinner = function () {
   		});
 	}
 
+	$scope.doneTask = function(id) { 
+		$scope.responseNeeded = true; //throw up faded div
+   	thisTask = $scope.dataFromID(JSON.stringify(id));
+
+   	console.log('doneTask id',id);
+
+   	thisTask.editing = false;
+
+   	smoke.confirm("Mark as complete?", function(e){
+			if (e){
+				console.log("DONE, DELETING");
+				$scope.responseNeeded = false; //remove faded div
+				$scope.$apply();
+				for (var i=0, length = bubbalist.taskList.length; i <= length - 1; i++) {	
+					if(bubbalist.taskList.asArray()[i] != undefined && JSON.parse(bubbalist.taskList.asArray()[i].ID) === id) {
+						bubbalist.taskList.remove(i);
+					}
+				};
+				for (var i=0, length = $scope.taskList.length; i <= length - 1; i++) {	
+					if($scope.taskList[i] != undefined && JSON.parse($scope.taskList[i].ID) === id) {
+						$scope.taskList.splice(i,1); 
+					}
+				};
+				$scope.remTask(id);
+			}
+			else {
+				$scope.responseNeeded = false;
+				thisTask = $scope.dataFromID(JSON.stringify(id));
+				$scope.doneEditing(JSON.parse(thisTask.ID));
+				$scope.$apply();
+			}
+		}, { ok: "Yup", cancel: "Nevermind", reverseButtons: true });
+	}
+
 	$scope.delTask = function(id) { //deletes tasks from arrays (not DOM yet)
 		$scope.responseNeeded = true; //throw up faded div
    	thisTask = $scope.dataFromID(JSON.stringify(id));
+
+   	console.log('delTask id',id);
 
    	thisTask.editing = false;
 		console.log(thisTask.editing);
@@ -351,6 +388,7 @@ bubbalist.showSpinner = function () {
 	}
 
 	$scope.remTask  = function (id){ //deletes task visually off DOM
+		console.log("removing task");
 		var tasky = document.getElementById(id);
 		tasky.parentNode.removeChild(tasky);
 
@@ -373,14 +411,18 @@ bubbalist.showSpinner = function () {
 //====== TOGGLE EDITING =======================================================
 //=============================================================================
 	$scope.startEditing = function (id) {
+		console.log("STARTING EDITING");
 		$scope.checkIfEditing();
 		// $scope.fadeOtherTasks(id);
 
-		var longID = id;
-		var shortID = longID.substr(0, longID.length-6); //removes "handle" from end of ID 
+		// var longID = id;
+		// var shortID = longID.substr(0, longID.length-6); //removes "handle" from end of ID 
 		// console.log("longID:",longID,"--->","shortID:",shortID);
-		thisTask = $scope.dataFromID(shortID);
+		thisTask = $scope.dataFromID(id);
+		console.log(thisTask);
+
 		if(thisTask) { //remove after fixing hammer.js
+			var shortID = thisTask.ID;
 			thisTask.editing = true;
 			bubbalist.taskList.set(thisTask.i, thisTask);
 			$scope.taskList[thisTask.i] = thisTask;
@@ -469,32 +511,6 @@ bubbalist.showSpinner = function () {
 		};
 	}
 
-	$scope.fadeOtherTasks = function(id) {
-		var longID = id;
-   	var diff = longID.length - 16; //need to shorten ID to the first 16 digits
-   	var shortID = longID.substr(0, longID.length-diff);
-		id = shortID;
-
-		for (var i=0, length = $scope.taskList.length; i <= length - 1; i++) {	
-			if($scope.taskList[i].ID != id) {
-				$("#"+$scope.taskList[i].ID).addClass('fade-task');
-				$("#"+$scope.taskList[i].ID+"handle").hide();
-			}
-		};
-	}
-
-	$scope.unfadeOtherTasks = function(id) {
-		// console.log("ID---",id);
-
-		for (var i=0, length = $scope.taskList.length; i <= length - 1; i++) {	
-			if($scope.taskList[i].ID != id) {
-				// console.log("UNFADE ME.");
-				$("#"+$scope.taskList[i].ID).removeClass('fade-task');
-				$("#"+$scope.taskList[i].ID+"handle").show();
-			}
-		};
-	}
-
 //=============================================================================
 //======== COLOUR PICKING =====================================================
 //=============================================================================
@@ -519,52 +535,63 @@ bubbalist.showSpinner = function () {
 	mc.add( new Hammer.Tap({ event: 'doubletap', taps: 2 }) );
 	mc.add( new Hammer.Tap({ event: 'tap', taps:1 }) );
 
-	var tapped = false;
-	var doubleTapped = false;
-
-	$scope.tapOn = function() { tapped=true; console.log("tapped is",tapped); }
-	$scope.tapOff = function () { tapped=false; console.log("tapped is",tapped); }
-	$scope.doubleTapOn = function() { doubleTapped=true; console.log("doubleTapped is",doubleTapped); }
-	$scope.doubleTapOff = function () { doubleTapped=false; console.log("doubleTapped is",doubleTapped); }
-
 	mc.on("doubletap", function(ev) {
-		doubleTapped = true;
-		setTimeout(function(){ $scope.doubleTapOff(); },400);
-		doubleTapEdit.click(ev.target.id, ev.type);
-		tapBringForward.click(ev.target.id, ev.type); //(since you also want bring forward if editing)
+		var id;
+		if(ev.target.id > 16) {
+			var longID = ev.target.id;
+	   	var diff = longID.length - 16; //need to shorten ID to the first 16 digits
+	   	var shortID = longID.substr(0, longID.length-diff);
+	   	var id = shortID;
+   	} else id = ev.target.id;
+		doubleTapEdit.click(id, ev.type);
+		tapBringForward.click(id, ev.type); //(since you also want bring forward if editing)
 	});
 
-	doubleTapEdit.click = function(id, eventType) {
-		$scope.startEditing(id);
-   	$scope.$apply();
-	}
-
 	mc.on("tap", function(ev) {
-
 		var longID = ev.target.id;
    	var diff = longID.length - 16; //need to shorten ID to the first 16 digits
    	var shortID = longID.substr(0, longID.length-diff);
    	var id = shortID;
+   	console.log(id); //runs first
 
-		console.log(id);
-
-  		tapBringForward.click(ev.target.id, ev.type);
-  		tapped = true;
-  		setTimeout(function (){
-  			thisTask = $scope.dataFromID(id);
-	  		if(!doubleTapped && !thisTask.editing) { 
-	  			$scope.checkIfEditing();
-	  		}
-	  	},200);
-	  	setTimeout(function(){ $scope.tapOff(); },400);
+   	if(id[0] === 'c') {
+	   	for (var i=0, length = $scope.taskList.length; i <= length - 1; i++) {	
+				if($scope.taskList[i].editing) {
+					id = $scope.taskList[i].ID;
+				}
+			};
+		}
+  		tapBringForward.click(id, ev.type);
 	});
 
+	doubleTapEdit.click = function(id, eventType) {
+		if(id.length > 16) {
+	   	var longID = id;
+	   	var diff = longID.length - 16; //need to shorten ID to the first 16 digits
+	   	var shortID = longID.substr(0, longID.length-diff);
+	   	id = shortID;
+   	}
+		// console.log("doubleTapEdit.click",id,eventType);
+		$scope.startEditing(id);
+   	$scope.$apply();
+	}
+
 	tapBringForward.click = function(id, eventType) { //orig function in 'orig hammer js fns'
-   	var longID = id;
-   	var diff = longID.length - 16; //need to shorten ID to the first 16 digits
-   	var shortID = longID.substr(0, longID.length-diff);
+   	if(id.length > 16) {
+	   	var longID = id;
+	   	var diff = longID.length - 16; //need to shorten ID to the first 16 digits
+	   	var shortID = longID.substr(0, longID.length-diff);
+	   	var id = shortID;
+   	} else shortID = id;
+
+   	// console.log("tapBringForward.click",id,eventType); //runs second
+
+   	// var longID = id;
+   	// var diff = longID.length - 16; //need to shorten ID to the first 16 digits
+   	// var shortID = longID.substr(0, longID.length-diff);
 
 		thisTask = $scope.dataFromID(shortID);
+
 		if(thisTask != undefined) {
 	   	zPos = zPos+10;
 	   	$('#'+shortID).css("z-index",zPos);
@@ -575,6 +602,7 @@ bubbalist.showSpinner = function () {
 			$scope.taskList[thisTask.i] = thisTask;
 	   	$scope.$apply();
 	   }
+
 	}
 //=============================================================================
 //====== REFERENCED FUNCTIONS =================================================
@@ -800,27 +828,27 @@ bubbalist.showSpinner = function () {
    };
 
    //MARK TASK AS COMPLETED
-	$scope.doneTask = function (i){ //i = $index from home.html
-	 	console.log('$scope.doneTask(i)');
+	// $scope.doneTask = function (i){ //i = $index from home.html
+	//  	console.log('$scope.doneTask(i)');
 
-	 	$scope.responseNeeded = true; //throw up faded div
-	   	smoke.confirm("Mark as complete?", function(e){
-				if (e){
-					$scope.responseNeeded = false; //remove faded div
-					$scope.$apply();
-				 	console.log($scope.responseNeeded);
-					$scope.taskList[i] = null;
-			 		var items = document.querySelectorAll('.tasky');
-				 		for (var j=0, length = $scope.taskList.length; j <= length - 1; j++) {
-				 			if ($scope.taskList[j] === null) { //ensure task[j] hasn't already been deleted (to avoid error)
-				 				$(items[j]).addClass("deleted");
-				 		}
-				 	}
-				$scope.checkForTasks();
-				} else {
-					$scope.responseNeeded = false; //remove faded div
-					$scope.$apply();
-				 	console.log($scope.responseNeeded);
-				}}, { ok: "Yup", cancel: "Nevermind", reverseButtons: true });
-   };
+	//  	$scope.responseNeeded = true; //throw up faded div
+	//    	smoke.confirm("Mark as complete?", function(e){
+	// 			if (e){
+	// 				$scope.responseNeeded = false; //remove faded div
+	// 				$scope.$apply();
+	// 			 	console.log($scope.responseNeeded);
+	// 				$scope.taskList[i] = null;
+	// 		 		var items = document.querySelectorAll('.tasky');
+	// 			 		for (var j=0, length = $scope.taskList.length; j <= length - 1; j++) {
+	// 			 			if ($scope.taskList[j] === null) { //ensure task[j] hasn't already been deleted (to avoid error)
+	// 			 				$(items[j]).addClass("deleted");
+	// 			 		}
+	// 			 	}
+	// 			$scope.checkForTasks();
+	// 			} else {
+	// 				$scope.responseNeeded = false; //remove faded div
+	// 				$scope.$apply();
+	// 			 	console.log($scope.responseNeeded);
+	// 			}}, { ok: "Yup", cancel: "Nevermind", reverseButtons: true });
+ //   };
 });
