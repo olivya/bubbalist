@@ -1,6 +1,7 @@
 bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	$scope.taskList = [];
 	var colour = '#25d7ec';
+	// var colour;
 	var opacity;
 	//Variables for updating DOM:
 	var zIndex = 0;
@@ -79,6 +80,8 @@ bubbalist.destroyLogin = function () {
 
 bubbalist.showLogin = function () {
 	$('#login').show();
+	$("#google").addClass("animated bounceInDown");
+	$("#authorizeButton").addClass("animated bounceInUp");
 	console.log("showing login");
 }
 
@@ -105,17 +108,19 @@ bubbalist.showSpinner = function () {
 		$scope.taskList = bubbalist.taskList.asArray();
 		$scope.$apply();
 		console.log("bubbalist.updateTasks()", $scope.taskList);
+		//colour is right here...
+
 		$scope.newTask = "";
 		$('.text-feedback').html(maxChars);
 
 		$scope.drawTasks();
 
-		console.log("done drawing! finding largest z-index...");
+		// console.log("done drawing! finding largest z-index...");
 		zPos = $scope.findLargestZ();
-		console.log("...so next zPos will be",zPos);
+		// console.log("...so next zPos will be",zPos);
 		thisTaskIsNew = true;
 
-		console.log(bubbalist.ready);
+		// console.log(bubbalist.ready);
 		console.log("READY!\n~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~\n "); //<--- this is when loading screen can stop <--- 
 
 		bubbalist.ready = true;
@@ -189,7 +194,7 @@ bubbalist.showSpinner = function () {
 			bubbalist.taskList.push(task); //for drive.js
 			$scope.newTask = ""; //reset textbox
 			$('.text-feedback').html(maxChars); //reset char count
-			setTimeout($scope.toggleMenu,100); //close menu after a moment
+			setTimeout($scope.toggleMenu,300); //close menu after a moment
 		}
 		else { //if user didn't input anything...
 			$scope.responseNeeded = true; //put faded div on screen
@@ -315,6 +320,9 @@ bubbalist.showSpinner = function () {
 			$('#'+tasky.id).css("top",thisTask.yPos+"px");
 			$('#'+tasky.id).css("left",thisTask.xPos+"px");
 			$('#'+tasky.id).css("z-index",thisTask.zPos);
+
+			// console.log(thisTask.colour);
+
 			$('#'+tasky.id).css("background-color",thisTask.colour);
 
 			if(thisTaskIsNew) {
@@ -341,7 +349,7 @@ bubbalist.showSpinner = function () {
 		};
 		zPos = largestZ;
 		zPos+=10;
-		console.log("done! largest Z was",largestZ+"...");
+		// console.log("done! largest Z was",largestZ+"...");
 		return zPos;
 	}
 
@@ -414,10 +422,10 @@ bubbalist.showSpinner = function () {
 
    	thisTask = $scope.dataFromID(JSON.stringify(id));
 
-   	console.log('delTask id',id);
+   	// console.log('delTask id',id);
 
    	thisTask.editing = false;
-		console.log(thisTask.editing);
+		// console.log(thisTask.editing);
 
 		// $(".dialog-inner").addClass("animated bounceInDown");
 
@@ -450,7 +458,7 @@ bubbalist.showSpinner = function () {
 	}
 
 	$scope.remTask  = function (id){ //deletes task visually off DOM
-		console.log("removing task");
+		// console.log("removing task");
 		
 		if(completed) {
 			$("#"+id).addClass("animated rollOut");
@@ -479,7 +487,7 @@ bubbalist.showSpinner = function () {
 				$(".no-tasks-message").show();
 				$(".no-tasks-message").addClass("animated bounceInDown");
 			},500);
-			
+
 			setTimeout(function(){
 				$(".no-tasks-message").removeClass("animated bounceInDown");
 			},2000);
@@ -611,6 +619,11 @@ bubbalist.showSpinner = function () {
 	$scope.togglePicker = function (){
 		$scope.showColourPicker();
 		picker = !picker;
+
+		// $('.colour-picker-button').addClass("animated rubberBand");
+		// setTimeout(function() {
+		// 	$('.colour-picker-button').removeClass("animated rubberBand");
+		// },1000);
 		// console.log(picker);
 	}
 

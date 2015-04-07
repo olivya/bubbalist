@@ -12,17 +12,17 @@ body {
 	position:relative;
 	border-width:0px;
 	color:#fff;
-	width:86%;
+	width:76%;
 	border-radius:10px;
-	background-color: rgba(0,0,0,0.65);
-	margin-top:2px;
+	/*background-color: rgba(0,0,0,0.65);*/
+	background-color: #333333;
+	margin-top:10px;
 	font-family:'Lilita One',sans-serif;
 	text-transform:uppercase;
-	font-size:30px;
+	font-size:28px;
 	padding:10px;
 	outline:none;
-	margin-left:7%;
-	margin-top:35%;
+	margin-left:12%;
 }
 
 
@@ -44,14 +44,14 @@ body {
 
 
 #spinner {
-	font-size:3em;
-	opacity:0.3;
+	font-size:4em;
+	opacity:0.2;
 }
 
 #spinner-container {
 	width:100%;
 	text-align:center;
-	margin-top:15%;
+	margin-top:25%;
 }
 
 #google {
@@ -60,7 +60,8 @@ body {
 	display:block;
 	margin-left:auto;
 	margin-right:auto;
-	opacity:0.6;
+	opacity:0.9;
+	margin-top:28%;
 }
 
 .hide {
