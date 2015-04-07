@@ -7,7 +7,7 @@ function initializeModel(model) {
     console.log('MODEL INITIALIZED');
     bubbalist.ready = false;
     bubbalist.updateReady();
-    console.log("bubbalist.ready is now",bubbalist.ready);
+    // console.log("bubbalist.ready is now",bubbalist.ready);
     var taskList = model.createList();
     model.getRoot().set('taskList', taskList);
 }
@@ -15,7 +15,8 @@ function initializeModel(model) {
 function onFileLoaded(doc) {
     console.log('FILE LOADED');
     bubbalist.updateReady();
-    console.log("bubbalist.ready is now",bubbalist.ready);
+    bubbalist.hideSpinner();
+    // console.log("bubbalist.ready is now",bubbalist.ready);
     bubbalist.taskList = doc.getModel().getRoot().get('taskList');
 
    function taskAdded(e) {

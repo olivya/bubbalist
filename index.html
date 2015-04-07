@@ -26,8 +26,15 @@
 </head>
 <body>
 	<div id="main">
-		<button id="authorizeButton" disabled>Please log in!</button>
-		<img id="google" src="google.png">
+		<div id="login" style="display:none">
+			<button id="authorizeButton" disabled>Please log in!</button>
+			<img id="google" src="google.png">
+		</div>
+
+		<div id="spinner-container">
+			<i id="spinner" class="fa fa-spinner fa-pulse"></i>
+		</div>
+		
 		<div id="ngview" ng-view></div>
 	</div>
 </body>

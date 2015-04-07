@@ -110,10 +110,17 @@ rtclient.Authorizer.prototype.authorize = function(onAuthComplete) {
       console.log("good to go");
       bubbalist.ready = false;
       bubbalist.updateReady();
-      console.log("bubbalist.ready is now",bubbalist.ready);
+      // console.log("bubbalist.ready is now",bubbalist.ready);
     } else {
       _this.authButton.disabled = false;
+
+      $("#authorizeButton").click(function() {
+        bubbalist.hideLogin();
+        bubbalist.showSpinner();
+      });
+
       _this.authButton.onclick = authorizeWithPopup;
+
       console.log("no auth!");
       bubbalist.stopLoad();
     }
@@ -361,6 +368,7 @@ rtclient.RealtimeLoader.prototype.load = function() {
   }
 
   if (this.autoCreate) {
+    bubbalist.destroyLogin();
     console.log("HAD TO CREATE FILE");
     this.createNewFileAndRedirect();
     bubbalist.ready = false;
