@@ -155,6 +155,11 @@ bubbalist.showSpinner = function () {
 		$('.toggle-menu-button').removeClass('fade');
 		$('.toggle-help-button').removeClass('fade');
 
+		setTimeout(function(){
+			$('.toggle-menu-button').removeClass('animated bounceInRight');
+			$('.toggle-help-button').removeClass('animated bounceInRight');
+		})
+
 		$scope.$apply();
    };
    //Draws stored tasks on reload:
