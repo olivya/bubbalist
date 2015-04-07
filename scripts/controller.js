@@ -540,10 +540,19 @@ bubbalist.showSpinner = function () {
 	}
 
 	mc.on("tap", function(ev) {
+
+		var longID = ev.target.id;
+   	var diff = longID.length - 16; //need to shorten ID to the first 16 digits
+   	var shortID = longID.substr(0, longID.length-diff);
+   	var id = shortID;
+
+		console.log(id);
+
   		tapBringForward.click(ev.target.id, ev.type);
   		tapped = true;
   		setTimeout(function (){
-	  		if(!doubleTapped) { 
+  			thisTask = $scope.dataFromID(id);
+	  		if(!doubleTapped && !thisTask.editing) { 
 	  			$scope.checkIfEditing();
 	  		}
 	  	},200);
