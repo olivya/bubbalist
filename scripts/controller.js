@@ -24,6 +24,9 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	bubbalist.ready = false;
 	$scope.ready = false;
 
+	var deleted = false;
+	var completed = false;
+
 	// $(function() {
 	// 	FastClick.attach(document.body);
 	// });
@@ -122,8 +125,20 @@ bubbalist.showSpinner = function () {
 		$scope.activated = true;
 
 		if(bubbalist.taskList.length===0) {
-			$(".no-tasks-message").show();
-		} else $(".no-tasks-message").hide();
+			// $(".no-tasks-message").show();
+			var noTasksMsg = document.createElement("div");
+			noTasksMsg.id = "noTasksMsg";
+			document.getElementById("ngview").appendChild(noTasksMsg);
+			var noTasksMsgText = document.createTextNode("You haven't added any tasks!");
+			$("#noTasksMsg").addClass("no-tasks-message");
+			noTasksMsg.appendChild(noTasksMsgText);
+			$("#noTasksMsg").addClass("animated bounceInDown");
+			setTimeout(function(){
+				$("#noTasksMsg").removeClass("animated bounceInDown");
+			},2000);
+		}
+
+		// } else $(".no-tasks-message").hide();
 
 		console.log("activated?",$scope.activated);
 
@@ -211,11 +226,31 @@ bubbalist.showSpinner = function () {
 	// STEP 2: render task on DOM ("task"= task obj data, "tasky"= visual task on DOM/HTML)
 	$scope.visTask = function(task) {
 		if (task != undefined) {
+			$("#noTasksMsg").addClass("animated bounceOutDown");
+			setTimeout(function(){
+				$("#noTasksMsg").removeClass("animated bounceOutDown");
+			},2000);
+
 			thisTask = $scope.dataFromID(task.ID);
 			//create & add tasky & handle (for dragging) divs:
 			var tasky = document.createElement("div");
 			tasky.id = task.ID;
 			document.getElementById("ngview").appendChild(tasky);
+			
+			if(thisTaskIsNew) {
+				$("#"+tasky.id).addClass("animated rollIn");
+
+				setTimeout(function(){
+					$("#"+tasky.id).removeClass("animated rollIn");
+				},1000);
+			} else {
+				$("#"+tasky.id).addClass("animated fadeIn");
+
+				setTimeout(function(){
+					$("#"+tasky.id).removeClass("animated fadeIn");
+				},1000);
+			}
+
 			$("#"+tasky.id).addClass("tasky"); //for styling
 			$("#"+tasky.id).addClass("draggable"); //for styling
 
@@ -361,6 +396,7 @@ bubbalist.showSpinner = function () {
 						$scope.taskList.splice(i,1); 
 					}
 				};
+				completed = true;
 				$scope.remTask(id);
 			}
 			else {
@@ -374,6 +410,8 @@ bubbalist.showSpinner = function () {
 
 	$scope.delTask = function(id) { //deletes tasks from arrays (not DOM yet)
 		$scope.responseNeeded = true; //throw up faded div
+		// $("#cover").addClass("animated fadeIn");
+
    	thisTask = $scope.dataFromID(JSON.stringify(id));
 
    	console.log('delTask id',id);
@@ -381,39 +419,71 @@ bubbalist.showSpinner = function () {
    	thisTask.editing = false;
 		console.log(thisTask.editing);
 
-   	smoke.confirm("Are you sure?", function(e){
-			if (e){
-				$scope.responseNeeded = false; //remove faded div
-				$scope.$apply();
-				for (var i=0, length = bubbalist.taskList.length; i <= length - 1; i++) {	
-					if(bubbalist.taskList.asArray()[i] != undefined && JSON.parse(bubbalist.taskList.asArray()[i].ID) === id) {
-						bubbalist.taskList.remove(i);
-					}
-				};
-				for (var i=0, length = $scope.taskList.length; i <= length - 1; i++) {	
-					if($scope.taskList[i] != undefined && JSON.parse($scope.taskList[i].ID) === id) {
-						$scope.taskList.splice(i,1); 
-					}
-				};
-				$scope.remTask(id);
-			}
-			else {
-				$scope.responseNeeded = false;
-				thisTask = $scope.dataFromID(JSON.stringify(id));
-				$scope.doneEditing(JSON.parse(thisTask.ID));
-				$scope.$apply();
-			}
-		}, { ok: "Yup", cancel: "Nevermind", reverseButtons: true });
+		// $(".dialog-inner").addClass("animated bounceInDown");
+
+		// setTimeout(function(){
+	   	smoke.confirm("Are you sure?", function(e){
+				if (e){
+					$scope.responseNeeded = false; //remove faded div
+					$scope.$apply();
+					for (var i=0, length = bubbalist.taskList.length; i <= length - 1; i++) {	
+						if(bubbalist.taskList.asArray()[i] != undefined && JSON.parse(bubbalist.taskList.asArray()[i].ID) === id) {
+							bubbalist.taskList.remove(i);
+						}
+					};
+					for (var i=0, length = $scope.taskList.length; i <= length - 1; i++) {	
+						if($scope.taskList[i] != undefined && JSON.parse($scope.taskList[i].ID) === id) {
+							$scope.taskList.splice(i,1); 
+						}
+					};
+					deleted = true;
+					$scope.remTask(id);
+				}
+				else {
+					$scope.responseNeeded = false;
+					thisTask = $scope.dataFromID(JSON.stringify(id));
+					$scope.doneEditing(JSON.parse(thisTask.ID));
+					$scope.$apply();
+				}
+			}, { ok: "Yup", cancel: "Nevermind", reverseButtons: true });
+	   // },1000);
 	}
 
 	$scope.remTask  = function (id){ //deletes task visually off DOM
 		console.log("removing task");
+		
+		if(completed) {
+			$("#"+id).addClass("animated rollOut");
+		}
+
+		if(deleted) {
+			$("#"+id).addClass("animated bounceOutDown");
+		}
+
 		var tasky = document.getElementById(id);
-		tasky.parentNode.removeChild(tasky);
+
+		setTimeout(function(){
+			tasky.parentNode.removeChild(tasky);
+			deleted = false;
+			completed = false;
+		},1000);
 
 		if(bubbalist.taskList.length===0) {
-			$(".no-tasks-message").show();
-		} else $(".no-tasks-message").hide();
+			// var noTasksMsg = document.createElement("div");
+			// noTasksMsg.id = "noTasksMsg";
+			// document.getElementById("ngview").appendChild(noTasksMsg);
+			// var noTasksMsgText = document.createTextNode("You haven't added any tasks!");
+			// $("#noTasksMsg").addClass("no-tasks-message");
+			// noTasksMsg.appendChild(noTasksMsgText);
+			setTimeout(function(){
+				$(".no-tasks-message").show();
+				$(".no-tasks-message").addClass("animated bounceInDown");
+			},500);
+			
+			setTimeout(function(){
+				$(".no-tasks-message").removeClass("animated bounceInDown");
+			},2000);
+		}
 	}
 
 	$scope.clearTasks  = function (){
@@ -558,12 +628,12 @@ bubbalist.showSpinner = function () {
 
 	$scope.showColourPicker = function () {
 		if(!picker) { 
-			$( ".colour-picker" ).velocity("slideDown", { duration: 200 })
-			$( ".colours" ).velocity("fadeIn", { duration: 100, delay:150 })
+			$( ".colour-picker" ).velocity("slideDown", { duration: 100 })
+			$( ".colours" ).velocity("fadeIn", { duration: 50, delay:50 })
 		}
 		else {
-			$( ".colour-picker" ).velocity("slideUp", { duration: 200, delay:150 })
-			$( ".colours" ).velocity("fadeOut", { duration: 100 })
+			$( ".colour-picker" ).velocity("slideUp", { duration: 100, delay:50 })
+			$( ".colours" ).velocity("fadeOut", { duration: 50 })
 		}
 	}
 
