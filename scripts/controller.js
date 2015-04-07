@@ -348,7 +348,6 @@ bubbalist.showSpinner = function () {
 				$scope.$apply();
 			}
 		}, { ok: "Yup", cancel: "Nevermind", reverseButtons: true });
-
 	}
 
 	$scope.remTask  = function (id){ //deletes task visually off DOM
@@ -520,7 +519,17 @@ bubbalist.showSpinner = function () {
 	mc.add( new Hammer.Tap({ event: 'doubletap', taps: 2 }) );
 	mc.add( new Hammer.Tap({ event: 'tap', taps:1 }) );
 
+	var tapped = false;
+	var doubleTapped = false;
+
+	$scope.tapOn = function() { tapped=true; console.log("tapped is",tapped); }
+	$scope.tapOff = function () { tapped=false; console.log("tapped is",tapped); }
+	$scope.doubleTapOn = function() { doubleTapped=true; console.log("doubleTapped is",doubleTapped); }
+	$scope.doubleTapOff = function () { doubleTapped=false; console.log("doubleTapped is",doubleTapped); }
+
 	mc.on("doubletap", function(ev) {
+		doubleTapped = true;
+		setTimeout(function(){ $scope.doubleTapOff(); },400);
 		doubleTapEdit.click(ev.target.id, ev.type);
 		tapBringForward.click(ev.target.id, ev.type); //(since you also want bring forward if editing)
 	});
@@ -532,7 +541,13 @@ bubbalist.showSpinner = function () {
 
 	mc.on("tap", function(ev) {
   		tapBringForward.click(ev.target.id, ev.type);
-  		$scope.checkIfEditing();
+  		tapped = true;
+  		setTimeout(function (){
+	  		if(!doubleTapped) { 
+	  			$scope.checkIfEditing();
+	  		}
+	  	},200);
+	  	setTimeout(function(){ $scope.tapOff(); },400);
 	});
 
 	tapBringForward.click = function(id, eventType) { //orig function in 'orig hammer js fns'
