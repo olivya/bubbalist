@@ -1,6 +1,6 @@
 bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	$scope.taskList = [];
-	var colour = '#25d7ec';
+	var colour = '#05E1FF';
 	// var colour;
 	var opacity;
 	//Variables for updating DOM:

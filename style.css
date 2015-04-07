@@ -437,7 +437,7 @@ body {
 	margin-left:5px;
 	border-radius:10px;
 	/*background-color: rgba(0,0,0,0.65);*/
-	background-color: #25d7ec;
+	background-color: #05E1FF;
 	outline:none;
 }
 
@@ -471,15 +471,15 @@ body {
 	margin-bottom:3px;
 }
 
-#colour1 { background-color:#25d7ec; }
+#colour1 { background-color:#05E1FF; }
 #colour2 { background-color:#8799FF; }
 #colour3 { background-color:#BA82FF; }
 #colour4 { background-color:#FF8396; }
-#colour5 { background-color:#ea4d7d; }
-#colour6 { background-color:#FF235E; }
+#colour5 { background-color:#FF7ABB; }
+#colour6 { background-color:#FE2374; }
 #colour7 { background-color:#5DEFB0; }
-#colour8 { background-color:#47CC92; }
-#colour9 { background-color:#076F5C; }
+#colour8 { background-color:#49DDB0; }
+#colour9 { background-color:#139a6f; }
 
 /*================================================================================*/
 /*================================ SMOKE.JS ALERTS ===============================*/
