@@ -378,7 +378,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 								$(".no-tasks-message").show(); //...show no tasks message
 								$(".no-tasks-message").addClass("animated bounceInDown");
 							},400);
-							setTimeout(function(){ $(".no-tasks-message").removeClass("animated bounceInDown"); },1000);
+							setTimeout(function(){ $(".no-tasks-message").removeClass("animated bounceInDown"); },2000);
 						}
 					},250);
 				} else { 
@@ -410,8 +410,10 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		if(bubbalist.taskList.length===0) { //if this was the last task deleted...
 			console.log("last task");
 			setTimeout(function(){
-				$(".no-tasks-message").show(); //...show no tasks message
+				// $(".no-tasks-message").removeClass("animated bounceInDown");
+				
 				$(".no-tasks-message").addClass("animated bounceInDown");
+				$(".no-tasks-message").show(); //...show no tasks message
 				console.log("showing..");
 			},400);
 			setTimeout(function(){ $(".no-tasks-message").removeClass("animated bounceInDown"); },2000);
