@@ -30,7 +30,7 @@ body {
 	text-transform: uppercase;
 	float:left;
 	width:60%;
-	height:35px;
+	height:auto;
 	border-width:0px;
 	padding:0px;
 	color:#fff;
@@ -415,6 +415,7 @@ body {
 	text-transform: uppercase;
 	font-size:1.25em;
 	float:right;
+	margin-top:10px;
 }
 
 .toggle-help-button {

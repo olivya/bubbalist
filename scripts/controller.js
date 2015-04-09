@@ -178,9 +178,13 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 				$scope.$apply();
 			}, { ok: "Okay" });
 		}
+
 		if(bubbalist.taskList.length===0) {
-			$(".no-tasks-message").show();
+			$(".no-tasks-message").show(); //...show no tasks message
+			$(".no-tasks-message").addClass("animated bounceInDown");
+			setTimeout(function(){ $(".no-tasks-message").removeClass("animated bounceInDown"); },1000);
 		} else $(".no-tasks-message").hide();
+
 		$scope.visTask(task);
 	};
 
@@ -374,7 +378,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 								$(".no-tasks-message").show(); //...show no tasks message
 								$(".no-tasks-message").addClass("animated bounceInDown");
 							},400);
-							setTimeout(function(){ $(".no-tasks-message").removeClass("animated bounceInDown"); },2000);
+							setTimeout(function(){ $(".no-tasks-message").removeClass("animated bounceInDown"); },1000);
 						}
 					},250);
 				} else { 
