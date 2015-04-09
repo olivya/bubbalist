@@ -12,7 +12,7 @@
 	<script type="text/javascript" src="libs/angular/angular-route.min.js"></script>
 	<script type="text/javascript" src="libs/hammer.min.js"></script>
 	<script type="text/javascript" src="libs/velocity.min.js"></script>
-	<script type="text/javascript" src="libs/smoke.min.js"></script>
+	<script type="text/javascript" src="libs/smoke.js"></script> <!-- modified to add entrance/exit animations -->
 	<script type="text/javascript" src="libs/moment.min.js"></script>
 	<!-- My scripts: -->
 	<script type="text/javascript" src="scripts/script.js"></script>
@@ -32,7 +32,7 @@
 			<button id="authorizeButton" disabled>Please click here to log in!</button>
 		</div>
 
-		<div id="spinner-container">
+		<div id="spinner-container" class="animated bounceInDown">
 			<i id="spinner" class="fa fa-spinner fa-pulse"></i>
 		</div>
 		

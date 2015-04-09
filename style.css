@@ -25,6 +25,20 @@ body {
 	margin-left:12%;
 }
 
+#clear-all-tasks-button {
+	font-size:1.25em;
+	text-transform: uppercase;
+	float:left;
+	width:60%;
+	height:35px;
+	border-width:0px;
+	padding:0px;
+	color:#fff;
+	border-radius:10px;
+	background-color: rgba(0,0,0,0.65);
+	font-family:'Lilita One',sans-serif;
+	outline:none;
+}
 
 #cover {
 	position:fixed;
@@ -34,14 +48,24 @@ body {
 	margin-left:-200%;
 	background-color:rgba(255,255,255,0.8);
  	z-index:100000000000000000;
-
-/* 	-webkit-animation-duration: 1s;
-  -moz-animation-duration: 1s;
-  -o-animation-duration: 1s;
-  -ms-animation-duration: 1s;
-  animation-duration: 1s;*/
 }
 
+.cover.ng-hide-add.ng-hide-add-active,
+.cover.ng-hide-remove.ng-hide-remove-active {
+  -webkit-transition: all linear 0.15s;
+  -moz-transition: all linear 0.15s;
+  -o-transition: all linear 0.15s;
+  -ms-transition: all linear 0.15s;
+  transition: all linear 0.15s;
+}
+
+.cover.ng-hide {
+  opacity: 0;
+}
+
+.cover {
+  opacity: 1;
+}
 
 #spinner {
 	font-size:4em;
@@ -87,9 +111,9 @@ body {
 	float:left;
 	border-width:0px;
 	color:#fff;
-	border-radius:10px;
+	border-radius:12px;
 	background-color: rgba(0,0,0,0.65);
-	margin-top:2px;
+	margin-top:3px;
 }
 
 .save-button {
@@ -122,7 +146,7 @@ body {
 	font-size:1em;
 	padding:5px;
 	border-width:0px;
-	border-radius:10px;
+	border-radius:13px;
 	background:white;
 	opacity:0.65;
 	outline:none;
@@ -152,9 +176,9 @@ body {
 	position:absolute;
 	width:125px;
 	height:120px;
-	border-radius:25px;
+	border-radius:33px;
 	border:1px dotted rgba(0,0,0,0.4);
-	padding:9px;
+	padding:12px;
 	font-family: "Ubuntu", sans-serif;
 	font-weight:300;
 	font-size:.85em;
@@ -162,9 +186,27 @@ body {
 	color:#fff;
 	margin:0px;
 	word-wrap:break-word;
-/*	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;*/
+
+/*  -webkit-animation-duration: 0.5s;
+  -moz-animation-duration: 0.5s;
+  -o-animation-duration: 0.5s;
+  -ms-animation-duration: 0.5s;
+  animation-duration: 0.5s;*/
+}
+
+.animated.rollIn{
+  -webkit-animation-duration: 0.4s;
+  animation-duration: 0.4s;
+}
+
+.animated.rollOut{
+  -webkit-animation-duration: 0.5s;
+  animation-duration: 0.5s;
+}
+
+.animated.fadeOut{
+  -webkit-animation-duration: 0.2s;
+  animation-duration: 0.2s;
 }
 
 .tasky:hover {
@@ -298,6 +340,7 @@ body {
 	text-align:center;
 	color:#fff;
 	font-size:2.5em;
+	z-index:1000000000000000;
 
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -315,7 +358,6 @@ body {
 	text-transform:uppercase;
 	text-align:center;
 	font-size:2em;	
-	/*opacity:0.2;*/
 	color:#cccccc;
 	top:75px;
 	margin-right: 15%;
@@ -360,14 +402,14 @@ body {
 	line-height:0.75em;
 }
 
-.help-form > .help-items > #main {
+.help-form > .help-items > #plannings-a-drag {
 	font-family:'Lilita One',sans-serif;
 	color:#fff;
 	text-transform: uppercase;
 	font-size:1.25em;
 }
 
-.help-form > .help-items > #main2 {
+.help-form > .help-items > #literally {
 	font-family:'Lilita One',sans-serif;
 	color:#fff;
 	text-transform: uppercase;
@@ -391,6 +433,7 @@ body {
 	background-color:#38FFE1;
 	z-index:1;
 	outline:none;
+	z-index:1000000000000000;
 
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -414,14 +457,6 @@ body {
 		transition: opacity 0.5s;
 }
 
-/*.colour-picker-button {
-  -webkit-animation-duration: 0.7s;
-  -moz-animation-duration: 0.7s;
-  -o-animation-duration: 0.7s;
-  -ms-animation-duration: 0.7s;
-  animation-duration: 0.7s;
-}*/
-
 /*================================================================================*/
 /*================================= COLOUR PICKER ================================*/
 /*================================================================================*/
@@ -436,7 +471,6 @@ body {
 	margin-top:5px;
 	margin-left:5px;
 	border-radius:10px;
-	/*background-color: rgba(0,0,0,0.65);*/
 	background-color: #05E1FF;
 	outline:none;
 }
@@ -450,8 +484,6 @@ body {
 #colour1, #colour2, #colour3,
 #colour4, #colour5, #colour6,
 #colour7, #colour8, #colour9 {
-/*	width:30%;
-	height:40px;*/ /* change to same as width */
 	width:50px;
 	height:50px;
 	background:rgba(0,0,0,0.8);
@@ -510,7 +542,19 @@ body {
    font-size:28px;
 	border-radius: 20px;
  	z-index:10000000000000000000000;
+
+  -webkit-animation-duration: 0.2s;
+  -moz-animation-duration: 0.2s;
+  -o-animation-duration: 0.2s;
+  -ms-animation-duration: 0.2s;
+  animation-duration: 0.2s;
 }
+
+
+/*.smoke-base {
+	background-color: red;
+	z-index:10000000000000000000000;
+}*/
 
 .dialog-buttons {
 	margin: 0px 0 5px 0;
@@ -539,7 +583,7 @@ button.cancel {
 	padding:10px;
 	color:#fff;
 	margin-top:10px;
-	border-radius:10px;
+	border-radius:15px;
 	background-color: rgba(0,0,0,0.65);
 	font-family:'Lilita One',sans-serif;
 	text-transform:uppercase;

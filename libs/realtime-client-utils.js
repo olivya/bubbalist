@@ -92,6 +92,7 @@ rtclient.Authorizer.prototype.start = function(onAuthComplete) {
   var _this = this;
   gapi.load('auth:client,drive-realtime,drive-share', function() {
     _this.authorize(onAuthComplete);
+    console.log("start() function done");
   });
 }
 
@@ -99,6 +100,8 @@ rtclient.Authorizer.prototype.start = function(onAuthComplete) {
 // Reauthorize the client with no callback (used for authorization failure):
 // @param onAuthComplete {Function} to call once authorization has completed.
 rtclient.Authorizer.prototype.authorize = function(onAuthComplete) {
+  console.log("authorize()");
+
   var clientId = this.clientId;
   var userId = this.userId;
   var _this = this;
@@ -107,26 +110,25 @@ rtclient.Authorizer.prototype.authorize = function(onAuthComplete) {
     if (authResult && !authResult.error) {
       _this.authButton.disabled = true;
       _this.fetchUserId(onAuthComplete);
-      console.log("good to go");
-      bubbalist.ready = false;
-      bubbalist.updateReady();
-      // console.log("bubbalist.ready is now",bubbalist.ready);
+      console.log("no auth result error!");
+      bubbalist.hideLogin();
+      bubbalist.showSpinner();
     } else {
       _this.authButton.disabled = false;
 
       $("#authorizeButton").click(function() {
-        bubbalist.hideLogin();
-        bubbalist.showSpinner();
+        console.log("authorize button clicked!");
       });
 
       _this.authButton.onclick = authorizeWithPopup;
 
-      console.log("no auth!");
-      bubbalist.stopLoad();
+      console.log("no auth! stopping load & showing login...");
+      bubbalist.showLogin();
     }
   };
 
   var authorizeWithPopup = function() {
+    console.log("authorizing with popup");
     gapi.auth.authorize({
       client_id: clientId,
       scope: [
@@ -137,7 +139,7 @@ rtclient.Authorizer.prototype.authorize = function(onAuthComplete) {
       user_id: userId,
       immediate: false
     }, handleAuthResult);
-    console.log(clientId);
+    // console.log(clientId);
   };
 
   // Try with no popups first:
@@ -304,10 +306,11 @@ rtclient.RealtimeLoader.prototype.start = function() {
  */
 rtclient.RealtimeLoader.prototype.handleErrors = function(e) {
 
-  console.log(e);
+  console.log("ERROR:",e);
   if (e.type == 'not_found') {
-        RTCLIENT.createNewFileAndRedirect();
-        return;
+      console.log("createNewFileAndRedirect() ...");
+      RTCLIENT.createNewFileAndRedirect();
+      return;
   }
 
   if(e.type == gapi.drive.realtime.ErrorType.TOKEN_REFRESH_REQUIRED) {
@@ -368,12 +371,9 @@ rtclient.RealtimeLoader.prototype.load = function() {
   }
 
   if (this.autoCreate) {
-    bubbalist.destroyLogin();
-    console.log("HAD TO CREATE FILE");
+    // bubbalist.destroyLogin();
     this.createNewFileAndRedirect();
-    bubbalist.ready = false;
-    bubbalist.updateReady();
-    console.log("bubbalist.ready is now",bubbalist.ready);
+    console.log("HAD TO CREATE FILE; now createNewFileAndRedirect()");
   }
 }
 
@@ -389,7 +389,7 @@ rtclient.RealtimeLoader.prototype.createNewFileAndRedirect = function() {
     if (file.id) {
       localStorage.setItem('realtimeFileID', file.id);
       _this.redirectTo([file.id], _this.authorizer.userId);
-      console.log('file id created' , localStorage);
+      console.log("DONE CREATING FILE");
     }
     // File failed to be created, log why and do not attempt to redirect.
     else {

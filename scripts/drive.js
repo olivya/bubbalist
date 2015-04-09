@@ -1,4 +1,5 @@
 window.onload = function() {
+    console.log('WINDOW ONLOAD');
     var realtimeLoader = new rtclient.RealtimeLoader(realtimeOptions);
     realtimeLoader.start();
 }
@@ -7,32 +8,30 @@ function initializeModel(model) {
     console.log('MODEL INITIALIZED');
     bubbalist.ready = false;
     bubbalist.updateReady();
-    // console.log("bubbalist.ready is now",bubbalist.ready);
     var taskList = model.createList();
     model.getRoot().set('taskList', taskList);
 }
 
 function onFileLoaded(doc) {
     console.log('FILE LOADED');
+
+    bubbalist.ready = true;
     bubbalist.updateReady();
+
     bubbalist.hideSpinner();
-    // console.log("bubbalist.ready is now",bubbalist.ready);
     bubbalist.taskList = doc.getModel().getRoot().get('taskList');
 
    function taskAdded(e) {
-        // console.log('======================================\nTASK ADDED (drive.js)\n========================================');
-        if (e.isLocal) return; //if the event happened in the local tab, basically leave this function
+        if (e.isLocal) return;
         bubbalist.updateTasks();
    };
 
    function taskDeleted(e) {
-        // console.log('======================================\nTASK DELETED (drive.js)\n======================================');
         if (e.isLocal) return;
         bubbalist.updateTasks();
    };
 
     function taskChanged(e) {
-        // console.log('======================================\nTASK CHANGED (drive.js)\n======================================');
         if (e.isLocal) return;
         bubbalist.updateTasks();
     };
@@ -49,9 +48,9 @@ var realtimeOptions = {
     authButtonElementId: 'authorizeButton',
     initializeModel: initializeModel,
     autoCreate: true, 
-    defaultTitle: "Bubbalist", //what
-    newFileMimeType: null, // using default
+    defaultTitle: "Bubbalist",
+    newFileMimeType: null,
     onFileLoaded: onFileLoaded,
-    registerTypes: null, // no action
+    registerTypes: null,
     afterAuth:null
 }

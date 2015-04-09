@@ -1,59 +1,58 @@
-<span class="no-tasks-message" style="display:none;">You haven't added any tasks!</span>
-
-<!-- ADD TASK FORM: -->
-	<div class="add-task-form">
-		<div id="cover" ng-show="responseNeeded"></div>
-
-		<form name="addTaskForm"
-				ng-submit="addTask()"
-				novalidate>
-			<div class="form-items">
-				<textarea rows="4"
-							 maxlength="100"
-							 class="task-input"
-							 placeholder="Task"
-							 ng-model="newTask"
-							 required>
-				</textarea><br/>
-				<!-- <span ng-click="addTask()"> -->
-					<button class="add-task-button" type="submit">ADD TASK!</button>
-				<!-- </span> -->
-				<button class="colour-picker-button" ng-click="togglePicker()" type="button"></button>
-				<div class="text-feedback"></div>
-				<!-- COLOUR PICKER DROPDOWN: -->
-				<!-- <div class="colour-picker" ng-show="showColourPicker"> -->
-				<div class="colour-picker" style="display:none;">
-					<div class="colours" style="display:none;">
-						<div id="colour1" ng-click="colourSelected('#05E1FF')"></div>
-						<div id="colour2" ng-click="colourSelected('#8799FF')"></div>
-						<div id="colour3" ng-click="colourSelected('#BA82FF')"></div><br/>
-						<div id="colour4" ng-click="colourSelected('#FF8396')"></div>
-						<div id="colour5" ng-click="colourSelected('#FF7ABB')"></div>
-						<div id="colour6" ng-click="colourSelected('#FE2374')"></div><br/>
-						<div id="colour7" ng-click="colourSelected('#5DEFB0')"></div>
-						<div id="colour8" ng-click="colourSelected('#49DDB0')"></div>
-						<div id="colour9" ng-click="colourSelected('#139a6f')"></div>
-					</div>
+<!-- * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * -->
+<!-- ~ * ~ * ~ * ~ ADD TASK FORM ~ * ~ * ~ * ~ -->
+<!-- * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * -->
+<div class="add-task-form">
+	<form name="addTaskForm"
+			ng-submit="addTask()"
+			novalidate>
+		<div class="form-items">
+			<textarea rows="4"
+						 maxlength="100"
+						 class="task-input"
+						 placeholder="Task"
+						 ng-model="newTask"
+						 required>
+			</textarea>
+			<button class="add-task-button" type="submit">ADD TASK!</button>
+			<button class="colour-picker-button" ng-click="togglePicker()" type="button"></button>
+			<div class="text-feedback"></div>
+			<div class="colour-picker" style="display:none;">
+				<div class="colours" style="display:none;">
+					<div id="colour1" ng-click="colourSelected('#05E1FF')"></div>
+					<div id="colour2" ng-click="colourSelected('#8799FF')"></div>
+					<div id="colour3" ng-click="colourSelected('#BA82FF')"></div><br/>
+					<div id="colour4" ng-click="colourSelected('#FF8396')"></div>
+					<div id="colour5" ng-click="colourSelected('#FF7ABB')"></div>
+					<div id="colour6" ng-click="colourSelected('#FE2374')"></div><br/>
+					<div id="colour7" ng-click="colourSelected('#5DEFB0')"></div>
+					<div id="colour8" ng-click="colourSelected('#49DDB0')"></div>
+					<div id="colour9" ng-click="colourSelected('#139a6f')"></div>
 				</div>
 			</div>
-		</form><br/>
-		
-			<div class="toggle-menu-button animated bounceInRight" ng-click="toggleMenu()">
-				<i class="fa fa-plus plus-icon"></i>
-			</div>
-	</div>
-<div class="scroll-for-real"></div>
+		</div>
+	</form>
+</div>
+<!-- ~ * ~ * ~ (+) BUTTON: ~ * ~ * ~ -->
+<div class="toggle-menu-button animated bounceInRight" ng-click="toggleMenu()">
+	<i class="fa fa-plus plus-icon"></i>
+</div>
 
-<!-- HELP FORM: -->
+<!-- * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * -->
+<!-- ~ * ~ * ~ * ~ HELP MENU ~ * ~ * ~ * ~ -->
+<!-- * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * -->
 <div class="help-form">
 	<div class="help-items">
-			<span id="main">Planning's a drag . . .</span><p/>
+			<span id="plannings-a-drag">Planning's a drag . . .</span><p/>
 			<span>Drag tasks to reposition.</span><p/>
 			<span>Double-tap to edit, delete, or mark as done.</span><p/>
 			<span>Single-tap to bring task to the front.</span><p/>
-			<span id="main2">. . . literally.</span>
+			<button id="clear-all-tasks-button" ng-click="clearTasks()">clear all tasks</button>
+			<span id="literally">. . . literally.</span>
 	</div>
-	<br/>
-	<div class="toggle-help-button animated bounceInRight" ng-click="toggleHelp()">
-		<i class="fa fa-question"></i>
-	</div>
+</div>
+<!-- ~ * ~ * ~ (?) BUTTON: ~ * ~ * ~ -->
+<div class="toggle-help-button animated bounceInRight" ng-click="toggleHelp()">
+	<i class="fa fa-question question-icon"></i>
+</div>
+
+<div id="cover" class="cover" ng-show="responseNeeded"></div>
