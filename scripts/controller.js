@@ -76,19 +76,24 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		console.log("BUBBALIST READY:",bubbalist.ready);
 		bubbalist.updateReady();
 
-		if(bubbalist.taskList.length===0) {
+		// if(bubbalist.taskList.length===0) {
 			var noTasksMsg = document.createElement("div");
 			noTasksMsg.id = "noTasksMsg";
 			document.getElementById("ngview").appendChild(noTasksMsg);
 			var noTasksMsgText = document.createTextNode("You don't have any tasks!");
 			$("#noTasksMsg").addClass("no-tasks-message");
 			noTasksMsg.appendChild(noTasksMsgText);
+			$("#noTasksMsg").hide();
+		// }
+
+		if(bubbalist.taskList.length===0) {
 			$("#noTasksMsg").addClass("animated bounceInDown");
+			$("#noTasksMsg").show();
 			setTimeout(function(){
 				$("#noTasksMsg").removeClass("animated bounceInDown");
 			},2000);
-		}
-
+		} else $("#noTasksMsg").hide();
+ 
 		//update DOM elements after load...
 		$('#loading').remove();
 		$('.toggle-menu-button').removeClass('fade');
