@@ -76,15 +76,13 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		console.log("BUBBALIST READY:",bubbalist.ready);
 		bubbalist.updateReady();
 
-		// if(bubbalist.taskList.length===0) {
-			var noTasksMsg = document.createElement("div");
-			noTasksMsg.id = "noTasksMsg";
-			document.getElementById("ngview").appendChild(noTasksMsg);
-			var noTasksMsgText = document.createTextNode("You don't have any tasks!");
-			$("#noTasksMsg").addClass("no-tasks-message");
-			noTasksMsg.appendChild(noTasksMsgText);
-			$("#noTasksMsg").hide();
-		// }
+		var noTasksMsg = document.createElement("div");
+		noTasksMsg.id = "noTasksMsg";
+		document.getElementById("ngview").appendChild(noTasksMsg);
+		var noTasksMsgText = document.createTextNode("You don't have any tasks!");
+		$("#noTasksMsg").addClass("no-tasks-message");
+		noTasksMsg.appendChild(noTasksMsgText);
+		$("#noTasksMsg").hide();
 
 		if(bubbalist.taskList.length===0) {
 			$("#noTasksMsg").addClass("animated bounceInDown");
@@ -112,9 +110,6 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 			if(bubbalist.taskList.asArray()[i] != null) {
 				thisTaskIsNew = false; //b/c loading from storage
 				$scope.visTask(bubbalist.taskList.asArray()[i]);
-
-				console.log("yPos",bubbalist.taskList.asArray()[i].yPos,"// xPos",bubbalist.taskList.asArray()[i].xPos,"\""+bubbalist.taskList.asArray()[i].task+"\"");
-
 				if(i === (bubbalist.taskList.length - 1)){
 					thisTaskIsNew = true;
 				}
@@ -166,11 +161,21 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 				task:textInput,
 				editing:false,
 				colour:colour,
-				ID:moment().format("MDdYYYYHHmmssSSS"),
+				ID:moment().format("MDDDYYYYHHmmssSSS"),
 				xPos:10,
 				yPos:yPos,
 				zPos:zPos
 			};
+
+			//fix bug with double-digit dates messing up length:
+			if(task.ID.length > 16) {
+				console.log('long',task.ID);
+				var newID = task.ID;
+	   		newID = task.ID.substr(0, task.ID.length-1);
+	   		task.ID = newID;
+				console.log('new',task.ID);
+			}
+
 			$scope.taskList.push(task);
 			bubbalist.taskList.push(task);
 			$scope.newTask = "";
@@ -280,6 +285,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 			setTimeout(function(){ $scope.compile(tasky.id); },200);
 			$scope.makeDraggie(thisTask.ID);
 			// $scope.thisTaskIsNew = true; //set upfor next task - will be set back to false if another task is loaded from drawTask
+			// console.log(tasky);
 		}
 	}
 
