@@ -20,8 +20,6 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		if (bubbalist.ready) {
 			$scope.ready = true;
 		} else $scope.ready = false;
-
-		('$scope.ready=',$scope.ready);
 	}
 
 	bubbalist.updateReady();
@@ -107,6 +105,13 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		}
 	}
 
+	$scope.showMenuButtons = function () {
+		$(".toggle-help-button").show();
+		$(".toggle-help-button").addClass("bounceInRight");
+		$(".toggle-menu-button").show();
+		$('.toggle-menu-button').addClass('bounceInRight');
+	}
+
 	bubbalist.updateTasks = function() { //runs on page load
 		bubbalist.ready = false;
 		bubbalist.updateReady();
@@ -117,6 +122,9 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		$scope.drawTasks();
 		zPos = $scope.findLargestZ();
 		console.log("READY!\n "); //<--- loading screen can stop here <--- 
+		
+		$scope.showMenuButtons();
+
 		bubbalist.hideSpinner();
 		bubbalist.ready = true;
 		bubbalist.updateReady();
@@ -138,14 +146,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 			},2000);
 		} else $("#noTasksMsg").hide();
  
-		//update DOM elements after load...
-		$('#loading').remove();
-		$('.toggle-menu-button').removeClass('fade');
-		$('.toggle-help-button').removeClass('fade');
-		setTimeout(function(){
-			$('.toggle-menu-button').removeClass('animated bounceInRight');
-			$('.toggle-help-button').removeClass('animated bounceInRight');
-		})
+		// $('#loading').remove();
 		$scope.$apply();
    };
 
