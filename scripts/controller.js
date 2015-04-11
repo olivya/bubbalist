@@ -119,13 +119,10 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		$scope.drawTasks();
 		zPos = $scope.findLargestZ();
 		console.log("READY!\n "); //<--- loading screen can stop here <--- 
-
 		$scope.showMenuButtons();
-
 		bubbalist.hideSpinner();
 		bubbalist.ready = true;
 		bubbalist.updateReady();
-
 		var noTasksMsg = document.createElement("div");
 		noTasksMsg.id = "noTasksMsg";
 		document.getElementById("ngview").appendChild(noTasksMsg);
@@ -143,7 +140,6 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 			},2000);
 		} else $("#noTasksMsg").hide();
  
-		// $('#loading').remove();
 		$scope.$apply();
    };
 
@@ -750,13 +746,13 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 			$( ".toggle-help-button" ).velocity(
 			{	right: "0.25em",
 				top:"4.35em",
-				backgroundColor: "#9F99FE" },
+				backgroundColor: "#5DF5ED" },
 			{	duration: menuSpeed });
 		} else {
 			$( ".toggle-help-button" ).velocity(
 			{	right: "0.25em",
 				top:"1.65em",
-				backgroundColor: "#9F99FE" }, 
+				backgroundColor: "#5DF5ED" }, 
 			{	duration: menuSpeed });
 		}
 	};
