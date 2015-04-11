@@ -32,10 +32,6 @@
 		</div>
 	</form>
 </div>
-<!-- ~ * ~ * ~ (+) BUTTON: ~ * ~ * ~ -->
-<div class="toggle-menu-button animated" style="display:none" ng-click="toggleMenu()">
-	<i class="fa fa-plus plus-icon"></i>
-</div>
 
 <!-- * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * -->
 <!-- ~ * ~ * ~ * ~ HELP MENU ~ * ~ * ~ * ~ -->
@@ -50,9 +46,17 @@
 			<span id="literally">. . . literally.</span>
 	</div>
 </div>
-<!-- ~ * ~ * ~ (?) BUTTON: ~ * ~ * ~ -->
-<div class="toggle-help-button animated" style="display:none" ng-click="toggleHelp()">
-	<i class="fa fa-question question-icon"></i>
-</div>
+
+<!-- <div id="button-container"> -->
+	<!-- ~ * ~ * ~ (?) BUTTON: ~ * ~ * ~ -->
+	<div class="toggle-help-button animated" style="display:none" ng-click="toggleHelp()">
+		<i class="fa fa-question question-icon"></i>
+	</div>
+
+	<!-- ~ * ~ * ~ (+) BUTTON: ~ * ~ * ~ -->
+	<div class="toggle-menu-button animated" style="display:none" ng-click="toggleMenu()">
+		<i class="fa fa-plus plus-icon"></i>
+	</div>
+<!-- </div> -->
 
 <div id="cover" class="cover" ng-show="responseNeeded"></div>

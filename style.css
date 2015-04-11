@@ -14,7 +14,6 @@ body {
 	color:#fff;
 	width:76%;
 	border-radius:10px;
-	/*background-color: rgba(0,0,0,0.65);*/
 	background-color: #333333;
 	margin-top:10px;
 	font-family:'Lilita One',sans-serif;
@@ -101,7 +100,6 @@ body {
 	opacity:1;
 }
 
-
 .button-pressed {
 	background-color: rgba(0,0,0,0.8);
 }
@@ -144,7 +142,7 @@ body {
 .edit-box {
 	resize:none;
 	width:100%;
-	font-size:1em;
+	font-size:1.5em;
 	padding:5px;
 	border-width:0px;
 	border-radius:13px;
@@ -187,12 +185,6 @@ body {
 	color:#fff;
 	margin:0px;
 	word-wrap:break-word;
-
-/*  -webkit-animation-duration: 0.5s;
-  -moz-animation-duration: 0.5s;
-  -o-animation-duration: 0.5s;
-  -ms-animation-duration: 0.5s;
-  animation-duration: 0.5s;*/
 }
 
 .animated.rollIn{
@@ -432,7 +424,7 @@ body {
 	width:47px;
 	line-height: 52px;
 	border-width:0px;
-	background-color:#38FFE1;
+	background-color:#9F99FE;
 	z-index:1;
 	outline:none;
 	z-index:1000000000000000;

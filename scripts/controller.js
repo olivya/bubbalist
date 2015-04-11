@@ -57,13 +57,12 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 //=============================================================================
 	//updating view when a non-local change is made:
 	bubbalist.updateView = function(RTevent) {
-		//event added:
+
 		if(RTevent === "added") {
-			//draw newest task:
 			$scope.taskList = bubbalist.taskList.asArray();
-			$scope.visTask($scope.taskList[($scope.taskList.length - 1)]);
+			$scope.visTask($scope.taskList[($scope.taskList.length - 1)]); //draw newest task:
 		}
-		//event moved or edited:
+
 		if(RTevent === "changed") {
 			$scope.taskList = bubbalist.taskList.asArray();
 			for (var i=0, length = $scope.taskList.length; i < length; i++) {	
@@ -84,7 +83,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 			};
 			$scope.taskList = bubbalist.taskList.asArray();
 		}
-		//event deleted:
+
 		if(RTevent === "deleted") {
 			//check if $scope task on the view is still in BB list...
 			for (var i=0, length = $scope.taskList.length; i < length; i++) {	
@@ -92,9 +91,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 					$('#'+$scope.taskList[i].ID).remove();
 				}
 			}
-			
 			$scope.taskList = bubbalist.taskList.asArray();
-
 			if($scope.taskList.length===0) { //if this was the last task deleted...
 				console.log("Last task was deleted...");
 				$(".no-tasks-message").addClass("animated bounceInDown");
@@ -122,7 +119,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		$scope.drawTasks();
 		zPos = $scope.findLargestZ();
 		console.log("READY!\n "); //<--- loading screen can stop here <--- 
-		
+
 		$scope.showMenuButtons();
 
 		bubbalist.hideSpinner();
@@ -753,13 +750,13 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 			$( ".toggle-help-button" ).velocity(
 			{	right: "0.25em",
 				top:"4.35em",
-				backgroundColor: "#38FFE1" },
+				backgroundColor: "#9F99FE" },
 			{	duration: menuSpeed });
 		} else {
 			$( ".toggle-help-button" ).velocity(
 			{	right: "0.25em",
 				top:"1.65em",
-				backgroundColor: "#38FFE1" }, 
+				backgroundColor: "#9F99FE" }, 
 			{	duration: menuSpeed });
 		}
 	};
