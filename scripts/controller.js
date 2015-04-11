@@ -35,32 +35,78 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 			$('#login').show();
 			$("#google").addClass("animated bounceInDown");
 			$("#authorizeButton").addClass("animated bounceInUp");
-			console.log("showing login...");
 		},150);
 	}
 
 	bubbalist.hideLogin = function () {
 		$('#login').hide();
-		console.log("hiding login...");
 	}
 
 	bubbalist.hideSpinner = function () {
 		$("#spinner-container").removeClass("bounceInDown");
 		$("#spinner-container").addClass("fadeOut");
 		setTimeout(function(){ $('#spinner-container').hide(); },200);
-		console.log("hiding spinner...");
 	}
 
 	bubbalist.showSpinner = function () {
 		$("#spinner-container").removeClass("fadeOut");
 		$('#spinner-container').show();
 		$("#spinner-container").addClass("bounceInDown");
-		console.log("showing spinner...");
 	}
 
 //=============================================================================
 //====== INITIALIZING STUFF ===================================================
 //=============================================================================
+	//updating view when a non-local change is made:
+	bubbalist.updateView = function(RTevent) {
+		//event added:
+		if(RTevent === "added") {
+			//draw newest task:
+			$scope.taskList = bubbalist.taskList.asArray();
+			$scope.visTask($scope.taskList[($scope.taskList.length - 1)]);
+		}
+		//event moved or edited:
+		if(RTevent === "changed") {
+			$scope.taskList = bubbalist.taskList.asArray();
+			for (var i=0, length = $scope.taskList.length; i < length; i++) {	
+				var thisTask = $scope.taskList[i];
+				//update position:
+				$("#"+thisTask.ID).css("top",thisTask.yPos+"px");
+				$("#"+thisTask.ID).css("left",thisTask.xPos+"px");
+				$("#"+thisTask.ID).css("z-index",thisTask.zPos);
+				//update task text:
+				var origTaskySpan = document.getElementById(thisTask.ID+"span");
+				if(origTaskySpan) { origTaskySpan.parentNode.removeChild(origTaskySpan); }
+				var newTaskySpan = document.createElement("span");
+				newTaskySpan.id = thisTask.ID+"span";
+				var newTaskySpanText = document.createTextNode(thisTask.task);
+				newTaskySpan.appendChild(newTaskySpanText);
+				var handle = document.getElementById(thisTask.ID+"handle");
+				handle.appendChild(newTaskySpan);
+			};
+			$scope.taskList = bubbalist.taskList.asArray();
+		}
+		//event deleted:
+		if(RTevent === "deleted") {
+			//check if $scope task on the view is still in BB list...
+			for (var i=0, length = $scope.taskList.length; i < length; i++) {	
+				if(bubbalist.taskList.asArray().indexOf($scope.taskList[i] ) <= -1) {
+					$('#'+$scope.taskList[i].ID).remove();
+				}
+			}
+			
+			$scope.taskList = bubbalist.taskList.asArray();
+
+			if($scope.taskList.length===0) { //if this was the last task deleted...
+				console.log("Last task was deleted...");
+				$(".no-tasks-message").addClass("animated bounceInDown");
+				$(".no-tasks-message").show(); //...show no tasks message
+				console.log("Showing no tasks message.");
+				setTimeout(function(){ $(".no-tasks-message").removeClass("animated bounceInDown"); },2000);
+			}
+		}
+	}
+
 	bubbalist.updateTasks = function() { //runs on page load
 		bubbalist.ready = false;
 		bubbalist.updateReady();
@@ -70,10 +116,9 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		$('.text-feedback').html(maxChars);
 		$scope.drawTasks();
 		zPos = $scope.findLargestZ();
-		console.log("READY!\n~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~\n "); //<--- this is when loading screen can stop <--- 
+		console.log("READY!\n "); //<--- loading screen can stop here <--- 
 		bubbalist.hideSpinner();
 		bubbalist.ready = true;
-		console.log("BUBBALIST READY:",bubbalist.ready);
 		bubbalist.updateReady();
 
 		var noTasksMsg = document.createElement("div");
@@ -87,6 +132,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		if(bubbalist.taskList.length===0) {
 			$("#noTasksMsg").addClass("animated bounceInDown");
 			$("#noTasksMsg").show();
+			console.log("Showing no tasks message.");
 			setTimeout(function(){
 				$("#noTasksMsg").removeClass("animated bounceInDown");
 			},2000);
@@ -116,7 +162,6 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 			}
 		};
    }
-
 
 //=============================================================================
 //====== RETURNING TASK DATA ==================================================
@@ -169,11 +214,9 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 
 			//fix bug with double-digit dates messing up length:
 			if(task.ID.length > 16) {
-				console.log('long',task.ID);
 				var newID = task.ID;
 	   		newID = task.ID.substr(0, task.ID.length-1);
 	   		task.ID = newID;
-				console.log('new',task.ID);
 			}
 
 			$scope.taskList.push(task);
@@ -191,6 +234,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 
 		if(bubbalist.taskList.length===0) {
 			$(".no-tasks-message").show(); //...show no tasks message
+			console.log("Showing no tasks message.");
 			$(".no-tasks-message").addClass("animated bounceInDown");
 			setTimeout(function(){ $(".no-tasks-message").removeClass("animated bounceInDown"); },1000);
 		} else $(".no-tasks-message").hide();
@@ -201,6 +245,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	$scope.visTask = function(task) {
 		if (task != undefined) {
 			$("#noTasksMsg").addClass("animated bounceOutDown");
+			$(".no-tasks-message").hide();
 			setTimeout(function(){ $("#noTasksMsg").removeClass("animated bounceOutDown"); },2000);
 			//* ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~
 			//~ * ~ * ~ CREATE TASKY DOM ELEMENTS ~ * ~ * ~ *
@@ -331,7 +376,6 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 			} else {
 				$scope.responseNeeded = false;
 				thisTask = $scope.dataFromID(JSON.stringify(id));
-				// $scope.doneEditing(JSON.parse(thisTask.ID));
 				$scope.$apply();
 			}
 		}, { ok: "Yup", cancel: "Nevermind", reverseButtons: true });
@@ -361,7 +405,6 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 			} else {
 				$scope.responseNeeded = false;
 				thisTask = $scope.dataFromID(JSON.stringify(id));
-				// $scope.doneEditing(JSON.parse(thisTask.ID));
 				$scope.$apply();
 			}
 		}, { ok: "Yup", cancel: "Nevermind", reverseButtons: true });
@@ -419,13 +462,13 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 			clear = false;
 		},1000); //time to let animation play
 		if(bubbalist.taskList.length===0) { //if this was the last task deleted...
-			console.log("last task");
+			console.log("Last task was deleted...");
 			setTimeout(function(){
 				// $(".no-tasks-message").removeClass("animated bounceInDown");
 				
 				$(".no-tasks-message").addClass("animated bounceInDown");
 				$(".no-tasks-message").show(); //...show no tasks message
-				console.log("showing..");
+				console.log("Showing no tasks message.");
 			},400);
 			setTimeout(function(){ $(".no-tasks-message").removeClass("animated bounceInDown"); },2000);
 		}

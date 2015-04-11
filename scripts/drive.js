@@ -1,11 +1,10 @@
 window.onload = function() {
-    console.log('WINDOW ONLOAD');
     var realtimeLoader = new rtclient.RealtimeLoader(realtimeOptions);
     realtimeLoader.start();
 }
 
 function initializeModel(model) {
-    console.log('MODEL INITIALIZED');
+    console.log('Model initialized!');
     bubbalist.ready = false;
     bubbalist.updateReady();
     var taskList = model.createList();
@@ -13,33 +12,30 @@ function initializeModel(model) {
 }
 
 function onFileLoaded(doc) {
-    console.log('FILE LOADED');
-
+    console.log('File loaded!');
     bubbalist.ready = true;
     bubbalist.updateReady();
-
     bubbalist.hideSpinner();
     bubbalist.taskList = doc.getModel().getRoot().get('taskList');
 
    function taskAdded(e) {
         if (e.isLocal) return;
-        bubbalist.updateTasks();
+        bubbalist.updateView("added");
    };
 
    function taskDeleted(e) {
         if (e.isLocal) return;
-        bubbalist.updateTasks();
+        bubbalist.updateView("deleted");
    };
 
     function taskChanged(e) {
         if (e.isLocal) return;
-        bubbalist.updateTasks();
+        bubbalist.updateView("changed");
     };
 
     bubbalist.taskList.addEventListener(gapi.drive.realtime.EventType.VALUES_ADDED, taskAdded);
     bubbalist.taskList.addEventListener(gapi.drive.realtime.EventType.VALUES_REMOVED, taskDeleted);
-    bubbalist.taskList.addEventListener(gapi.drive.realtime.EventType.VALUE_CHANGED, taskChanged);
-
+    bubbalist.taskList.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, taskChanged);
     bubbalist.updateTasks();
 }
 
