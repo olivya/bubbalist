@@ -14,7 +14,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 	$scope.ready = false;
 	
 	if($(window).width() > 550) {
-		alert("It appears you may not be on a mobile device. Please be aware that Bubbalist is optimized for mobile devices, and may have unexpected behaviour on larger screens!")
+		alert("It appears you may not be on a mobile device. Bubbalist is optimized for mobile devices, so it is recommended that you resize your screen to a smaller width to avoid unexpected behaviour!")
 	}
 //=============================================================================
 //====== LOADING SCREEN =======================================================
