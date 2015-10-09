@@ -58,7 +58,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 			if($('#spinner-container').is(":visible")){
 				location.reload();
 			}
-		},10000);
+		},15000);
 	}
 
 //=============================================================================
