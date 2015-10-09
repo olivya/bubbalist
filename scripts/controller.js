@@ -150,6 +150,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 			if(bubbalist.taskList.asArray()[i] != null) {
 				thisTaskIsNew = false; //b/c loading from storage
 				$scope.visTask(bubbalist.taskList.asArray()[i]);
+				// console.log(bubbalist.taskList.asArray()[i].ID,bubbalist.taskList.asArray()[i].ID.length);
 				if(i === (bubbalist.taskList.length - 1)){
 					thisTaskIsNew = true;
 				}
@@ -209,7 +210,8 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 			//fix bug with double-digit dates messing up length:
 			if(task.ID.length > 16) {
 				var newID = task.ID;
-	   		newID = task.ID.substr(0, task.ID.length-1);
+				var amtToRemove = task.ID.length - 16; 
+	   		newID = task.ID.substr(0, task.ID.length-amtToRemove);
 	   		task.ID = newID;
 			}
 
