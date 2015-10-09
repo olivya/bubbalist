@@ -216,6 +216,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 				var amtToRemove = task.ID.length - 16; 
 	   		newID = task.ID.substr(0, task.ID.length-amtToRemove);
 	   		task.ID = newID;
+	   		console.log(newID,newID.length);
 			}
 
 			$scope.taskList.push(task);
