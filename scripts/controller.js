@@ -669,13 +669,22 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 			{	right: "83%",
 				top:"20px",
 				backgroundColor:"#FF75B3",
-				rotateZ:"45"},
+				// backgroundColor:"#000000",
+				// rotateZ:"45"
+			},
 			{	duration: menuSpeed });
 
 			$( ".plus-icon" ).velocity(
 			{	marginLeft:"-2",
-				paddingTop:"5" },
+				paddingTop:"5",
+				rotateZ:"45"},
 			{	duration: menuSpeed });
+
+			// setTimeout(function () {
+			// 	console.log("test");
+			// 	$( ".toggle-menu-button" ).find($(".fa")).removeClass('fa-plus').addClass('fa-times')
+			// },200);
+
 		} else { //if HELP menu IS already open...
 			$scope.toggleHelp(); //...close it
 
@@ -687,7 +696,14 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 			{	right: "83%",
 				top:"20px",
 				backgroundColor:"#FF75B3",
+				// backgroundColor:"#000000",
 				rotateZ:"45" },
+			{	duration: menuSpeed });
+
+			$( ".plus-icon" ).velocity(
+			{	marginLeft:"-2",
+				paddingTop:"5",
+				rotateZ:"45"},
 			{	duration: menuSpeed });
 		}
 	};
@@ -703,8 +719,15 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		{	right: "0.25em",
 			top:"0.25em",
 			backgroundColor: "#E5B2FF",
-			rotateZ:"90" },
+			// rotateZ:"-45"
+		},
 		{	duration: menuSpeed });
+
+			$( ".plus-icon" ).velocity(
+			{	marginLeft:"2",
+				paddingTop:"5",
+				rotateZ:"90"},
+			{	duration: menuSpeed });
 
 		if(!helpMenuOpen) { //if HELP menu is NOT opening in place of ADD TASK...
 			$scope.shiftHelpButtonUp(); //...return help button to usual position
@@ -730,6 +753,7 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 					top:"1.65em",
 					backgroundColor:"#FF75B3"	},
 				{	duration: menuSpeed });
+				
 			} else {
 				$( ".help-form" ).velocity(
 				{ right:"-1.5em" },
@@ -826,4 +850,22 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		$injector.invoke(function($compile){ $compile(el)($scope); });
 	}
 	//End compile function reference.
+});
+
+
+//=============================================================================
+//====== GA ===================================================================
+//=============================================================================
+
+$(".handle").click(function() {
+	console.log("clicked task");
+	if (typeof ga !== 'undefined' && ga.hasOwnProperty('loaded') && ga.loaded === true) {
+		console.log("clicked task");
+		// e.preventDefault();
+		// var href = this.href;
+		// ga('send', 'event', 'Slideshow Image', 'Click', jQuery(this).attr('rel'),
+		// 	{
+		// 		'hitCallback': function(){ document.location = href; }
+		// 	});
+	}
 });
