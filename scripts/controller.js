@@ -53,6 +53,12 @@ bubbalist.controller('mainController', function($scope, $location, $timeout) {
 		$("#spinner-container").removeClass("fadeOut");
 		$('#spinner-container').show();
 		$("#spinner-container").addClass("bounceInDown");
+
+		setTimeout(function(){
+			if($('#spinner-container').is(":visible")){
+				location.reload();
+			}
+		},10000);
 	}
 
 //=============================================================================
